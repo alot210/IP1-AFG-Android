@@ -5,3 +5,5 @@ out
 *.jar
 *.html
 *.txt
+*.DS_Store
+*.Thumbs
