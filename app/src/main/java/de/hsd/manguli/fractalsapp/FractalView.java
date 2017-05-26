@@ -13,11 +13,23 @@ import android.view.View;
 import de.hsd.manguli.fractalsapp.Complex;
 
 import java.lang.reflect.Array;
+import java.text.AttributedCharacterIterator;
 
 public class FractalView extends View {
     private Paint point;
+
     public FractalView(Context context) {
         super(context);
+        init();
+    }
+
+    public FractalView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public FractalView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
         init();
     }
 
@@ -27,11 +39,12 @@ public class FractalView extends View {
 
     }
 
-    public void onDraw(Canvas canvas) {
+    @Override
+    protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         point.setColor(Color.BLUE);
         point.setStyle(Paint.Style.FILL);
-        canvas.drawRect(2f,3f,4f,4f,point);
+        canvas.drawRect(0,0,canvas.getWidth()/2,canvas.getHeight()/2,point);
     }
 
 }
