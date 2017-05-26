@@ -42,9 +42,19 @@ public class FractalView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        point.setColor(Color.BLUE);
-        point.setStyle(Paint.Style.FILL);
-        canvas.drawRect(0,0,canvas.getWidth()/2,canvas.getHeight()/2,point);
+        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),5,new Complex(2.0,2.0),new Complex(9.0,16.0));
+        //point.setColor(Color.BLUE);
+        //point.setStyle(Paint.Style.FILL);
+
+
+        for (int i=0; i< canvas.getWidth();i++){
+            for(int j=0; j< canvas.getHeight(); j++){
+
+                point.setColor(mb.setColor(i,j));
+                point.setStyle(Paint.Style.FILL);
+                canvas.drawPoint(i,j,point);
+            }
+        }
     }
 
 }
