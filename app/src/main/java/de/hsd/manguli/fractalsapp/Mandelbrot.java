@@ -1,7 +1,7 @@
 package de.hsd.manguli.fractalsapp;
 
 /**
- * Created by Thomas on 26.05.2017.
+ * Mandelbrot Klasse
  */
 
 public class Mandelbrot extends Algorithm {

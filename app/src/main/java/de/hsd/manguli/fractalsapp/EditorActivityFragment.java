@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment als Teil des Editor
  */
 public class EditorActivityFragment extends Fragment {
 

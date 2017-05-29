@@ -2,7 +2,7 @@ package de.hsd.manguli.fractalsapp;
 
 
 /**
- * Created by Thomas on 24.05.2017.
+ * Complex Klasse für den eigenen Datentyp Complex
  */
 
 public class Complex {

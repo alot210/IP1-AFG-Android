@@ -16,22 +16,32 @@ import android.widget.TextView;
 
 import org.w3c.dom.Attr;
 
+/**
+ * MainActivity - wird beim Start der App aufgerufen
+ * hier befindet sich die View --> Ausgabe der Mengen
+ */
 public class MainActivity extends AppCompatActivity {
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //XML-Layout über die Ressourcen Variable holen
         setContentView(R.layout.activity_main);
+
+        //Toolbar als ActionBar hinzufügen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        //Logo in Action Bar integrieren
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setLogo(R.drawable.ic_hsd_logo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
-        //setContentView(new FractalView(this));
 
-
+        //Screenshot Button als FAB (=Floating Action Button) integrieren
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //Snackbar Meldung bei Klick auf FAB
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -40,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //View initialisieren und mit invalidate() onDraw aufrufen
         FractalView fw = new FractalView(this);
         fw.invalidate();
     }
@@ -60,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         //noinspection SimplifiableIfStatement
+        //MenüPunkte und die Intents zu den Activities
         if (id == R.id.action_settings) {
             Intent editorIntent = new Intent(this,EditorActivity.class);
             startActivity(editorIntent);
