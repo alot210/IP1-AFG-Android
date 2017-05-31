@@ -3,10 +3,12 @@ package de.hsd.manguli.fractalsapp;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Picture;
+import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -22,6 +24,8 @@ import java.text.AttributedCharacterIterator;
  */
 public class FractalView extends View {
     private Paint point;
+    Bitmap bitmap = null;
+    Canvas bitmapCanvas = null;
 
     //Überschreiben der drei Constructor
     public FractalView(Context context) {
@@ -44,7 +48,7 @@ public class FractalView extends View {
      */
     private void init() {
         //Paint Objekt initialisieren
-        point = new Paint(Paint.ANTI_ALIAS_FLAG);
+        point = new Paint();
         point.setColor(0xff101010);
 
     }
@@ -57,11 +61,24 @@ public class FractalView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        //Existiert ein Bitmap?
+        if (bitmap == null) {
+            //Bitmap erzeugen mit den Canvas Maßen
+            bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+            //Canvas mit Bitmap erzeugen
+            bitmapCanvas = new Canvas(bitmap);
+            bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+        }
+        //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
+        drawOnCanvas(bitmapCanvas);
+        //Bitmap auf Canvas ausgeben
+        canvas.drawBitmap(bitmap, 0, 0, point);
 
+    }
+
+    public void drawOnCanvas(Canvas canvas){
         //Mandelbrot Objekt erstellen
-        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),5,new Complex(2.0,2.0),new Complex(9.0,16.0));
-        //point.setColor(Color.BLUE);
-        //point.setStyle(Paint.Style.FILL);
+        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),5,new Complex(2.0,2.0),new Complex(3.0,4.0));
 
         //An den Punkten in der View zeichnen
         for (int i=0; i< canvas.getWidth();i++){
@@ -73,6 +90,6 @@ public class FractalView extends View {
                 canvas.drawPoint(i,j,point);
             }
         }
-    }
+    }//end drawOnCanvas()
 
-}
+}//end class()

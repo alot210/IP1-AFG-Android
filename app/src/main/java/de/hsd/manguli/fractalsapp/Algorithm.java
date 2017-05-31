@@ -76,9 +76,9 @@ public class Algorithm {
         //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
         if (isElemOfMand(c, maxIteration)) {
             //setColor
-            return Color.BLACK;
+            return Color.YELLOW;
         }
-        return Color.BLUE;
+        return Color.CYAN;
     }
 }
 
