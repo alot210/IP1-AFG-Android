@@ -12,11 +12,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="32dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="128dp"
         android:text="Iterationen"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginStart="32dp" />
+
+    <SeekBar
+        android:id="@+id/seekBar_m_Iteration"
+        style="@style/Widget.AppCompat.SeekBar.Discrete"
+        android:layout_width="180dp"
+        android:layout_height="32dp"
+        android:layout_marginRight="24dp"
+        android:max="10"
+        android:progress="3"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/text_m_Iteration"
+        android:layout_marginEnd="24dp" />
+
+    <TextView
+        android:id="@+id/text_m_Iteration_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Verändert den Detailgrad der äußeren Knospen"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_Iteration"
+        android:layout_marginStart="32dp" />
 
     <TextView
         android:id="@+id/text_m_color"
@@ -26,7 +50,20 @@
         android:text="Farben"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="157dp" />
+        android:layout_marginTop="32dp"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_Iteration_desc"
+        android:layout_marginStart="32dp" />
+
+    <TextView
+        android:id="@+id/text_m_color_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Wählen Sie max. 4 Farben"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_color"
+        android:layout_marginStart="32dp" />
 
     <TextView
         android:id="@+id/text_m_Rotation"
@@ -36,37 +73,100 @@
         android:text="Rotation"
         android:textSize="24sp"
         app:layout_constraintLeft_toLeftOf="parent"
-        tools:layout_editor_absoluteY="227dp" />
+        android:layout_marginTop="31dp"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_color_desc"
+        android:layout_marginStart="32dp" />
 
     <Switch
         android:id="@+id/switch_m_Rotation"
         android:layout_width="70dp"
-        android:layout_height="24dp"
-        android:layout_marginRight="80dp"
+        android:layout_height="27dp"
+        android:layout_marginRight="96dp"
+        android:checked="false"
         android:switchMinWidth="60dp"
         app:layout_constraintRight_toRightOf="parent"
-        tools:layout_editor_absoluteY="200dp" />
+        app:layout_constraintTop_toTopOf="@+id/text_m_Rotation"
+        tools:checked="false"
+        android:layout_marginEnd="96dp" />
+
+    <TextView
+        android:id="@+id/text_m_rotation_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Landscape View: Zoom-in oder Drehung"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_Rotation"
+        android:layout_marginStart="32dp" />
+
+    <TextView
+        android:id="@+id/text_m_animation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Animation"
+        android:textSize="24sp"
+        android:layout_marginLeft="32dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="31dp"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_rotation_desc"
+        android:layout_marginStart="32dp" />
+
+    <Switch
+        android:id="@+id/switch_m_Animation"
+        android:layout_width="70dp"
+        android:layout_height="27dp"
+        android:switchMinWidth="60dp"
+        app:layout_constraintTop_toTopOf="@+id/text_m_animation"
+        android:layout_marginRight="96dp"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginEnd="96dp" />
+
+    <TextView
+        android:id="@+id/text_m_animation_desc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="8dp"
+        android:text="Automatische Zoom-in-Animation in die Menge "
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_animation"
+        android:layout_marginStart="32dp" />
+
+    <TextView
+        android:id="@+id/switch_m_Speed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="32dp"
+        android:layout_marginTop="32dp"
+        android:text="Geschwindigkeit"
+        android:textSize="24sp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/text_m_animation_desc"
+        android:layout_marginStart="32dp" />
 
     <SeekBar
-        android:id="@+id/seekBar3"
+        android:id="@+id/seekBar_m_speed"
         style="@style/Widget.AppCompat.SeekBar.Discrete"
         android:layout_width="180dp"
         android:layout_height="32dp"
         android:layout_marginRight="24dp"
-        android:layout_marginTop="32dp"
         android:max="10"
         android:progress="3"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/switch_m_Speed"
+        android:layout_marginEnd="39dp"
+        android:layout_marginTop="0dp" />
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/text_m_speed_desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Verändert den Detailgrad der äußeren Knospen"
-        app:layout_constraintTop_toBottomOf="@+id/text_m_Iteration"
         android:layout_marginLeft="32dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        android:layout_marginTop="8dp"
+        android:text="Variiert die Geschwindigkeit der Animation"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/switch_m_Speed"
+        android:layout_marginStart="32dp" />
 
 </android.support.constraint.ConstraintLayout>
