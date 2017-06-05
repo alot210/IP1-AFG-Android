@@ -8,15 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 /**
- * Fragment als Teil des Editor
+ * A placeholder fragment containing a simple view.
  */
-public class EditorActivityFragment extends Fragment {
+public class Julia_Fragment extends Fragment {
 
-    public EditorActivityFragment() {
+    public Julia_Fragment() {
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_editor, container, false);
+        return inflater.inflate(R.layout.fragment_julia, container, false);
     }
 }
+
