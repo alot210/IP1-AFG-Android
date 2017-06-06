@@ -28,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@android:color/white"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
 </android.support.design.widget.CoordinatorLayout>
