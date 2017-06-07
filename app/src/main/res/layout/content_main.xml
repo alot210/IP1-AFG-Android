@@ -8,7 +8,7 @@
     tools:context="de.hsd.manguli.fractalsapp.MainActivity"
     tools:showIn="@layout/activity_main">
 
-
+<!--
    <view
        android:id="@+id/view"
        class="de.hsd.manguli.fractalsapp.FractalView"
@@ -19,6 +19,16 @@
        app:layout_constraintLeft_toLeftOf="parent"
        app:layout_constraintRight_toRightOf="parent"
        app:layout_constraintTop_toTopOf="parent" />
+-->
 
-
+    <ImageView
+        android:id="@+id/fraktal_dummy"
+        android:layout_width="446dp"
+        android:layout_height="554dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/mandelbrot_screenshot"
+        tools:layout_editor_absoluteX="-62dp" />
 </android.support.constraint.ConstraintLayout>

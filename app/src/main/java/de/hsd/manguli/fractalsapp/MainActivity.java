@@ -45,14 +45,14 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Hier wird der Screenshot gespeichert", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Animation mittels Touch stoppen.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
 
         //View initialisieren und mit invalidate() onDraw aufrufen
-        FractalView fw = new FractalView(this);
-        fw.invalidate();
+        //FractalView fw = new FractalView(this);
+        //fw.invalidate();
     }
 
     @Override
