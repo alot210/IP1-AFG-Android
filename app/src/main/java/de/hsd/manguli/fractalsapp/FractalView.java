@@ -78,7 +78,7 @@ public class FractalView extends View {
 
     public void drawOnCanvas(Canvas canvas){
         //Mandelbrot Objekt erstellen
-        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),5,new Complex(2.0,2.0),new Complex(3.0,4.0));
+        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),20,new Complex(2.0,2.0),new Complex(3.0,4.0));
 
         //An den Punkten in der View zeichnen
         for (int i=0; i< canvas.getWidth();i++){
