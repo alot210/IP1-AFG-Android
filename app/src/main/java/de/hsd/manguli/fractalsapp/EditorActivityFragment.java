@@ -1,11 +1,14 @@
 package de.hsd.manguli.fractalsapp;
 
 
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -25,6 +28,8 @@ public class EditorActivityFragment extends Fragment {
     TextView tv_iter;
     //Textfeld Geschwindigkeit
     TextView tv_speed;
+
+    static String i = "20";
 
     public EditorActivityFragment() {
     }
@@ -86,6 +91,33 @@ public class EditorActivityFragment extends Fragment {
             }
         });
 
+        final TextView iteration = (TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
+        Button drawIt = (Button) editor_m.findViewById(R.id.button_m_draw);
+
+
+        drawIt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                i = iteration.getText().toString();
+
+                //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+
+
+                //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
+                startActivity(mandelbrotIntent);
+
+                //String i = iteration.getText().toString();
+
+
+            }
+        });
+
         return editor_m;
+    }
+
+    public String getIteration(){
+        return i;
     }
 }

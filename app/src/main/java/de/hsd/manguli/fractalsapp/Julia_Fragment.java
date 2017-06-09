@@ -1,11 +1,14 @@
 package de.hsd.manguli.fractalsapp;
 
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -23,6 +26,11 @@ public class Julia_Fragment extends Fragment {
     TextView tv_iter;
     //Textfeld Geschwindigkeit
     TextView tv_speed;
+
+    static String i = "20";
+    static String real = "1.0";
+    static String imag = "1.0";
+    static Boolean juliaPush = false;
 
     public Julia_Fragment() {
     }
@@ -84,7 +92,43 @@ public class Julia_Fragment extends Fragment {
             }
         });
 
+        final TextView iteration = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
+        final EditText realValue = (EditText) editor_j.findViewById(R.id.number_j_real);
+        final EditText imagValue = (EditText) editor_j.findViewById(R.id.number_j_imaginaer);
+
+        Button drawIt = (Button) editor_j.findViewById(R.id.button_j_draw);
+
+
+        drawIt.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                i = iteration.getText().toString();
+                real = realValue.getText().toString();
+                imag = imagValue.getText().toString();
+                juliaPush = true;
+
+                Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
+                startActivity(juliaIntent);
+
+            }
+        });
+
+
         return editor_j;
     }
+
+    public String getIteration(){
+        return i;
+    }
+    public String getReal(){
+        return real;
+    }
+    public String getImag(){
+        return imag;
+    }
+    public Boolean getJuliaPush(){
+        return juliaPush;
+    }
+
 }
 
