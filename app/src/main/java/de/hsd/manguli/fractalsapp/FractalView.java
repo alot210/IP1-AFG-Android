@@ -101,9 +101,9 @@ public class FractalView extends View {
         }
         else{
             int itj = Integer.parseInt(jf.getIteration());
-            double _real = Double.parseDouble(jf.getReal());
-            double _imag = Double.parseDouble(jf.getImag());
-            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(2.0,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+            double _real = Math.cos((double)jf.getReal()+3.257);
+            double _imag = Math.sin((double)jf.getImag());
+            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(_real,_imag));
 
             //An den Punkten in der View zeichnen
             for (int i=0; i< canvas.getWidth();i++){

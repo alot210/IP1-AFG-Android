@@ -28,8 +28,8 @@ public class Julia_Fragment extends Fragment {
     TextView tv_speed;
 
     static String i = "20";
-    static String real = "1.0";
-    static String imag = "1.0";
+    static int real;
+    static int imag;
     static Boolean juliaPush = false;
 
     public Julia_Fragment() {
@@ -93,8 +93,17 @@ public class Julia_Fragment extends Fragment {
         });
 
         final TextView iteration = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
-        final EditText realValue = (EditText) editor_j.findViewById(R.id.number_j_real);
-        final EditText imagValue = (EditText) editor_j.findViewById(R.id.number_j_imaginaer);
+        final SeekBar realValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
+
+        realValue.setProgress(0);
+        realValue.incrementProgressBy(1);
+        realValue.setMax(360);
+
+        final SeekBar imagValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_imaginaer);
+
+        imagValue.setProgress(0);
+        imagValue.incrementProgressBy(1);
+        imagValue.setMax(360);
 
         Button drawIt = (Button) editor_j.findViewById(R.id.button_j_draw);
 
@@ -103,8 +112,8 @@ public class Julia_Fragment extends Fragment {
             @Override
             public void onClick(View view){
                 i = iteration.getText().toString();
-                real = realValue.getText().toString();
-                imag = imagValue.getText().toString();
+                real = realValue.getProgress();
+                imag = imagValue.getProgress();
                 juliaPush = true;
 
                 Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
@@ -120,15 +129,16 @@ public class Julia_Fragment extends Fragment {
     public String getIteration(){
         return i;
     }
-    public String getReal(){
+    public int getReal(){
         return real;
     }
-    public String getImag(){
+    public int getImag(){
         return imag;
     }
     public Boolean getJuliaPush(){
         return juliaPush;
     }
+    public void setJuliaPush(Boolean value){juliaPush=value;}
 
 }
 

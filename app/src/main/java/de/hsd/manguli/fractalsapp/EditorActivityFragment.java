@@ -98,6 +98,8 @@ public class EditorActivityFragment extends Fragment {
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
+                Julia_Fragment jf = new Julia_Fragment();
+                jf.setJuliaPush(false);
                 i = iteration.getText().toString();
 
                 //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
