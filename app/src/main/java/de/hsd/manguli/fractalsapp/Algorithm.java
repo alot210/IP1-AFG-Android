@@ -2,6 +2,7 @@ package de.hsd.manguli.fractalsapp;
 
 
 import android.graphics.Color;
+import android.util.Log;
 
 /**
  * Oberklasse mit Algorithmus fuer Julia und Mandelbrot
@@ -79,6 +80,28 @@ public class Algorithm {
             return Color.YELLOW;
         }
         return Color.CYAN;
+    }
+
+    //Methode transformiert übergebenen Punkt (= Pixel auf Screen)
+    //ruft isElemOfMand auf und gibt eine Farbe zurück
+    public int setColor(int i, int j, int color1, int color2) {
+
+        //transalte und scale und mirror: a=i, b=j a' = i*sx * x - tx & b' = j*sy* y - ty
+
+        //Int i, j als Complexe Zahl im Verhältnis zur Skalierung des Screens
+        Complex c = new Complex((double) i/this.width, (double) j/this.heigth);
+        //scale
+        c = c.scale(scale.getReal(), scale.getImag());
+
+        // mirror and translate
+        c = c.translate(-translate.getReal(), -translate.getImag());
+
+        //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
+        if (isElemOfMand(c, maxIteration)) {
+            //setColor
+            return color1;
+        }
+        return color2;
     }
 }
 

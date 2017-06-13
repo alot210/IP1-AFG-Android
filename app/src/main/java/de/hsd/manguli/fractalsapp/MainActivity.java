@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Logo in Action Bar integrieren
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.ic_hsd_logo);
+        getSupportActionBar().setLogo(R.drawable.hsd_logo_weiss);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
         //Screenshot Button als FAB (=Floating Action Button) integrieren

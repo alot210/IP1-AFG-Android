@@ -11,6 +11,7 @@ import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
 import android.view.View;
+import de.hsd.manguli.fractalsapp.EditorActivityFragment;
 
 import de.hsd.manguli.fractalsapp.Complex;
 
@@ -26,6 +27,8 @@ public class FractalView extends View {
     private Paint point;
     Bitmap bitmap = null;
     Canvas bitmapCanvas = null;
+    EditorActivityFragment eaf = new EditorActivityFragment();
+    Julia_Fragment jf = new Julia_Fragment();
 
     //Überschreiben der drei Constructor
     public FractalView(Context context) {
@@ -77,19 +80,68 @@ public class FractalView extends View {
     }
 
     public void drawOnCanvas(Canvas canvas){
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         //Mandelbrot Objekt erstellen
-        Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),20,new Complex(2.0,2.0),new Complex(3.0,4.0));
 
-        //An den Punkten in der View zeichnen
-        for (int i=0; i< canvas.getWidth();i++){
-            for(int j=0; j< canvas.getHeight(); j++){
-                //Farbe und Style setzen
-                point.setColor(mb.setColor(i,j));
-                point.setStyle(Paint.Style.FILL);
-                //Punkt zeichnen
-                canvas.drawPoint(i,j,point);
+        Boolean juliaPush = jf.getJuliaPush();
+        Boolean mandelPush = eaf.getMandelPush();
+
+        if(!juliaPush & !mandelPush){
+            int itm = Integer.parseInt(eaf.getIteration());
+            Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),itm,new Complex(2.0,2.0),new Complex(3.0,4.0));
+
+            //An den Punkten in der View zeichnen
+            for (int i=0; i< canvas.getWidth();i++){
+                for(int j=0; j< canvas.getHeight(); j++){
+                    //Farbe und Style setzen
+                    point.setColor(mb.setColor(i,j));
+                    //point.setColor(mb.setColor(i,j));
+                    point.setStyle(Paint.Style.FILL);
+                    //Punkt zeichnen
+                    canvas.drawPoint(i,j,point);
+                }
             }
         }
+        else if(mandelPush & !juliaPush) {
+            int itm = Integer.parseInt(eaf.getIteration());
+            int color1 = eaf.getColor1();
+            int color2 = eaf.getColor2();
+            Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),itm,new Complex(2.0,2.0),new Complex(3.0,4.0));
+
+            //An den Punkten in der View zeichnen
+            for (int i=0; i< canvas.getWidth();i++){
+                for(int j=0; j< canvas.getHeight(); j++){
+                    //Farbe und Style setzen
+                    point.setColor(mb.setColor(i,j,color1,color2));
+                    //point.setColor(mb.setColor(i,j));
+                    point.setStyle(Paint.Style.FILL);
+                    //Punkt zeichnen
+                    canvas.drawPoint(i,j,point);
+                }
+            }
+        }
+        else {
+            int itj = Integer.parseInt(jf.getIteration());
+            double _real = Math.cos((double)jf.getReal()+3.257);
+            double _imag = Math.sin((double)jf.getImag());
+            int color1 = jf.getColor1();
+            int color2 = jf.getColor2();
+            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+
+            //An den Punkten in der View zeichnen
+            for (int i=0; i< canvas.getWidth();i++){
+                for(int j=0; j< canvas.getHeight(); j++){
+                    //Farbe und Style setzen
+                    point.setColor(ju.setColor(i,j,color1,color2));
+                    point.setStyle(Paint.Style.FILL);
+                    //Punkt zeichnen
+                    canvas.drawPoint(i,j,point);
+                }
+            }
+            jf.setJuliaPush(false);
+        }
+
+
     }//end drawOnCanvas()
 
 }//end class()
