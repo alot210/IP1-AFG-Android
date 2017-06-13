@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -39,8 +40,8 @@ public class Julia_Fragment extends Fragment {
     static String i = "20";
     static int real;
     static int imag;
-    static int color1 = 16776960;
-    static int color2 = 65535;
+    static int color1;
+    static int color2;
     static Boolean juliaPush = false;
 
     public Julia_Fragment() {
@@ -48,6 +49,8 @@ public class Julia_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        color1 = 0;
+        color2 = 0;
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_j = inflater.inflate(R.layout.fragment_julia, container, false);
 
@@ -92,7 +95,6 @@ public class Julia_Fragment extends Fragment {
                 ColorPickerDialogBuilder
                         .with(getContext())
                         .setTitle("Choose color")
-                        .initialColor(R.color.yellow)
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(12)
                         .setPositiveButton("ok", new ColorPickerClickListener() {
@@ -113,7 +115,6 @@ public class Julia_Fragment extends Fragment {
                 ColorPickerDialogBuilder
                         .with(getContext())
                         .setTitle("Choose color")
-                        .initialColor(R.color.cyan)
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(12)
                         .setPositiveButton("ok", new ColorPickerClickListener() {
@@ -164,13 +165,19 @@ public class Julia_Fragment extends Fragment {
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                i = iteration.getText().toString();
-                real = realValue.getProgress();
-                imag = imagValue.getProgress();
-                juliaPush = true;
+                if(color1 != 0 && color2 != 0) {
+                    i = iteration.getText().toString();
+                    real = realValue.getProgress();
+                    imag = imagValue.getProgress();
+                    juliaPush = true;
 
-                Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
-                startActivity(juliaIntent);
+                    Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
+                    startActivity(juliaIntent);
+                }
+                else {
+                    Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                }
+
 
             }
         });

@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
@@ -39,8 +40,8 @@ public class EditorActivityFragment extends Fragment {
     Button bt_color2;
 
     static String i = "20";
-    static int color1 = 16776960;
-    static int color2 = 65535;
+    static int color1;
+    static int color2;
     static Boolean mandelPush = false;
 
     public EditorActivityFragment() {
@@ -48,6 +49,8 @@ public class EditorActivityFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        color1 = 0;
+        color2 = 0;
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_m = inflater.inflate(R.layout.fragment_editor, container, false);
 
@@ -64,7 +67,6 @@ public class EditorActivityFragment extends Fragment {
                 ColorPickerDialogBuilder
                         .with(getContext())
                         .setTitle("Choose color")
-                        .initialColor(R.color.yellow)
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(12)
                         .setPositiveButton("ok", new ColorPickerClickListener() {
@@ -85,7 +87,6 @@ public class EditorActivityFragment extends Fragment {
                 ColorPickerDialogBuilder
                         .with(getContext())
                         .setTitle("Choose color")
-                        .initialColor(R.color.cyan)
                         .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                         .density(12)
                         .setPositiveButton("ok", new ColorPickerClickListener() {
@@ -152,18 +153,24 @@ public class EditorActivityFragment extends Fragment {
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                i = iteration.getText().toString();
-                mandelPush = true;
+                if(color1 != 0 && color2 != 0) {
+                    i = iteration.getText().toString();
+                    mandelPush = true;
 
-                //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
+                    //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
+                    //        .setAction("Action", null).show();
 
 
-                //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
-                Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
-                startActivity(mandelbrotIntent);
+                    //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                    Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
+                    startActivity(mandelbrotIntent);
 
-                //String i = iteration.getText().toString();
+                    //String i = iteration.getText().toString();
+                }
+                else {
+                    Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                }
+
 
 
             }

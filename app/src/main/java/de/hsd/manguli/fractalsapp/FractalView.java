@@ -80,6 +80,7 @@ public class FractalView extends View {
     }
 
     public void drawOnCanvas(Canvas canvas){
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         //Mandelbrot Objekt erstellen
 
         Boolean juliaPush = jf.getJuliaPush();
@@ -125,7 +126,7 @@ public class FractalView extends View {
             double _imag = Math.sin((double)jf.getImag());
             int color1 = jf.getColor1();
             int color2 = jf.getColor2();
-            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(2.0,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
 
             //An den Punkten in der View zeichnen
             for (int i=0; i< canvas.getWidth();i++){
