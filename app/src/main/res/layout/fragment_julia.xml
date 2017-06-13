@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="128dp"
-            android:text="Realteil"
+            android:text="Real"
             android:textSize="24sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="32dp"
-            android:text="Imaginärteil"
+            android:text="Imaginär"
             android:textSize="24sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_j_real_desc" />
@@ -94,11 +94,11 @@
             android:layout_height="32dp"
             android:layout_marginRight="64dp"
             android:layout_marginTop="0dp"
-            android:max="20"
+            android:max="100"
             android:paddingRight="0dip"
-            android:progress="5"
-            app:layout_constraintTop_toTopOf="@+id/text_j_Iteration"
-            app:layout_constraintRight_toRightOf="parent" />
+            android:progress="20"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_j_Iteration" />
 
         <TextView
             android:id="@+id/text_j_Iteration_desc"
@@ -125,27 +125,29 @@
             android:id="@+id/text_j_color_desc"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Wählen Sie max. 4 Farben"
-            app:layout_constraintTop_toBottomOf="@+id/text_j_color"
             android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            android:layout_marginTop="8dp"
+            android:text="Wählen Sie 2 Farben"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_j_color" />
 
         <Button
             android:id="@+id/button_j_color1_select"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginRight="140dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_j_color" />
+            app:layout_constraintTop_toTopOf="@+id/text_j_color"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintLeft_toLeftOf="@+id/seekBar_j_Iteration" />
 
         <Button
             android:id="@+id/button_j_color2_select"
             android:layout_width="36dp"
             android:layout_height="36dp"
-            android:layout_marginRight="100dp"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/text_j_color" />
+            app:layout_constraintTop_toTopOf="@+id/text_j_color"
+            android:layout_marginTop="0dp"
+            android:layout_marginRight="32dp"
+            app:layout_constraintRight_toRightOf="@+id/seekBar_j_Iteration" />
 
         <TextView
             android:id="@+id/text_j_Rotation"
@@ -238,26 +240,24 @@
             android:id="@+id/switch_j_Speed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="31dp"
-            android:text="Geschwindigkeit"
-            android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@+id/text_j_animation_desc"
             android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            android:layout_marginTop="31dp"
+            android:text="Speed"
+            android:textSize="24sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_j_animation_desc" />
 
         <SeekBar
             android:id="@+id/seekBar_j_speed"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="0dp"
+            android:layout_width="164dp"
             android:layout_height="32dp"
+            android:layout_marginRight="64dp"
             android:layout_marginTop="0dp"
             android:max="10"
             android:progress="3"
             app:layout_constraintTop_toTopOf="@+id/switch_j_Speed"
-            app:layout_constraintRight_toLeftOf="@+id/text_j_Speed_value"
-            android:layout_marginRight="0dp"
-            app:layout_constraintLeft_toRightOf="@+id/switch_j_Speed"
-            android:layout_marginLeft="0dp" />
+            app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/text_j_speed_desc"
@@ -276,7 +276,7 @@
             android:layout_marginBottom="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="0dp"
-            android:text="5"
+            android:text="20"
             android:textAlignment="center"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/seekBar_j_Iteration"
@@ -299,36 +299,8 @@
             android:layout_marginBottom="0dp"
             app:layout_constraintVertical_bias="0.5" />
 
-        <TextView
-            android:id="@+id/text_j_seepf"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="32dp"
-            android:text="Seepferdchen"
-            android:textSize="24sp"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_j_speed_desc" />
 
-        <Switch
-            android:id="@+id/switch_j_seepferdchen"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginTop="0dp"
-            android:switchMinWidth="60dp"
-            app:layout_constraintRight_toRightOf="@+id/switch_j_Animation"
-            app:layout_constraintTop_toTopOf="@+id/text_j_seepf" />
 
-        <TextView
-            android:id="@+id/text_j_seepf_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginTop="8dp"
-            android:text="Zoom auf die nächste Seepferdchen-Struktur"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/text_j_seepf" />
 
         <Button
             android:id="@+id/button_j_draw"
@@ -346,8 +318,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:layout_marginBottom="32dp"
             android:layout_marginTop="32dp"
-            app:layout_constraintTop_toBottomOf="@+id/text_j_seepf_desc"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/text_j_speed_desc" />
 
     </android.support.constraint.ConstraintLayout>
 </ScrollView>
