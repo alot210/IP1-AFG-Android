@@ -83,8 +83,9 @@ public class FractalView extends View {
         //Mandelbrot Objekt erstellen
 
         Boolean juliaPush = jf.getJuliaPush();
+        Boolean mandelPush = eaf.getMandelPush();
 
-        if(!juliaPush){
+        if(!juliaPush & !mandelPush){
             int itm = Integer.parseInt(eaf.getIteration());
             Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),itm,new Complex(2.0,2.0),new Complex(3.0,4.0));
 
@@ -93,29 +94,50 @@ public class FractalView extends View {
                 for(int j=0; j< canvas.getHeight(); j++){
                     //Farbe und Style setzen
                     point.setColor(mb.setColor(i,j));
+                    //point.setColor(mb.setColor(i,j));
                     point.setStyle(Paint.Style.FILL);
                     //Punkt zeichnen
                     canvas.drawPoint(i,j,point);
                 }
             }
         }
-        else{
-            int itj = Integer.parseInt(jf.getIteration());
-            double _real = Math.cos((double)jf.getReal()+3.257);
-            double _imag = Math.sin((double)jf.getImag());
-            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(_real,_imag));
+        else if(mandelPush & !juliaPush) {
+            int itm = Integer.parseInt(eaf.getIteration());
+            int color1 = eaf.getColor1();
+            int color2 = eaf.getColor2();
+            Mandelbrot mb = new Mandelbrot(canvas.getWidth(),canvas.getHeight(),itm,new Complex(2.0,2.0),new Complex(3.0,4.0));
 
             //An den Punkten in der View zeichnen
             for (int i=0; i< canvas.getWidth();i++){
                 for(int j=0; j< canvas.getHeight(); j++){
                     //Farbe und Style setzen
-                    point.setColor(ju.setColor(i,j));
+                    point.setColor(mb.setColor(i,j,color1,color2));
+                    //point.setColor(mb.setColor(i,j));
                     point.setStyle(Paint.Style.FILL);
                     //Punkt zeichnen
                     canvas.drawPoint(i,j,point);
                 }
             }
+        }
+        else {
+            int itj = Integer.parseInt(jf.getIteration());
+            double _real = Math.cos((double)jf.getReal()+3.257);
+            double _imag = Math.sin((double)jf.getImag());
+            int color1 = jf.getColor1();
+            int color2 = jf.getColor2();
+            Julia ju = new Julia(canvas.getWidth(),canvas.getHeight(),itj,new Complex(2.0,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
 
+            //An den Punkten in der View zeichnen
+            for (int i=0; i< canvas.getWidth();i++){
+                for(int j=0; j< canvas.getHeight(); j++){
+                    //Farbe und Style setzen
+                    point.setColor(ju.setColor(i,j,color1,color2));
+                    point.setStyle(Paint.Style.FILL);
+                    //Punkt zeichnen
+                    canvas.drawPoint(i,j,point);
+                }
+            }
+            jf.setJuliaPush(false);
         }
 
 

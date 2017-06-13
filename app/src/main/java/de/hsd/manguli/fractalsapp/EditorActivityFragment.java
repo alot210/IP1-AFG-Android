@@ -1,8 +1,8 @@
 package de.hsd.manguli.fractalsapp;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 import org.w3c.dom.Text;
 
@@ -29,7 +33,15 @@ public class EditorActivityFragment extends Fragment {
     //Textfeld Geschwindigkeit
     TextView tv_speed;
 
+    //Button erste Farbe
+    Button bt_color1;
+    //Button zweite Farbe
+    Button bt_color2;
+
     static String i = "20";
+    static int color1 = 16776960;
+    static int color2 = 65535;
+    static Boolean mandelPush = false;
 
     public EditorActivityFragment() {
     }
@@ -45,6 +57,48 @@ public class EditorActivityFragment extends Fragment {
         sb_iter.setProgress(0);
         sb_iter.incrementProgressBy(10);
         sb_iter.setMax(100);
+
+        bt_color1 = (Button) editor_m.findViewById(R.id.button_m_color1_select);
+        bt_color1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ColorPickerDialogBuilder
+                        .with(getContext())
+                        .setTitle("Choose color")
+                        .initialColor(R.color.yellow)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color1.setBackgroundColor(i);
+                                color1 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+            }
+        });
+
+        bt_color2 = (Button) editor_m.findViewById(R.id.button_m_color2_select);
+        bt_color2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ColorPickerDialogBuilder
+                        .with(getContext())
+                        .setTitle("Choose color")
+                        .initialColor(R.color.cyan)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color2.setBackgroundColor(i);
+                                color2 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+            }
+        });
 
         sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
 
@@ -98,9 +152,8 @@ public class EditorActivityFragment extends Fragment {
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Julia_Fragment jf = new Julia_Fragment();
-                jf.setJuliaPush(false);
                 i = iteration.getText().toString();
+                mandelPush = true;
 
                 //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
@@ -122,4 +175,12 @@ public class EditorActivityFragment extends Fragment {
     public String getIteration(){
         return i;
     }
+
+    public int getColor1() {return color1;}
+
+    public int getColor2() {return color2;}
+
+    public boolean getMandelPush() {return mandelPush;}
+
+    public void setMandelPush(Boolean value) {mandelPush = value;}
 }

@@ -1,6 +1,7 @@
 package de.hsd.manguli.fractalsapp;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -11,6 +12,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.flask.colorpicker.ColorPickerView;
+import com.flask.colorpicker.builder.ColorPickerClickListener;
+import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -26,10 +31,16 @@ public class Julia_Fragment extends Fragment {
     TextView tv_iter;
     //Textfeld Geschwindigkeit
     TextView tv_speed;
+    //Button erste Farbe;
+    Button bt_color1;
+    //Button zweite Farbe
+    Button bt_color2;
 
     static String i = "20";
     static int real;
     static int imag;
+    static int color1 = 16776960;
+    static int color2 = 65535;
     static Boolean juliaPush = false;
 
     public Julia_Fragment() {
@@ -72,6 +83,48 @@ public class Julia_Fragment extends Fragment {
             @Override
             public void onStopTrackingTouch(SeekBar sb_iter) {
 
+            }
+        });
+
+        bt_color1 = (Button) editor_j.findViewById(R.id.button_j_color1_select);
+        bt_color1.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ColorPickerDialogBuilder
+                        .with(getContext())
+                        .setTitle("Choose color")
+                        .initialColor(R.color.yellow)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color1.setBackgroundColor(i);
+                                color1 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+            }
+        });
+
+        bt_color2 = (Button) editor_j.findViewById(R.id.button_j_color2_select);
+        bt_color2.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                ColorPickerDialogBuilder
+                        .with(getContext())
+                        .setTitle("Choose color")
+                        .initialColor(R.color.cyan)
+                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
+                        .density(12)
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color2.setBackgroundColor(i);
+                                color2 = i;
+                            }
+                        })
+                        .build()
+                        .show();
             }
         });
 
@@ -138,7 +191,8 @@ public class Julia_Fragment extends Fragment {
     public Boolean getJuliaPush(){
         return juliaPush;
     }
+    public int getColor1() {return color1;}
+    public int getColor2() {return color2;}
     public void setJuliaPush(Boolean value){juliaPush=value;}
 
 }
-
