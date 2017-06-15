@@ -21,7 +21,7 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class Julia_Fragment extends Fragment {
+public class Julia_Fragment extends Fragment implements View.OnClickListener {
 
     //Seekbar Iterationen
     SeekBar sb_iter;
@@ -36,12 +36,19 @@ public class Julia_Fragment extends Fragment {
     Button bt_color1;
     //Button zweite Farbe
     Button bt_color2;
+    //Button dritte Farbe
+    Button bt_color3;
+    //Button vierte Farbe
+    Button bt_color4;
 
-    static String i = "20";
+    //Variablen für Übergabeparameter an Fractalview
+    static String iterartion = "20";
     static int real;
     static int imag;
     static int color1;
     static int color2;
+    static int color3;
+    static int color4;
     static Boolean juliaPush = false;
 
     public Julia_Fragment() {
@@ -49,8 +56,11 @@ public class Julia_Fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Farbwerte auf 0 gesetzt für Fehlerbehandlung
         color1 = 0;
         color2 = 0;
+        color3 = 0;
+        color4 = 0;
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_j = inflater.inflate(R.layout.fragment_julia, container, false);
 
@@ -89,45 +99,15 @@ public class Julia_Fragment extends Fragment {
             }
         });
 
+        //Alle Buttons initialisieren und ClickListener hinzufügen
         bt_color1 = (Button) editor_j.findViewById(R.id.button_j_color1_select);
-        bt_color1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ColorPickerDialogBuilder
-                        .with(getContext())
-                        .setTitle("Choose color")
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setPositiveButton("ok", new ColorPickerClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
-                                bt_color1.setBackgroundColor(i);
-                                color1 = i;
-                            }
-                        })
-                        .build()
-                        .show();
-            }
-        });
-
+        bt_color1.setOnClickListener(this);
         bt_color2 = (Button) editor_j.findViewById(R.id.button_j_color2_select);
-        bt_color2.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                ColorPickerDialogBuilder
-                        .with(getContext())
-                        .setTitle("Choose color")
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setPositiveButton("ok", new ColorPickerClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
-                                bt_color2.setBackgroundColor(i);
-                                color2 = i;
-                            }
-                        })
-                        .build()
-                        .show();
-            }
-        });
+        bt_color2.setOnClickListener(this);
+        bt_color3 = (Button) editor_j.findViewById(R.id.button_j_color3_select);
+        bt_color3.setOnClickListener(this);
+        bt_color4 = (Button) editor_j.findViewById(R.id.button_j_color4_select);
+        bt_color4.setOnClickListener(this);
 
         sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -165,8 +145,10 @@ public class Julia_Fragment extends Fragment {
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                if(color1 != 0 && color2 != 0) {
-                    i = iteration.getText().toString();
+                //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
+                if(color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0) {
+                    Toast.makeText(getContext(), "Juliamenge wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                    iterartion = iteration.getText().toString();
                     real = realValue.getProgress();
                     imag = imagValue.getProgress();
                     juliaPush = true;
@@ -186,20 +168,63 @@ public class Julia_Fragment extends Fragment {
         return editor_j;
     }
 
-    public String getIteration(){
-        return i;
-    }
-    public int getReal(){
-        return real;
-    }
-    public int getImag(){
-        return imag;
-    }
-    public Boolean getJuliaPush(){
-        return juliaPush;
-    }
-    public int getColor1() {return color1;}
-    public int getColor2() {return color2;}
-    public void setJuliaPush(Boolean value){juliaPush=value;}
+    //OnCllick Methode muss für OnClickListener überschrieben werden
+    @Override
+    public void onClick(View v) {
+        //Holen uns den ersten Teil des Dialogfensters aus FractalView
+        FractalView fw = new FractalView(getContext());
+        ColorPickerDialogBuilder cpdb = fw.getColorPickerDialogBuilder();
 
+        //Überprüfung welcher Button gedrückt worden ist
+        switch (v.getId()) {
+            //Setze für jedes Dialogfenster den Ok Button, setze Werte zur Übergabe und lasse das Fenster anzeigen
+            case R.id.button_j_color1_select:
+                cpdb
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color1.setBackgroundColor(i);
+                                color1 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+                break;
+            case R.id.button_j_color2_select:
+                cpdb
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color2.setBackgroundColor(i);
+                                color2 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+                break;
+            case R.id.button_j_color3_select:
+                cpdb
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color3.setBackgroundColor(i);
+                                color3 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+                break;
+            case R.id.button_j_color4_select:
+                cpdb
+                        .setPositiveButton("ok", new ColorPickerClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                bt_color4.setBackgroundColor(i);
+                                color4 = i;
+                            }
+                        })
+                        .build()
+                        .show();
+        }
+    }
 }
