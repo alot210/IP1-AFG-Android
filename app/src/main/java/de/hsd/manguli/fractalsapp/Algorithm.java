@@ -15,6 +15,7 @@ public class Algorithm {
     private int width;
     private int heigth;
     private int maxIteration;
+    private int color1 = Color.YELLOW, color2 = Color.CYAN, color3 = 0, color4 = 0;
 
     public int getWidth(){
         return this.width;
@@ -77,32 +78,19 @@ public class Algorithm {
         //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
         if (isElemOfMand(c, maxIteration)) {
             //setColor
-            return Color.YELLOW;
-        }
-        return Color.CYAN;
-    }
-
-    //Methode transformiert übergebenen Punkt (= Pixel auf Screen)
-    //ruft isElemOfMand auf und gibt eine Farbe zurück
-    public int setColor(int i, int j, int color1, int color2) {
-
-        //transalte und scale und mirror: a=i, b=j a' = i*sx * x - tx & b' = j*sy* y - ty
-
-        //Int i, j als Complexe Zahl im Verhältnis zur Skalierung des Screens
-        Complex c = new Complex((double) i/this.width, (double) j/this.heigth);
-        //scale
-        c = c.scale(scale.getReal(), scale.getImag());
-
-        // mirror and translate
-        c = c.translate(-translate.getReal(), -translate.getImag());
-
-        //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
-        if (isElemOfMand(c, maxIteration)) {
-            //setColor
             return color1;
         }
         return color2;
     }
+
+    public int getColor1() {return color1;}
+    public void setColor1(int color1) {this.color1 = color1;}
+    public int getColor2() {return color2;}
+    public void setColor2(int color2) {this.color2 = color2;}
+    public int getColor3() {return color3;}
+    public void setColor3(int color3) {this.color3 = color3;}
+    public int getColor4() {return color4;}
+    public void setColor4(int color4) {this.color4 = color4;}
 }
 
 
