@@ -10,30 +10,73 @@ import android.util.Log;
 public class Algorithm {
 
     //Default Konstruktor
-    public Algorithm(){};
+    public Algorithm() {
+    }
+
+    ;
     //Fenstergröße
     private int width;
     private int heigth;
-    private int maxIteration;
-    private int color1 = Color.YELLOW, color2 = Color.CYAN, color3 = 0, color4 = 0;
 
-    public int getWidth(){
+    //Default-Werte
+    private int maxIteration = 150;
+    private int color1 = Color.YELLOW, color2 = Color.CYAN, color3 = Color.MAGENTA, color4 = Color.BLUE;
+    //Array mit interpolierten Farben
+    public int[] palette = new int[maxIteration];
+
+    public int getWidth() {
         return this.width;
     }
-    public int getHeigth(){
+
+    public int getHeigth() {
         return this.heigth;
     }
-    public int getMaxIteration(){
+
+    public int getMaxIteration() {
         return this.maxIteration;
     }
-    public void setWidth(int _width){
+
+    public void setWidth(int _width) {
         this.width = _width;
     }
-    public void setHeigth(int _height){
+
+    public void setHeigth(int _height) {
         this.heigth = _height;
     }
-    public void setMaxIteration(int _m){
+
+    public void setMaxIteration(int _m) {
         this.maxIteration = _m;
+    }
+    public int getColor1() {
+        return color1;
+    }
+
+    public void setColor1(int color1) {
+        this.color1 = color1;
+    }
+
+    public int getColor2() {
+        return color2;
+    }
+
+    public void setColor2(int color2) {
+        this.color2 = color2;
+    }
+
+    public int getColor3() {
+        return color3;
+    }
+
+    public void setColor3(int color3) {
+        this.color3 = color3;
+    }
+
+    public int getColor4() {
+        return color4;
+    }
+
+    public void setColor4(int color4) {
+        this.color4 = color4;
     }
 
     //Mittelpunkt des Bildausschnitts berechnen:
@@ -45,7 +88,7 @@ public class Algorithm {
 
     //Methode wird nur von Julia-Menge überschrieben
     //Methode überprüft für jede übergebene Komplexe Zahl Zugehörigkeit zur Menge
-    public Boolean isElemOfMand(Complex z0, int max){
+    public int isElemOfMand(Complex z0, int max){
 
         Complex z = z0;
 
@@ -53,12 +96,22 @@ public class Algorithm {
 
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
                 //setColor(n)
-                return false;
+                int color =  0;
+                if (n < maxIteration / 4) {
+                    color = interpolate(color1, color2, n);
+                } else if (n < maxIteration / 2) {
+                    color = interpolate(color2, color3, n);
+                } else if (n < maxIteration * 3 / 4) {
+                    color = interpolate(color3, color4, n);
+                } else {
+                    color = interpolate(color3, color4, n);
+                }
+                return color;
             }
             //Berechnung der Folge z' = z*z + z0;
             z = z.mult(z).add(z0);
         }
-        return true;  //|Zn| < 2, Farbe ist schwarz
+        return Color.BLACK;  //|Zn| < 2, Farbe ist schwarz
     }
 
     //Methode transformiert übergebenen Punkt (= Pixel auf Screen)
@@ -68,7 +121,7 @@ public class Algorithm {
         //transalte und scale und mirror: a=i, b=j a' = i*sx * x - tx & b' = j*sy* y - ty
 
         //Int i, j als Complexe Zahl im Verhältnis zur Skalierung des Screens
-        Complex c = new Complex((double) i/this.width, (double) j/this.heigth);
+        Complex c = new Complex((double) i / this.width, (double) j / this.heigth);
         //scale
         c = c.scale(scale.getReal(), scale.getImag());
 
@@ -76,21 +129,34 @@ public class Algorithm {
         c = c.translate(-translate.getReal(), -translate.getImag());
 
         //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
-        if (isElemOfMand(c, maxIteration)) {
-            //setColor
-            return color1;
-        }
-        return color2;
+        return isElemOfMand(c, maxIteration);
     }
 
-    public int getColor1() {return color1;}
-    public void setColor1(int color1) {this.color1 = color1;}
-    public int getColor2() {return color2;}
-    public void setColor2(int color2) {this.color2 = color2;}
-    public int getColor3() {return color3;}
-    public void setColor3(int color3) {this.color3 = color3;}
-    public int getColor4() {return color4;}
-    public void setColor4(int color4) {this.color4 = color4;}
+
+
+
+    void fillColor() {
+        System.out.println("fillColor()");
+        for (int i = 0; i < maxIteration; i++) {
+            if (i < maxIteration / 4) {
+                palette[i] = interpolate(color1, color2, i);
+            } else if (i < maxIteration / 2) {
+                palette[i] = interpolate(color2, color3, i);
+            } else if (i < maxIteration * 3 / 4) {
+                palette[i] = interpolate(color3, color4, i);
+            } else {
+                palette[i] = interpolate(color3, color4, i);
+            }
+
+        }
+    }
+
+    public int interpolate(int v1, int v2, int i) {
+        int r = Math.abs(Color.red(v1) + i * (Color.red(v2) - Color.red(v1)) / maxIteration);
+        int g = Math.abs(Color.green(v1) + i * (Color.green(v2) - Color.green(v1)) / maxIteration);
+        int b = Math.abs(Color.blue(v1) + i * (Color.blue(v2) - Color.blue(v1)) / maxIteration);
+        return Color.rgb(r, g, b);
+    }
 }
 
 

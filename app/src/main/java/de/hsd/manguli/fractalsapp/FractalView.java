@@ -116,7 +116,7 @@ public class FractalView extends View {
             int color1, color2, color3, color4;
             System.out.println("drawFractal");
 
-            terminateThreads();
+
             Thread t, t1, t2, t3, t4;
             int numberOfThreads = 64;
             int startY = 0, stopY = canvas.getHeight()/numberOfThreads, startX = canvas.getWidth();
@@ -167,7 +167,7 @@ public class FractalView extends View {
                 startY = stopY;
                 stopY += canvas.getHeight()/numberOfThreads;
             }
-
+            terminateThreads();
         }
 
         private class SetThread extends Thread
