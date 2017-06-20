@@ -2,6 +2,7 @@ package de.hsd.manguli.fractalsapp;
 
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.os.Handler;
+import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -35,6 +37,7 @@ import static android.content.ContentValues.TAG;
  * View zur Darstellung der Mengen
  */
 public class FractalView extends View {
+    ProgressDialog pd;
     private Paint point;
     Bitmap bitmap = null;
     Canvas bitmapCanvas = null;
@@ -97,6 +100,35 @@ public class FractalView extends View {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             //Bitmap auf Canvas ausgeben
             drawFractal(bitmapCanvas);
+            pd = new ProgressDialog(getContext());
+            pd.setMax(100);
+            pd.setMessage("Es lädt, bitte warten Sie einen Moment");
+            pd.setTitle("Die Menge wird gezeichnet");
+            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+            pd.show();
+            final Handler handle = new Handler() {
+                @Override
+                public void handleMessage(Message mg) {
+                    super.handleMessage(mg);
+                    pd.incrementProgressBy(1);
+                }
+            };
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        while (pd.getProgress() <= pd.getMax()) {
+                            Thread.sleep(200);
+                            handle.sendMessage(handle.obtainMessage());
+                            if(pd.getProgress() == pd.getMax()) pd.dismiss();
+                        }
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }).start();
             canvas.drawBitmap(bitmap, 0, 0, point);
             System.out.println("onDraw");
             /*onCall = false;
@@ -167,7 +199,6 @@ public class FractalView extends View {
                 startY = stopY;
                 stopY += canvas.getHeight()/numberOfThreads;
             }
-
         }
 
         private class SetThread extends Thread
