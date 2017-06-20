@@ -97,21 +97,19 @@ public class Algorithm {
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
                 //setColor(n)
                 int color =  0;
-                if (n < maxIteration / 4) {
-                    color = interpolate(color1, color2, n);
-                } else if (n < maxIteration / 2) {
+                if (n < maxIteration / 3) {
                     color = interpolate(color2, color3, n);
-                } else if (n < maxIteration * 3 / 4) {
+                } else if (n < maxIteration *2/ 3) {
                     color = interpolate(color3, color4, n);
-                } else {
-                    color = interpolate(color3, color4, n);
+                } else{
+                    color = interpolate(color4, color2, n);
                 }
                 return color;
             }
             //Berechnung der Folge z' = z*z + z0;
             z = z.mult(z).add(z0);
         }
-        return Color.BLACK;  //|Zn| < 2, Farbe ist schwarz
+        return color1;  //|Zn| < 2, Farbe ist schwarz
     }
 
     //Methode transformiert übergebenen Punkt (= Pixel auf Screen)

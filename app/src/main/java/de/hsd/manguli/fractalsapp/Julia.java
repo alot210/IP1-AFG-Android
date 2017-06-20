@@ -30,11 +30,19 @@ public class Julia extends Algorithm{
 
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
                 //setColor(n)
-                return Color.CYAN;
+                int color =  0;
+                if (n < getMaxIteration() / 3) {
+                    color = interpolate(getColor2(), getColor3(), n);
+                } else if (n < getMaxIteration() *2/ 4) {
+                    color = interpolate(getColor3(), getColor4(), n);
+                } else{
+                    color = interpolate(getColor4(), getColor2(), n);
+                }
+                return color;
             }
             //hier Konstante statt z0 addieren
             z = z.mult(z).add(constant);
         }
-        return Color.YELLOW;  //|Zn| < 2, Farbe ist schwarz
+        return getColor1();  //|Zn| < 2, Farbe ist schwarz
     }
 }
