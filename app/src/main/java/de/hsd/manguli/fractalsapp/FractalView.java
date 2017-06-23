@@ -29,6 +29,7 @@ import java.lang.reflect.Array;
 import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static android.content.ContentValues.TAG;
 
@@ -43,9 +44,9 @@ public class FractalView extends View {
     Canvas bitmapCanvas = null;
     Boolean juliaPush = Julia_Fragment.juliaPush;
     Boolean mandelPush = EditorActivityFragment.mandelPush;
+    int numberOfThreads = 4;
 
     private List<Thread> currentThreads = new ArrayList<>();
-    private volatile boolean terminateThreads;
     private static Boolean onCall = false;
 
     //Überschreiben der drei Constructor
@@ -86,6 +87,7 @@ public class FractalView extends View {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+            showProgressDialog(getContext());
             //Existiert ein Bitmap?
             //damit onDraw-Methode nur einmal ausgeführt wird (ansonsten wird sie zweimal mit onCreate und onResume aufgerufen)
             //if(onCall) {
@@ -96,39 +98,10 @@ public class FractalView extends View {
                 bitmapCanvas = new Canvas(bitmap);
                 bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
             }
-            //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-            //Bitmap auf Canvas ausgeben
+            //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             drawFractal(bitmapCanvas);
-            pd = new ProgressDialog(getContext());
-            pd.setMax(100);
-            pd.setMessage("Es lädt, bitte warten Sie einen Moment");
-            pd.setTitle("Die Menge wird gezeichnet");
-            pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-            pd.show();
-            final Handler handle = new Handler() {
-                @Override
-                public void handleMessage(Message mg) {
-                    super.handleMessage(mg);
-                    pd.incrementProgressBy(1);
-                }
-            };
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        while (pd.getProgress() <= pd.getMax()) {
-                            Thread.sleep(200);
-                            handle.sendMessage(handle.obtainMessage());
-                            if(pd.getProgress() == pd.getMax()) pd.dismiss();
-                        }
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
+            //Bitmap auf Canvas ausgeben
             canvas.drawBitmap(bitmap, 0, 0, point);
             System.out.println("onDraw");
             /*onCall = false;
@@ -148,9 +121,7 @@ public class FractalView extends View {
             int color1, color2, color3, color4;
             System.out.println("drawFractal");
 
-            terminateThreads();
-            Thread t, t1, t2, t3, t4;
-            int numberOfThreads = 64;
+            SetThread t, t1, t2, t3, t4;
             int startY = 0, stopY = canvas.getHeight()/numberOfThreads, startX = canvas.getWidth();
 
             /*t1 = new MandelThread(mb, canvas, 0, canvas.getWidth(), canvas.getHeight()/4, Color.RED);
@@ -208,7 +179,6 @@ public class FractalView extends View {
             private Canvas canvas;
             private Paint paint = new Paint();
             private Algorithm m;
-            final Handler myHandler = new Handler();
 
             SetThread (Algorithm m, Canvas canvas, int startY, int stopX, int stopY) {
                 this.canvas = canvas;
@@ -229,28 +199,6 @@ public class FractalView extends View {
                         canvas.drawPoint(i,j,paint);
                     }
                 }
-
-            }
-        }
-
-        public void terminateThreads() {
-            try {
-                terminateThreads = true;
-
-                for(Thread t : currentThreads){
-                    if (t.isAlive()) {
-                        t.join(DateUtils.SECOND_IN_MILLIS);
-                        System.out.println("thread terminated");
-                    }
-                    if (t.isAlive()) {
-                        Log.w(TAG, "Thread is still alive after 1sec...");
-                    }
-                }
-
-                terminateThreads = false;
-                currentThreads.clear();
-            } catch(Exception ex) {
-                Log.w(TAG, "Exception while terminating threads: " + ex.getMessage());
             }
         }
 
@@ -270,4 +218,38 @@ public class FractalView extends View {
                 });
         return cpdb;
     }//end getColorPickerDialogBuilder
+
+    public void showProgressDialog(Context context) {
+        pd = new ProgressDialog(context);
+        pd.setMax(100);
+        pd.setTitle("Die Menge wird gezeichnet");
+        pd.setMessage("Bitte haben Sie etwas Geduld");
+        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.show();
+        final Handler handle = new Handler() {
+            @Override
+            public void handleMessage(Message mg) {
+                super.handleMessage(mg);
+                pd.incrementProgressBy(100/numberOfThreads);
+            }
+        };
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (pd.getProgress() <= pd.getMax()) {
+                        for(Thread t : currentThreads) {
+                            t.join();
+                            handle.sendMessage(handle.obtainMessage());
+                        }
+                        if(pd.getProgress() == pd.getMax()) pd.dismiss();
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
 }//end class()
