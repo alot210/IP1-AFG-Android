@@ -13,6 +13,7 @@ import android.graphics.Picture;
 import android.graphics.PorterDuff;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -45,9 +46,6 @@ public class FractalView extends View {
     Boolean juliaPush = Julia_Fragment.juliaPush;
     Boolean mandelPush = EditorActivityFragment.mandelPush;
     int numberOfThreads = 4;
-
-    private List<Thread> currentThreads = new ArrayList<>();
-    private static Boolean onCall = false;
 
     //Überschreiben der drei Constructor
     public FractalView(Context context) {
@@ -164,8 +162,6 @@ public class FractalView extends View {
                 t = new SetThread(am, canvas, startY, startX, stopY);
                 //Run-Methode starten
                 t.start();
-                //Threads zur Liste hinzufügen
-                currentThreads.add(t);
                 //Nächster Abschnitt vom Mandelbrot
                 startY = stopY;
                 stopY += canvas.getHeight()/numberOfThreads;
@@ -188,6 +184,14 @@ public class FractalView extends View {
                 this.m = m;
             }
 
+            Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    super.handleMessage(msg);
+                    pd.incrementProgressBy(100/numberOfThreads);
+                }
+            };
+
             @Override
             public void run(){
                 //An den Punkten in der View zeichnen
@@ -198,6 +202,13 @@ public class FractalView extends View {
                         paint.setStyle(Paint.Style.FILL);
                         canvas.drawPoint(i,j,paint);
                     }
+                }
+                handler.sendMessage(handler.obtainMessage());
+                if(pd.getProgress() == pd.getMax()) pd.dismiss();
+                try {
+                    this.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }
@@ -226,30 +237,5 @@ public class FractalView extends View {
         pd.setMessage("Bitte haben Sie etwas Geduld");
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         pd.show();
-        final Handler handle = new Handler() {
-            @Override
-            public void handleMessage(Message mg) {
-                super.handleMessage(mg);
-                pd.incrementProgressBy(100/numberOfThreads);
-            }
-        };
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    while (pd.getProgress() <= pd.getMax()) {
-                        for(Thread t : currentThreads) {
-                            t.join();
-                            handle.sendMessage(handle.obtainMessage());
-                        }
-                        if(pd.getProgress() == pd.getMax()) pd.dismiss();
-                    }
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
     }
 }//end class()
