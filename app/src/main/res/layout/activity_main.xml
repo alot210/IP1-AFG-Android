@@ -32,4 +32,14 @@
         app:rippleColor="@android:color/white"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/button_logcat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|left"
+        android:layout_margin="@dimen/fab_margin"
+        app:backgroundTint="@color/colorPrimary"
+        app:rippleColor="@android:color/white"
+        />
+
 </android.support.design.widget.CoordinatorLayout>

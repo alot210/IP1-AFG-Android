@@ -60,6 +60,22 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                //LogCat anzeigen lassen
+                //Intent logCatIntent = new Intent(MainActivity.this,LogCatActivity.class);
+                //startActivity(logCatIntent);
+
+
+            }
+        });
+
+        FloatingActionButton lcb = (FloatingActionButton) findViewById(R.id.button_logcat);
+        //Snackbar Meldung bei Klick auf FAB
+        lcb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 //Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
 
