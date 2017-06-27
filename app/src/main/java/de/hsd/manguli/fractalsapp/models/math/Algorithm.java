@@ -1,8 +1,7 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.models.math;
 
 
 import android.graphics.Color;
-import android.util.Log;
 
 /**
  * Oberklasse mit Algorithmus fuer Julia und Mandelbrot

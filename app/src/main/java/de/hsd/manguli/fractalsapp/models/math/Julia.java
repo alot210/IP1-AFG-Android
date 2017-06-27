@@ -1,10 +1,13 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.models.math;
+
+import de.hsd.manguli.fractalsapp.models.math.Algorithm;
+import de.hsd.manguli.fractalsapp.models.math.Complex;
 
 /**
  * Created by Jens on 09.06.2017.
  */
 
-public class Julia extends Algorithm{
+public class Julia extends Algorithm {
 
     //Konstante für Julia-Menge
     private static Complex constant;

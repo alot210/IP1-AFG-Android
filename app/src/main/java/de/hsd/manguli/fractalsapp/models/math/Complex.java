@@ -1,4 +1,4 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.models.math;
 
 
 /**

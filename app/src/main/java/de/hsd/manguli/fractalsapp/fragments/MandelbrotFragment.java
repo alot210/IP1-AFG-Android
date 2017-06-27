@@ -1,4 +1,4 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.fragments;
 
 
 import android.content.DialogInterface;
@@ -9,19 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerClickListener;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+import de.hsd.manguli.fractalsapp.activities.MainActivity;
+import de.hsd.manguli.fractalsapp.views.FractalView;
+import de.hsd.manguli.fractalsapp.R;
+
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment als Teil des Editor
  */
-public class Julia_Fragment extends Fragment implements View.OnClickListener {
+public class MandelbrotFragment extends Fragment implements View.OnClickListener {
 
     //Seekbar Iterationen
     SeekBar sb_iter;
@@ -32,7 +34,8 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
     TextView tv_iter;
     //Textfeld Geschwindigkeit
     TextView tv_speed;
-    //Button erste Farbe;
+
+    //Button erste Farbe
     Button bt_color1;
     //Button zweite Farbe
     Button bt_color2;
@@ -42,16 +45,14 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
     Button bt_color4;
 
     //Variablen für Übergabeparameter an Fractalview
-    static String iterartion = "20";
-    static int real;
-    static int imag;
-    static int color1;
-    static int color2;
-    static int color3;
-    static int color4;
-    static Boolean juliaPush = false;
+    public static String iteration = "20";
+    public static int color1;
+    public static int color2;
+    public static int color3;
+    public static int color4;
+    public static Boolean mandelPush = false;
 
-    public Julia_Fragment() {
+    public MandelbrotFragment() {
     }
 
     @Override
@@ -62,19 +63,29 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
         color3 = 0;
         color4 = 0;
         //View erstellen, um darüber die XML Elemente ansprechen zu können
-        View editor_j = inflater.inflate(R.layout.fragment_julia, container, false);
+        View editor_m = inflater.inflate(R.layout.fragment_editor, container, false);
 
         //Layout Elemente über ID ansprechen
         //Iteration
-        sb_iter = (SeekBar) editor_j.findViewById(R.id.seekBar_j_Iteration);
+        sb_iter=(SeekBar) editor_m.findViewById(R.id.seekBar_m_Iteration);
         sb_iter.setProgress(0);
         sb_iter.incrementProgressBy(10);
         sb_iter.setMax(100);
 
-        sb_speed = (SeekBar) editor_j.findViewById(R.id.seekBar_j_speed);
+        //Alle Buttons initialisieren und ClickListener hinzufügen
+        bt_color1 = (Button) editor_m.findViewById(R.id.button_m_color1_select);
+        bt_color1.setOnClickListener(this);
+        bt_color2 = (Button) editor_m.findViewById(R.id.button_m_color2_select);
+        bt_color2.setOnClickListener(this);
+        bt_color3 = (Button) editor_m.findViewById(R.id.button_m_color3_select);
+        bt_color3.setOnClickListener(this);
+        bt_color4 = (Button) editor_m.findViewById(R.id.button_m_color4_select);
+        bt_color4.setOnClickListener(this);
 
-        tv_iter = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
-        tv_speed = (TextView) editor_j.findViewById(R.id.text_j_Speed_value);
+        sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
+
+        tv_iter=(TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
+        tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
 
         //Wird bei Veränderung der Seekbar aufgerufen
         sb_iter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -99,16 +110,6 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        //Alle Buttons initialisieren und ClickListener hinzufügen
-        bt_color1 = (Button) editor_j.findViewById(R.id.button_j_color1_select);
-        bt_color1.setOnClickListener(this);
-        bt_color2 = (Button) editor_j.findViewById(R.id.button_j_color2_select);
-        bt_color2.setOnClickListener(this);
-        bt_color3 = (Button) editor_j.findViewById(R.id.button_j_color3_select);
-        bt_color3.setOnClickListener(this);
-        bt_color4 = (Button) editor_j.findViewById(R.id.button_j_color4_select);
-        bt_color4.setOnClickListener(this);
-
         sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
@@ -126,20 +127,8 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        final TextView iteration = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
-        final SeekBar realValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
-
-        realValue.setProgress(0);
-        realValue.incrementProgressBy(1);
-        realValue.setMax(360);
-
-        final SeekBar imagValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_imaginaer);
-
-        imagValue.setProgress(0);
-        imagValue.incrementProgressBy(1);
-        imagValue.setMax(360);
-
-        Button drawIt = (Button) editor_j.findViewById(R.id.button_j_draw);
+        final TextView iteration = (TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
+        Button drawIt = (Button) editor_m.findViewById(R.id.button_m_draw);
 
 
         drawIt.setOnClickListener(new View.OnClickListener(){
@@ -147,25 +136,30 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
             public void onClick(View view){
                 //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
                 if(color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0) {
-                    Toast.makeText(getContext(), "Juliamenge wird nun gezeichnet.", Toast.LENGTH_LONG).show();
-                    iterartion = iteration.getText().toString();
-                    real = realValue.getProgress();
-                    imag = imagValue.getProgress();
-                    juliaPush = true;
+                    Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                    MandelbrotFragment.iteration = iteration.getText().toString();
+                    mandelPush = true;
 
-                    Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
-                    startActivity(juliaIntent);
+                    //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
+                    //        .setAction("Action", null).show();
+
+
+                    //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                    Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
+                    startActivity(mandelbrotIntent);
+
+                    //String i = iteration.getText().toString();
                 }
                 else {
                     Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
                 }
 
 
+
             }
         });
 
-
-        return editor_j;
+        return editor_m;
     }
 
     //OnCllick Methode muss für OnClickListener überschrieben werden
@@ -178,7 +172,7 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
         //Überprüfung welcher Button gedrückt worden ist
         switch (v.getId()) {
             //Setze für jedes Dialogfenster den Ok Button, setze Werte zur Übergabe und lasse das Fenster anzeigen
-            case R.id.button_j_color1_select:
+            case R.id.button_m_color1_select:
                 cpdb
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
@@ -190,7 +184,7 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
                         .build()
                         .show();
                 break;
-            case R.id.button_j_color2_select:
+            case R.id.button_m_color2_select:
                 cpdb
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
@@ -202,7 +196,7 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
                         .build()
                         .show();
                 break;
-            case R.id.button_j_color3_select:
+            case R.id.button_m_color3_select:
                 cpdb
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
@@ -214,7 +208,7 @@ public class Julia_Fragment extends Fragment implements View.OnClickListener {
                         .build()
                         .show();
                 break;
-            case R.id.button_j_color4_select:
+            case R.id.button_m_color4_select:
                 cpdb
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
