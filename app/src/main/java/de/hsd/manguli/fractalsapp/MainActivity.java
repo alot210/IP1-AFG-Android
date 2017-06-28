@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -66,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //Button für das auslesen der LOGCAT.txt innerhalb der App
+        //mit Absicht Auskommentiert!!!
+        /*
         FloatingActionButton lcb = (FloatingActionButton) findViewById(R.id.button_logcat);
         //Snackbar Meldung bei Klick auf FAB
         lcb.setOnClickListener(new View.OnClickListener() {
@@ -76,10 +80,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(logCatIntent);
             }
         });
+        */
 
         //View initialisieren und mit invalidate() onDraw aufrufen
         FractalView fw = new FractalView(this);
         fw.invalidate();
+        Log.d("LOGGING","View wurde initialisiert");
 
         //Aktuelles Logcat in Datei schreiben
         writeLogFile();
@@ -118,16 +124,14 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
-
-
         return super.onOptionsItemSelected(item);
     }
 
     //Methode die das aktuelle Logcat in eine txt Datei schreibt
     private void writeLogFile(){
-        //Speichern der Logcat Daten in eine log.txt
-        //Toast.makeText(this, "SDCard Found", Toast.LENGTH_LONG).show();
+        //Speichern der Logcat Daten in eine LOGCAT.txt
         try {
+            //AKtuelles Logcat Debug wird Zeile für Zeile eingelesen
             Process process = Runtime.getRuntime().exec("logcat -d");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder log = new StringBuilder();
@@ -145,19 +149,31 @@ public class MainActivity extends AppCompatActivity {
 
             //Log in einen String schreiben + Timestamp
             final String logString = new String(date + " " +log.toString());
-            //Log.v("loggingString",logString);
 
-            File dir = new File(this.getFilesDir(), "/LOG");
+            File path;
+            File dir;
+            File file;
 
-            //Toast.makeText(this, dir.toString(), Toast.LENGTH_LONG).show();
-
-            if(!dir.exists()){
-                dir.mkdirs();
+            //Wenn der Zugriff auf den externen Speicher erlaubt ist...
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
+                //In Download einen neuen Ordner und die txt erstellen
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                dir = new File(path, "/FRACTALICIOUS");
+                if(!dir.exists()) dir.mkdirs();
+                file = new File(dir, "LOGCAT.txt");
+                Log.v("EXAMPLE EXDIR",dir.toString());
             }
+            //Falls der Zugriff nicht erlaubt ist, den Zugriff abfragen
+            else{
+                ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+                //Siehe oben
+                path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                dir = new File(path, "/FRACTALICIOUS");
+                if(!dir.exists()) dir.mkdirs();
+                file = new File(dir, "LOGCAT.txt");
+                Log.v("EXAMPLE EXDIR",dir.toString());
 
-            File file = new File(dir, "logcat.txt");
-            //Toast.makeText(this, "Logcat.txt erstellt", Toast.LENGTH_LONG).show();
-            //Log.v("FILEDIR", dir.toString());
+            }
 
             FileOutputStream fout = new FileOutputStream(file);
             OutputStreamWriter osw = new OutputStreamWriter(fout);
@@ -166,8 +182,6 @@ public class MainActivity extends AppCompatActivity {
             osw.write(logString);
             osw.flush();
             osw.close();
-
-            //Toast.makeText(this, "sollte durchgelaufen sein", Toast.LENGTH_LONG).show();
 
         }
         catch(FileNotFoundException e){

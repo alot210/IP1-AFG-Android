@@ -1,10 +1,12 @@
 package de.hsd.manguli.fractalsapp;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -25,6 +27,7 @@ public class LogCatActivity extends AppCompatActivity {
 
         TextView t = (TextView) findViewById(R.id.logCatText);
 
+        Log.v("EXAMPLE READ",Environment.getExternalStorageDirectory().toString()+"/Download");
 
         t.setText(getLogFile());
 
@@ -37,20 +40,20 @@ public class LogCatActivity extends AppCompatActivity {
         BufferedReader br;
         StringBuilder text = new StringBuilder("");
         try {
-            br = new BufferedReader(new FileReader(new File(getFilesDir()+ "/LOG/logcat.txt")));
+            br = new BufferedReader(new FileReader(new File(Environment.getExternalStorageDirectory() + "/Download/FRACTALICIOUS/LOGCAT.txt")));
+
             String read;
 
 
             while((read = br.readLine()) != null){
                 text.append(read);
             }
-            //Log.v("OUTPUT", text.toString());
 
             br.close();
 
-
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            //Log.v("Fehler 1", e.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
