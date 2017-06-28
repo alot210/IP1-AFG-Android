@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
@@ -45,6 +46,7 @@ public class FractalView extends View {
     Canvas bitmapCanvas = null;
     Boolean juliaPush = Julia_Fragment.juliaPush;
     Boolean mandelPush = EditorActivityFragment.mandelPush;
+    Boolean onCall = false;
     int numberOfThreads = 4;
 
     //Überschreiben der drei Constructor
@@ -84,29 +86,30 @@ public class FractalView extends View {
 
         @Override
         protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            showProgressDialog(getContext());
+            //super.onDraw(canvas);
             //Existiert ein Bitmap?
             //damit onDraw-Methode nur einmal ausgeführt wird (ansonsten wird sie zweimal mit onCreate und onResume aufgerufen)
-            //if(onCall) {
-            if (bitmap == null) {
-                //Bitmap erzeugen mit den Canvas Maßen
-                bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-                //Canvas mit Bitmap erzeugen
-                bitmapCanvas = new Canvas(bitmap);
-                bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+            if(Build.VERSION.SDK_INT > 23) {
+                onCall = true;
             }
-            canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-            //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
-            drawFractal(bitmapCanvas);
-            //Bitmap auf Canvas ausgeben
-            canvas.drawBitmap(bitmap, 0, 0, point);
-            System.out.println("onDraw");
-            /*onCall = false;
-            return;
-
-        }
-        onCall = true;*/
+            if(onCall) {
+                showProgressDialog(getContext());
+                if (bitmap == null) {
+                    //Bitmap erzeugen mit den Canvas Maßen
+                    bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+                    //Canvas mit Bitmap erzeugen
+                    bitmapCanvas = new Canvas(bitmap);
+                    bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                }
+                canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
+                //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
+                drawFractal(bitmapCanvas);
+                //Bitmap auf Canvas ausgeben
+                canvas.drawBitmap(bitmap, 0, 0, point);
+                System.out.println("onDraw");
+                onCall = false;
+            }
+            onCall = true;
         }
 
         public void drawFractal(Canvas canvas){
@@ -189,6 +192,7 @@ public class FractalView extends View {
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     pd.incrementProgressBy(100/numberOfThreads);
+                    if(pd.getProgress() == pd.getMax()) pd.dismiss();
                 }
             };
 
@@ -204,7 +208,6 @@ public class FractalView extends View {
                     }
                 }
                 handler.sendMessage(handler.obtainMessage());
-                if(pd.getProgress() == pd.getMax()) pd.dismiss();
                 try {
                     this.join();
                 } catch (InterruptedException e) {

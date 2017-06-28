@@ -49,10 +49,6 @@ public class MainActivity extends AppCompatActivity {
                         .setAction("Action", null).show();
             }
         });
-
-        //View initialisieren und mit invalidate() onDraw aufrufen
-        FractalView fw = new FractalView(this);
-        fw.invalidate();
     }
 
     @Override
