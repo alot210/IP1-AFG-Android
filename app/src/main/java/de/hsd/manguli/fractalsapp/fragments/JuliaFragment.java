@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -88,6 +89,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                 progress = progress * 10;
                 //in Textfeld den Wert schreiben
                 tv_iter.setText(String.valueOf(progress));
+                Log.d("LOGGING","Iteration verändert");
             }
 
             @Override
@@ -115,6 +117,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
                 tv_speed.setText(String.valueOf(progress));
+                Log.d("LOGGING","Geschwindigkeit verändert");
             }
 
             @Override
@@ -155,11 +158,13 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                     imag = imagValue.getProgress();
                     juliaPush = true;
 
+                    Log.d("LOGGING","Julia Draw gedrueckt");
                     Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
                     startActivity(juliaIntent);
                 }
                 else {
                     Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                    Log.d("LOGGING","Julia Draw gedrueckt, Farben fehlen");
                 }
 
 
@@ -187,6 +192,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color1.setBackgroundColor(i);
                                 color1 = i;
+                                Log.d("LOGGING","Juliamenge Farbe 1 gesetzt");
                             }
                         })
                         .build()
@@ -199,6 +205,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
                                 color2 = i;
+                                Log.d("LOGGING","Juliamenge Farbe 2 gesetzt");
                             }
                         })
                         .build()
@@ -211,6 +218,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
                                 color3 = i;
+                                Log.d("LOGGING","Juliamenge Farbe 3 gesetzt");
                             }
                         })
                         .build()
@@ -223,6 +231,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
                                 color4 = i;
+                                Log.d("LOGGING","Juliamenge Farbe 4 gesetzt");
                             }
                         })
                         .build()

@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-
+                Log.d("LOGGING","Screenshot Button gedrueckt");
             }
         });
 
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         //View initialisieren und mit invalidate() onDraw aufrufen
         FractalView fw = new FractalView(this);
         fw.invalidate();
-        Log.d("LOGGING","View wurde initialisiert");
+        Log.d("LOGGING","View wurde initialisiert, Menge wird gezeichnet");
 
         //Aktuelles Logcat in Datei schreiben
         writeLogFile();
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        Log.d("LOGGING","Menue geoeffnet");
         return true;
     }
 
@@ -112,16 +113,19 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.action_settings) {
             Intent editorIntent = new Intent(this,EditorActivity.class);
             startActivity(editorIntent);
+            Log.d("LOGGING","EDITOR ausgewaehlt");
             return true;
         }
        else if (id == R.id.action_math) {
             Intent mathIntent = new Intent(this,MathActivity.class);
             startActivity(mathIntent);
+            Log.d("LOGGING","Mathe ausgewaehlt");
             return true;
         }
         else if(id == R.id.action_developer) {
             Intent developerIntent = new Intent(this,DeveloperActivity.class);
             startActivity(developerIntent);
+            Log.d("LOGGING","Developer ausgewaehlt");
             return true;
         }
 
@@ -132,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     private void writeLogFile(){
         //Speichern der Logcat Daten in eine LOGCAT.txt
         try {
-            //AKtuelles Logcat Debug wird Zeile für Zeile eingelesen
+            //Aktuelles Logcat Debug wird Zeile für Zeile eingelesen
             Process process = Runtime.getRuntime().exec("logcat -d");
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             StringBuilder log = new StringBuilder();
@@ -162,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 dir = new File(path, "/FRACTALICIOUS");
                 if(!dir.exists()) dir.mkdirs();
                 file = new File(dir, "LOGCAT.txt");
-                Log.v("EXAMPLE EXDIR",dir.toString());
+                Log.d("LOGGING",dir.toString());
             }
             //Falls der Zugriff nicht erlaubt ist, den Zugriff abfragen
             else{
@@ -172,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 dir = new File(path, "/FRACTALICIOUS");
                 if(!dir.exists()) dir.mkdirs();
                 file = new File(dir, "LOGCAT.txt");
-                Log.v("EXAMPLE EXDIR",dir.toString());
+                Log.d("LOGGING",dir.toString());
 
             }
 
@@ -181,17 +185,18 @@ public class MainActivity extends AppCompatActivity {
 
             //Writing the string to file
             osw.write(logString);
+            Log.d("LOGGING","Schreibe in LogFile");
             osw.flush();
             osw.close();
 
         }
         catch(FileNotFoundException e){
             e.printStackTrace();
-            Toast.makeText(this, "Fehler 1", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Fehler 1", Toast.LENGTH_LONG).show();
         }
         catch(IOException e) {
             e.printStackTrace();
-            Toast.makeText(this, "Fehler 2", Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, "Fehler 2", Toast.LENGTH_LONG).show();
         }
     }
 }

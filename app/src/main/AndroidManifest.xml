@@ -53,11 +53,11 @@
         <activity
             android:name=".LogCatActivity"
             android:label="LogCat Ausgabe"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.hsd.manguli.fractalsapp.MainActivity" />
+                android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
         </activity>
     </application>
 

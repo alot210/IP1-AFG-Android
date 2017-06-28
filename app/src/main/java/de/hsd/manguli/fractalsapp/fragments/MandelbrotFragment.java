@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +98,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                 progress = progress * 10;
                 //in Textfeld den Wert schreiben
                 tv_iter.setText(String.valueOf(progress));
+                Log.d("LOGGING","Iteration veraendert");
             }
 
             @Override
@@ -114,6 +116,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
                 tv_speed.setText(String.valueOf(progress));
+                Log.d("LOGGING","Geschwindigkeit veraendert");
             }
 
             @Override
@@ -144,6 +147,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                     //        .setAction("Action", null).show();
 
 
+                    Log.d("LOGGING","Mandelbrot Draw gedrueckt");
                     //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
                     Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
                     startActivity(mandelbrotIntent);
@@ -152,6 +156,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                 }
                 else {
                     Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                    Log.d("LOGGING","Mandelbrot Draw gedrueckt, Farben fehlen");
                 }
 
 
@@ -179,6 +184,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color1.setBackgroundColor(i);
                                 color1 = i;
+                                Log.d("LOGGING","Mandelbrot Farbe 1 gesetzt");
                             }
                         })
                         .build()
@@ -191,6 +197,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
                                 color2 = i;
+                                Log.d("LOGGING","Mandelbrot Farbe 2 gesetzt");
                             }
                         })
                         .build()
@@ -203,6 +210,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
                                 color3 = i;
+                                Log.d("LOGGING","Mandelbrot Farbe 3 gesetzt");
                             }
                         })
                         .build()
@@ -215,6 +223,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
                                 color4 = i;
+                                Log.d("LOGGING","Mandelbrot Farbe 4 gesetzt");
                             }
                         })
                         .build()
