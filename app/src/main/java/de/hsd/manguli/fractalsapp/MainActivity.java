@@ -63,11 +63,6 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                //LogCat anzeigen lassen
-                //Intent logCatIntent = new Intent(MainActivity.this,LogCatActivity.class);
-                //startActivity(logCatIntent);
-
-
             }
         });
 
@@ -76,14 +71,9 @@ public class MainActivity extends AppCompatActivity {
         lcb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
-
                 //LogCat anzeigen lassen
                 Intent logCatIntent = new Intent(MainActivity.this,LogCatActivity.class);
                 startActivity(logCatIntent);
-
-
             }
         });
 
