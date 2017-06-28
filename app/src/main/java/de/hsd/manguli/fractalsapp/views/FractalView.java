@@ -19,17 +19,13 @@ import android.view.View;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
-<<<<<<< HEAD:app/src/main/java/de/hsd/manguli/fractalsapp/FractalView.java
-
-import de.hsd.manguli.fractalsapp.EditorActivityFragment;
-=======
 import de.hsd.manguli.fractalsapp.fragments.JuliaFragment;
 import de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment;
 import de.hsd.manguli.fractalsapp.models.math.Algorithm;
 import de.hsd.manguli.fractalsapp.models.math.Complex;
 import de.hsd.manguli.fractalsapp.models.math.Julia;
 import de.hsd.manguli.fractalsapp.models.math.Mandelbrot;
->>>>>>> feature-refactor:app/src/main/java/de/hsd/manguli/fractalsapp/views/FractalView.java
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,48 +121,7 @@ public class FractalView extends View{
      * Hier wird angegeben, was in der View gezeichnet wird
      * @param canvas das übergebene Canvas Objekt, mit dem gezeichnet wird
      */
-/*
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
 
-
-
-        //Existiert ein Bitmap?
-        if (bitmap == null) {
-            //Bitmap erzeugen mit den Canvas Maßen
-            bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-            //Canvas mit Bitmap erzeugen
-            bitmapCanvas = new Canvas(bitmap);
-            bitmapCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-        }
-
-        canvas.save();
-        canvas.scale(scaleFactor,scaleFactor);
-
-        //translate soll nicht außerhalb des Canvas stattfinden
-        if((translateX*-1)< 0){
-            translateX = 0;
-        }
-        else if((translateX*-1)> (scaleFactor -1)* canvas.getWidth()){
-            translateX = (1- scaleFactor)* canvas.getWidth();
-        }
-
-        if((translateY*-1)< 0){
-            translateY = 0;
-        }
-        else if((translateY*-1)> (scaleFactor -1)* canvas.getHeight()){
-            translateY = (1- scaleFactor)* canvas.getHeight();
-        }
-
-
-        canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
-        //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
-        drawOnCanvas(bitmapCanvas);
-        //Bitmap auf Canvas ausgeben
-        canvas.drawBitmap(bitmap, 0, 0, point);
-        //Canvas drawBitmap = new Canvas(bitmap);
-        canvas.restore();*/
 
 
         @Override
@@ -207,15 +162,14 @@ public class FractalView extends View{
             drawFractal(bitmapCanvas);
             canvas.drawBitmap(bitmap, 0, 0, point);
             System.out.println("onDraw");
-<<<<<<< HEAD:app/src/main/java/de/hsd/manguli/fractalsapp/FractalView.java
+
             canvas.restore();
             /*onCall = false;
             return;
 
         }
         onCall = true;*/
-=======
->>>>>>> feature-refactor:app/src/main/java/de/hsd/manguli/fractalsapp/views/FractalView.java
+
         }
 
         public void drawFractal(Canvas canvas){
