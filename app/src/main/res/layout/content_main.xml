@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="de.hsd.manguli.fractalsapp.MainActivity"
+    tools:context="de.hsd.manguli.fractalsapp.activities.MainActivity"
     tools:showIn="@layout/activity_main">
 
 
    <view
        android:id="@+id/view"
-       class="de.hsd.manguli.fractalsapp.FractalView"
+       class="de.hsd.manguli.fractalsapp.views.FractalView"
        android:layout_width="0dp"
        android:layout_height="0dp"
        app:layout_constraintBottom_toBottomOf="parent"

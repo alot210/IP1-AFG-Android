@@ -1,6 +1,4 @@
-package de.hsd.manguli.fractalsapp;
-
-
+package de.hsd.manguli.fractalsapp.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -21,13 +19,18 @@ import android.view.View;
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 
+<<<<<<< HEAD:app/src/main/java/de/hsd/manguli/fractalsapp/FractalView.java
 
 import de.hsd.manguli.fractalsapp.EditorActivityFragment;
+=======
+import de.hsd.manguli.fractalsapp.fragments.JuliaFragment;
+import de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment;
+import de.hsd.manguli.fractalsapp.models.math.Algorithm;
+import de.hsd.manguli.fractalsapp.models.math.Complex;
+import de.hsd.manguli.fractalsapp.models.math.Julia;
+import de.hsd.manguli.fractalsapp.models.math.Mandelbrot;
+>>>>>>> feature-refactor:app/src/main/java/de/hsd/manguli/fractalsapp/views/FractalView.java
 
-import de.hsd.manguli.fractalsapp.Complex;
-
-import java.lang.reflect.Array;
-import java.text.AttributedCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,12 +46,11 @@ public class FractalView extends View{
     private Paint point;
     Bitmap bitmap = null;
     Canvas bitmapCanvas = null;
-    Boolean juliaPush = Julia_Fragment.juliaPush;
-    Boolean mandelPush = EditorActivityFragment.mandelPush;
+    Boolean juliaPush = JuliaFragment.juliaPush;
+    Boolean mandelPush = MandelbrotFragment.mandelPush;
 
     private List<Thread> currentThreads = new ArrayList<>();
     private volatile boolean terminateThreads;
-    private static Boolean onCall = false;
 
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
@@ -167,13 +169,10 @@ public class FractalView extends View{
         canvas.restore();*/
 
 
-
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
             //Existiert ein Bitmap?
-            //damit onDraw-Methode nur einmal ausgeführt wird (ansonsten wird sie zweimal mit onCreate und onResume aufgerufen)
-            //if(onCall) {
             if (bitmap == null) {
                 //Bitmap erzeugen mit den Canvas Maßen
                 bitmap = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
@@ -208,62 +207,55 @@ public class FractalView extends View{
             drawFractal(bitmapCanvas);
             canvas.drawBitmap(bitmap, 0, 0, point);
             System.out.println("onDraw");
+<<<<<<< HEAD:app/src/main/java/de/hsd/manguli/fractalsapp/FractalView.java
             canvas.restore();
             /*onCall = false;
             return;
 
         }
         onCall = true;*/
+=======
+>>>>>>> feature-refactor:app/src/main/java/de/hsd/manguli/fractalsapp/views/FractalView.java
         }
 
         public void drawFractal(Canvas canvas){
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
 
-            int mbItm = Integer.parseInt(EditorActivityFragment.iterartion);
-            int jItm = Integer.parseInt(Julia_Fragment.iterartion);
-            double _real = Math.cos((double)Julia_Fragment.real+3.257);
-            double _imag = Math.sin((double)Julia_Fragment.imag);
-            int color1, color2, color3, color4;
+            int mbItm = Integer.parseInt(MandelbrotFragment.iteration);
+            int jItm = Integer.parseInt(JuliaFragment.iteration);
+            double _real = Math.cos((double) JuliaFragment.real+3.257);
+            double _imag = Math.sin((double) JuliaFragment.imag);
+            //nur einmal initialisieren
+            int height = canvas.getHeight();
+            int width = canvas.getWidth();
             System.out.println("drawFractal");
 
+            //Threads beenden
+
             terminateThreads();
-            Thread t, t1, t2, t3, t4;
-            int numberOfThreads = 64;
-            int startY = 0, stopY = canvas.getHeight()/numberOfThreads, startX = canvas.getWidth();
-
-            /*t1 = new MandelThread(mb, canvas, 0, canvas.getWidth(), canvas.getHeight()/4, Color.RED);
-            t2 = new MandelThread(mb, canvas, canvas.getHeight()/4, canvas.getWidth(), canvas.getHeight()/2, Color.BLUE);
-            t3 = new MandelThread(mb, canvas, canvas.getHeight()/2, canvas.getWidth(), (canvas.getHeight()*3)/4, Color.GREEN);
-            t4 = new MandelThread(mb, canvas, (canvas.getHeight()*3)/4, canvas.getWidth(), canvas.getHeight(),Color.YELLOW);
-
-            t2.start();
-            t1.start();
-            t3.start();
-            t4.start();
-            currentThreads.add(t1);
-            currentThreads.add(t2);
-            currentThreads.add(t3);
-            currentThreads.add(t4);*/
+            Thread t;
+            int numberOfThreads = 32;
+            int startY = 0, stopY = height/numberOfThreads, startX = width;
             Algorithm am;
 
 
             if(!juliaPush) {
-                am = new Mandelbrot(canvas.getWidth(),canvas.getHeight(), mbItm ,new Complex(2.0,2.0),new Complex(3.0,4.0));
+                am = new Mandelbrot(width,height, mbItm ,new Complex(2.0,2.0),new Complex(3.0,4.0));
                 if(mandelPush) {
-                    am.setColor1(EditorActivityFragment.color1);
-                    am.setColor2(EditorActivityFragment.color2);
-                    am.setColor3(EditorActivityFragment.color3);
-                    am.setColor4(EditorActivityFragment.color4);
+                    am.setColor1(MandelbrotFragment.color1);
+                    am.setColor2(MandelbrotFragment.color2);
+                    am.setColor3(MandelbrotFragment.color3);
+                    am.setColor4(MandelbrotFragment.color4);
                 }
-                EditorActivityFragment.mandelPush = false;
+                MandelbrotFragment.mandelPush = false;
             }
             else {
-                am = new Julia(canvas.getWidth(), canvas.getHeight(), jItm, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
-                am.setColor1(Julia_Fragment.color1);
-                am.setColor2(Julia_Fragment.color2);
-                am.setColor3(Julia_Fragment.color3);
-                am.setColor4(Julia_Fragment.color4);
-                Julia_Fragment.juliaPush = false;
+                am = new Julia(width, height, jItm, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+                am.setColor1(JuliaFragment.color1);
+                am.setColor2(JuliaFragment.color2);
+                am.setColor3(JuliaFragment.color3);
+                am.setColor4(JuliaFragment.color4);
+                JuliaFragment.juliaPush = false;
             }
 
             for(int i = 0; i < numberOfThreads; i++){
@@ -275,7 +267,7 @@ public class FractalView extends View{
                 currentThreads.add(t);
                 //Nächster Abschnitt vom Mandelbrot
                 startY = stopY;
-                stopY += canvas.getHeight()/numberOfThreads;
+                stopY += height/numberOfThreads;
             }
 
         }
@@ -283,7 +275,7 @@ public class FractalView extends View{
         private class SetThread extends Thread
         {
 
-            private int startY, stopX, stopY, color1, color2, color3, color4;
+            private int startY, stopX, stopY;
             private Canvas canvas;
             private Paint paint = new Paint();
             private Algorithm m;

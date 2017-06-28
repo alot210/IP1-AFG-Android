@@ -1,8 +1,11 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.views.adapter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment;
+import de.hsd.manguli.fractalsapp.fragments.JuliaFragment;
 
 /**
  * Created by Thomas on 29.05.2017.
@@ -21,10 +24,10 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                EditorActivityFragment tab1 = new EditorActivityFragment();
+                MandelbrotFragment tab1 = new MandelbrotFragment();
                 return tab1;
             case 1:
-                Julia_Fragment tab2 = new Julia_Fragment();
+                JuliaFragment tab2 = new JuliaFragment();
                 return tab2;
 
             default:
