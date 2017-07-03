@@ -15,6 +15,7 @@ import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -35,6 +36,8 @@ import static android.content.ContentValues.TAG;
  * View zur Darstellung der Mengen
  */
 public class FractalView extends View {
+    int viewWidth;
+    int viewHeight;
     private Paint point;
     Bitmap bitmap = null;
     Canvas bitmapCanvas = null;
@@ -83,6 +86,7 @@ public class FractalView extends View {
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+
             //Existiert ein Bitmap?
             //damit onDraw-Methode nur einmal ausgeführt wird (ansonsten wird sie zweimal mit onCreate und onResume aufgerufen)
             //if(onCall) {
