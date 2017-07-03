@@ -45,7 +45,7 @@ public class Algorithm {
 
     //Methode wird nur von Julia-Menge überschrieben
     //Methode überprüft für jede übergebene Komplexe Zahl Zugehörigkeit zur Menge
-    public Boolean isElemOfMand(Complex z0, int max){
+    public int isElemOfMand(Complex z0, int max){
 
         Complex z = z0;
 
@@ -53,12 +53,12 @@ public class Algorithm {
 
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
                 //setColor(n)
-                return false;
+                return color1;
             }
             //Berechnung der Folge z' = z*z + z0;
             z = z.mult(z).add(z0);
         }
-        return true;  //|Zn| < 2, Farbe ist schwarz
+        return color2;  //|Zn| < 2, Farbe ist schwarz
     }
 
     //Methode transformiert übergebenen Punkt (= Pixel auf Screen)
@@ -76,11 +76,7 @@ public class Algorithm {
         c = c.translate(-translate.getReal(), -translate.getImag());
 
         //überprüfen ob Punkt in Menge liegt und dem entsprechend Farbe zurückgeben
-        if (isElemOfMand(c, maxIteration)) {
-            //setColor
-            return color1;
-        }
-        return color2;
+        return isElemOfMand(c, maxIteration);
     }
 
     public int getColor1() {return color1;}

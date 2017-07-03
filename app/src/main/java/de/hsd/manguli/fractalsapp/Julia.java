@@ -19,7 +19,7 @@ public class Julia extends Algorithm{
         this.constant = constant;
     }
     //Methode von Algorithm überschreiben
-    public Boolean isElemOfMand(Complex z0, int max){
+    public int isElemOfMand(Complex z0, int max){
 
         Complex z = z0;
 
@@ -28,11 +28,11 @@ public class Julia extends Algorithm{
 
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
                 //setColor(n)
-                return false;
+                return getColor1();
             }
             //hier Konstante statt z0 addieren
             z = z.mult(z).add(constant);
         }
-        return true;  //|Zn| < 2, Farbe ist schwarz
+        return getColor2();  //|Zn| < 2, Farbe ist schwarz
     }
 }

@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -21,7 +22,7 @@ import org.w3c.dom.Attr;
  * hier befindet sich die View --> Ausgabe der Mengen
  */
 public class MainActivity extends AppCompatActivity {
-
+    private FractalView fw;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //View initialisieren und mit invalidate() onDraw aufrufen
-        FractalView fw = new FractalView(this);
-        fw.invalidate();
+        fw = (FractalView) findViewById(R.id.view);//new FractalView(this);
+        //fw.invalidate();
     }
 
     @Override
@@ -91,5 +92,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         return super.onOptionsItemSelected(item);
+    }
+    @Override
+    public void onStop(){
+        super.onStop();
+        fw.terminateThreads();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+        fw.terminateThreads();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        fw.terminateThreads();
     }
 }
