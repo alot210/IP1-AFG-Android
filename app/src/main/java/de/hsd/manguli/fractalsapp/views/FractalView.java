@@ -121,9 +121,6 @@ public class FractalView extends View{
      * Hier wird angegeben, was in der View gezeichnet wird
      * @param canvas das übergebene Canvas Objekt, mit dem gezeichnet wird
      */
-
-
-
         @Override
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
@@ -137,23 +134,11 @@ public class FractalView extends View{
             }
 
             canvas.save();
-            canvas.scale(scaleFactor,scaleFactor);
+            canvas.scale(this.scaleFactor,this.scaleFactor,this.gestureDetector.getFocusX(),this.gestureDetector.getFocusY());
 
             //translate soll nicht außerhalb des Canvas stattfinden
-            if((translateX*-1)< 0){
-                translateX = 0;
-            }
-            else if((translateX*-1)> (scaleFactor -1)* canvas.getWidth()){
-                translateX = (1- scaleFactor)* canvas.getWidth();
-            }
 
-            if((translateY*-1)< 0){
-                translateY = 0;
-            }
-            else if((translateY*-1)> (scaleFactor -1)* canvas.getHeight()){
-                translateY = (1- scaleFactor)* canvas.getHeight();
-            }
-
+            scaleWindow(canvas);
 
             canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
@@ -277,7 +262,7 @@ public class FractalView extends View{
             } catch(Exception ex) {
                 Log.w(TAG, "Exception while terminating threads: " + ex.getMessage());
             }
-        }
+        }//end terminateThreads
 
     //Methode gibt ein Teil des Color Picker Dialogfensters zurück
     public ColorPickerDialogBuilder getColorPickerDialogBuilder() {
@@ -324,22 +309,46 @@ public class FractalView extends View{
                 break;
             case MotionEvent.ACTION_UP:
                 mode = NONE;
+                //hier wird gespeichert wo zuletzt hingedragged wurde
                 previousTranslateX = translateX;
                 previousTranslateY = translateY;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mode = DRAG;
+                //hier wird gespeichert wo zuletzt hingezoomt wurde
                 previousTranslateX = translateX;
                 previousTranslateY = translateY;
                 break;
         }
 
         gestureDetector.onTouchEvent(event);
+        //wird neu gezeichnet, wenn der Faktor größer als 1f ist oder der Modus ZOOM erkannt wurde
         if((mode == DRAG && scaleFactor != 1f) || mode == ZOOM){
             invalidate();
         }
         return true;
     }//end onTouchEvent
+
+    /**
+     * Methode überprüft, dass nicht aus dem Canvas herausgezoomt werden kann
+     * @param canvas das übergebene Canvas-Objekt auf das gezeichnet wird
+     */
+    public void scaleWindow(Canvas canvas){
+        if((translateX*-1)< 0){
+            translateX = 0;
+        }
+        else if((translateX*-1)> (scaleFactor -1)* canvas.getWidth()){
+            translateX = (1- scaleFactor)* canvas.getWidth();
+        }
+
+        if((translateY*-1)< 0){
+            translateY = 0;
+        }
+        else if((translateY*-1)> (scaleFactor -1)* canvas.getHeight()){
+            translateY = (1- scaleFactor)* canvas.getHeight();
+        }
+    }//end scaleWindow
+
     /**
      * Klasse wird im Konstruktor von FractalView aufgerufen
      */
