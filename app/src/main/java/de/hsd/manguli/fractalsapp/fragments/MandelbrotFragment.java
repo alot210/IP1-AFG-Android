@@ -47,10 +47,10 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
-    public static int color1;
-    public static int color2;
-    public static int color3;
-    public static int color4;
+    public static int color1 = 0;
+    public static int color2 = 0;
+    public static int color3 = 0;
+    public static int color4 = 0;
     public static Boolean mandelPush = false;
 
     public MandelbrotFragment() {
@@ -58,18 +58,14 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Farbwerte auf 0 gesetzt für Fehlerbehandlung
-        color1 = 0;
-        color2 = 0;
-        color3 = 0;
-        color4 = 0;
+
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_m = inflater.inflate(R.layout.fragment_editor, container, false);
 
         //Layout Elemente über ID ansprechen
         //Iteration
         sb_iter=(SeekBar) editor_m.findViewById(R.id.seekBar_m_Iteration);
-        sb_iter.setProgress(0);
+        sb_iter.setProgress(Integer.parseInt(iteration));
         sb_iter.incrementProgressBy(10);
         sb_iter.setMax(100);
 
@@ -86,7 +82,15 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
 
         tv_iter=(TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
+        tv_iter.setText(String.valueOf(iteration));
         tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
+
+        if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
+            bt_color1.setBackgroundColor(color1);
+            bt_color2.setBackgroundColor(color2);
+            bt_color3.setBackgroundColor(color3);
+            bt_color4.setBackgroundColor(color4);
+        }
 
         //Wird bei Veränderung der Seekbar aufgerufen
         sb_iter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
