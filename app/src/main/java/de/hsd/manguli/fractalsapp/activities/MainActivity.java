@@ -4,8 +4,12 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -32,6 +36,7 @@ import java.io.PrintWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * MainActivity - wird beim Start der App aufgerufen
@@ -56,18 +61,6 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.hsd_logo_weiss);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
-        //Screenshot Button als FAB (=Floating Action Button) integrieren
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        //Snackbar Meldung bei Klick auf FAB
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Hier wird im finalen Release ein Screenshot gespeichert.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-                Log.d("LOGGING","Screenshot Button gedrueckt");
-            }
-        });
-
         //Button für das auslesen der LOGCAT.txt innerhalb der App
         //mit Absicht Auskommentiert!!!
         /*
@@ -90,6 +83,97 @@ public class MainActivity extends AppCompatActivity {
 
         //Aktuelles Logcat in Datei schreiben
         writeLogFile();
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        //Screenshot Button als FAB (=Floating Action Button) integrieren
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        //Snackbar Meldung bei Klick auf FAB
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Dein Fractal wurde gespeichert.", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+                    ActivityCompat.requestPermissions(MainActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            1);
+
+                    saveImage(getBitmap());
+                }
+                else {
+                    saveImage(getBitmap());
+                }
+            }
+        });
+    }
+
+    private void saveImage(Bitmap finalBitmap) {
+
+        String root = Environment.getExternalStorageDirectory().toString();
+        File myDir = new File(root + "/Pictures");
+        myDir.mkdirs();
+        Random generator = new Random();
+        int n = 10000;
+        n = generator.nextInt(n);
+        String fname = "Image-"+ n +".jpg";
+        File file = new File (myDir, fname);
+        if (file.exists ()) file.delete ();
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            finalBitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
+            notifyMediaStoreScanner(file);
+            out.flush();
+            out.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public final void notifyMediaStoreScanner(final File file) {
+        try {
+            MediaStore.Images.Media.insertImage(this.getContentResolver(),
+                    file.getAbsolutePath(), file.getName(), null);
+            this.sendBroadcast(new Intent(
+                    Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Bitmap getBitmap() {
+        View myView = findViewById(R.id.view);
+        myView.buildDrawingCache();
+        Bitmap b1 = myView.getDrawingCache();
+        Bitmap b = b1.copy(Bitmap.Config.ARGB_8888, false);
+        myView.destroyDrawingCache();
+
+        return b;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    saveImage(getBitmap());
+                    Toast.makeText(MainActivity.this, "Bild gespeichert", Toast.LENGTH_LONG).show();
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                }
+                return;
+            }
+        }
     }
 
     @Override
