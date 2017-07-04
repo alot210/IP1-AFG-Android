@@ -21,8 +21,11 @@ import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.hsd.manguli.fractalsapp.fragments.JuliaFragment;
+import de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment;
 import de.hsd.manguli.fractalsapp.models.math.Algorithm;
 import de.hsd.manguli.fractalsapp.models.math.Complex;
+import de.hsd.manguli.fractalsapp.models.math.Julia;
 import de.hsd.manguli.fractalsapp.models.math.Mandelbrot;
 
 import static android.content.ContentValues.TAG;
@@ -38,6 +41,9 @@ public class FractalView extends View {
     private volatile boolean terminateThreads;
     private static Boolean onCall = false;
     private int[] pixels;
+    Boolean juliaPush = JuliaFragment.juliaPush;
+    Boolean mandelPush = MandelbrotFragment.mandelPush;
+    Algorithm am;
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
@@ -108,7 +114,7 @@ public class FractalView extends View {
         paint = new Paint();
         paint.setColor(0xff101010);
         //Androidversion ueberprufen => ab Marshmallow
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT > 23) {
             onCall = true;
         }
     }
@@ -150,7 +156,28 @@ public class FractalView extends View {
         //final, da innerhalb von Thread verwendet wird
         final int width = canvas.getWidth();
         final int height = canvas.getHeight();
-        final Algorithm am = new Mandelbrot(width, height, 100, new Complex(2.0, 2.0), new Complex(3.0, 4.0));
+
+        int mandelbrotIteration = Integer.parseInt(MandelbrotFragment.iteration);
+        int juliaIteration = Integer.parseInt(JuliaFragment.iteration);
+
+        if(!juliaPush) {
+            am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(2.0,2.0),new Complex(3.0,4.0));
+            if(mandelPush) {
+                am.setColor1(MandelbrotFragment.color1);
+                am.setColor2(MandelbrotFragment.color2);
+                am.setColor3(MandelbrotFragment.color3);
+                am.setColor4(MandelbrotFragment.color4);
+            }
+            MandelbrotFragment.mandelPush = false;
+        }
+        else {
+            am = new Julia(width, height, juliaIteration, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+            am.setColor1(JuliaFragment.color1);
+            am.setColor2(JuliaFragment.color2);
+            am.setColor3(JuliaFragment.color3);
+            am.setColor4(JuliaFragment.color4);
+            JuliaFragment.juliaPush = false;
+        }
 
         //Pixelarray initialiseren
         setPixels(new int[height * width]);

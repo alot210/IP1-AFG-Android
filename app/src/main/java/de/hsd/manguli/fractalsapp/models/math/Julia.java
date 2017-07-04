@@ -24,11 +24,11 @@ public class Julia extends Algorithm {
         this.constant = constant;
     }
     //Methode von Algorithm überschreiben
-    public int isElemOfMand(Complex z0, int max){
+    public int isElemOfMand(Complex z0){
 
         Complex z = z0;
 
-        for (int n = 0; n < max; n++) {   //n Zahl der Iterationen
+        for (int n = 0; n < getMaxIteration(); n++) {   //n Zahl der Iterationen
 
 
             if (z.pythagoras() > 4.0) {  //|Zn| > 2    => |Zn| = sqrt(x^2+y^2), dann ist Zahl C ausserhalb der Menge
