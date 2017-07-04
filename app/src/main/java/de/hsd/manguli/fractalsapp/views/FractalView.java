@@ -121,17 +121,20 @@ public class FractalView extends View {
     //Überschreiben der drei Constructor
     public FractalView(Context context) {
         super(context);
-        init(context);
+        gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
+        init();
     }
 
     public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
+        init();
     }
 
     public FractalView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        init(context);
+        gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
+        init();
     }
 
     public static int getScreenWidth() {
@@ -145,10 +148,9 @@ public class FractalView extends View {
     /**
      * Methode zur Initialisierung der View, wird beim Erstellen aufgerufen
      */
-    private void init(Context context) {
+    private void init() {
         paint = new Paint();
         paint.setColor(0xff101010);
-        gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
         //Androidversion ueberprufen => ab Marshmallow
         if (Build.VERSION.SDK_INT > 23) {
             onCall = true;
@@ -184,7 +186,6 @@ public class FractalView extends View {
 
             canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
-
             canvas.drawBitmap(bitmap, 0, 0, paint);
             canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
