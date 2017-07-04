@@ -3,6 +3,7 @@ package de.hsd.manguli.fractalsapp.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -47,10 +48,10 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
-    public static int color1;
-    public static int color2;
-    public static int color3;
-    public static int color4;
+    public static int color1 = 0;
+    public static int color2 = 0;
+    public static int color3 = 0;
+    public static int color4 = 0;
     public static Boolean mandelPush = false;
 
     public MandelbrotFragment() {
@@ -58,35 +59,43 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Farbwerte auf 0 gesetzt für Fehlerbehandlung
-        color1 = 0;
-        color2 = 0;
-        color3 = 0;
-        color4 = 0;
+
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_m = inflater.inflate(R.layout.fragment_editor, container, false);
 
         //Layout Elemente über ID ansprechen
         //Iteration
         sb_iter=(SeekBar) editor_m.findViewById(R.id.seekBar_m_Iteration);
-        sb_iter.setProgress(0);
         sb_iter.incrementProgressBy(10);
         sb_iter.setMax(100);
+        sb_iter.setProgress(Integer.parseInt(iteration));
 
-        //Alle Buttons initialisieren und ClickListener hinzufügen
+        //Alle Buttons initialisieren
         bt_color1 = (Button) editor_m.findViewById(R.id.button_m_color1_select);
-        bt_color1.setOnClickListener(this);
         bt_color2 = (Button) editor_m.findViewById(R.id.button_m_color2_select);
-        bt_color2.setOnClickListener(this);
         bt_color3 = (Button) editor_m.findViewById(R.id.button_m_color3_select);
-        bt_color3.setOnClickListener(this);
         bt_color4 = (Button) editor_m.findViewById(R.id.button_m_color4_select);
+
+        // Button ClickListener hinzufügen
+        bt_color1.setOnClickListener(this);
+        bt_color2.setOnClickListener(this);
+        bt_color3.setOnClickListener(this);
         bt_color4.setOnClickListener(this);
 
         sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
 
         tv_iter=(TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
+        tv_iter.setText(String.valueOf(iteration));
         tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
+
+
+
+        if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
+            bt_color1.setBackgroundColor(color1);
+            bt_color2.setBackgroundColor(color2);
+            bt_color3.setBackgroundColor(color3);
+            bt_color4.setBackgroundColor(color4);
+        }
 
         //Wird bei Veränderung der Seekbar aufgerufen
         sb_iter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -185,6 +194,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                                 bt_color1.setBackgroundColor(i);
                                 color1 = i;
                                 Log.d("LOGGING","Mandelbrot Farbe 1 gesetzt");
+                                //Log.d("LOGGING","FARBE 1: "+String.valueOf(color1));
                             }
                         })
                         .build()
@@ -230,4 +240,18 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                         .show();
         }
     }
+
+/*
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+
+        savedInstanceState.putString("Iteration",iteration);
+        savedInstanceState.putInt("Farbe1",color1);
+        //Log.d("LOGGING","FARBE 1:"+String.valueOf(color1));
+        savedInstanceState.putInt("IterationSeekbar", sb_iter.getProgress());
+
+
+        super.onSaveInstanceState(savedInstanceState);
+    }
+*/
 }
