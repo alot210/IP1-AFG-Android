@@ -157,6 +157,12 @@ public class FractalView extends View {
         }
     }
 
+    /**
+     * onDraw() wird im LifeCycle aufgerufen
+     * bei Lollipop in onCreate und onResume
+     * ab Nougat nur
+     * @param canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -183,6 +189,10 @@ public class FractalView extends View {
         onCall = true;
     }
 
+    /**
+     * erstellt Bitmap mit Mandelbrot/Juliamenge
+     * @param canvas
+     */
     public void drawFractal(Canvas canvas) {
         canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         Log.d("LOGGING", "drawFractal()");
@@ -220,35 +230,13 @@ public class FractalView extends View {
         Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
-                int c;
-                int loc;
                 int granulation = getGranulation();
                 int endOfGranulation = getEndOfGranulation();
 
                 //solange Thread lebt oder höchste Auflösung (granulation) erreicht ist
                 while (true) {
 
-                    //Farbpixel für jeweilige Auflösung berechnen
-                    for (int i = 0; i < width - 1; i += granulation) {
-                        for (int j = 0; j < height - granulation; j += granulation) {
-                            //Koordinaten von 2D-Array zu 1D-Array umrechnen
-                            loc = i + j * width;
-                            //Farbe für Pixelblock berechnen
-                            c = am.setColor(i, j);
-                            pixels[loc] = c;
-                            int n = granulation * granulation - 1;
-
-                            //Pixelblock in jeweiliger Granulation ins Array schreiben
-                            while (n > 0) {
-                                if (n % granulation == 0) {
-                                    loc = loc + width;
-                                    pixels[loc] = c;
-                                }
-                                pixels[loc + (n % granulation)] = c;
-                                n--;
-                            }
-                        }
-                    }
+                    pixels = am.fillPixels(granulation);
                     //neue Bitmap setzen und Pixelarray übergeben
                     setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
                     //View soll neu gerendert werden
@@ -272,6 +260,9 @@ public class FractalView extends View {
         Log.d("LOGGING", "drawFractal() beendet");
     }
 
+    /**
+     * Methode um Threads zu beenden
+     */
     public void terminateThreads() {
         int counter = 0;
         try {
