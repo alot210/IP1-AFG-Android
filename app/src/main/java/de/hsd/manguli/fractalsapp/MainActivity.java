@@ -88,31 +88,16 @@ public class MainActivity extends AppCompatActivity {
                 Snackbar.make(view, "Dein Fractal wurde gespeichert.", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
 
-                View myView = findViewById(R.id.view);
-                myView.buildDrawingCache();
-                Bitmap b1 = myView.getDrawingCache();
-                // copy this bitmap otherwise distroying the cache will destroy
-                // the bitmap for the referencing drawable and you'll not
-                // get the captured view
-                Bitmap b = b1.copy(Bitmap.Config.ARGB_8888, false);
-                //BitmapDrawable d = new BitmapDrawable(b);
-                //canvasView.setBackgroundDrawable(d);
-                myView.destroyDrawingCache();
+
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
                     ActivityCompat.requestPermissions(MainActivity.this,
                             new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             1);
-
-                    saveImage(b);
-
+                    saveImage(getBitmap());
                 }
                 else {
-                    saveImage(b);
+                    saveImage(getBitmap());
                 }
-                //sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"+ Environment.getExternalStorageDirectory())));
-                // RootView
-                //Bitmap bitmap_rootview = ScreenShott.getInstance().takeScreenShotOfRootView(view);
-                //ScreenShott.getInstance().saveScreenshotToPicturesFolder(MainActivity.this, bitmap_rootview, "my_screenshot_filename");
             }
         });
     }
@@ -181,7 +166,6 @@ public class MainActivity extends AppCompatActivity {
                     file.getAbsolutePath(), file.getName(), null);
             this.sendBroadcast(new Intent(
                     Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(file)));
-            Log.d(TAG,"Hallo");
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -196,29 +180,33 @@ public class MainActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    View myView = findViewById(R.id.view);
-                    myView.buildDrawingCache();
-                    Bitmap b1 = myView.getDrawingCache();
-                    // copy this bitmap otherwise distroying the cache will destroy
-                    // the bitmap for the referencing drawable and you'll not
-                    // get the captured view
-                    Bitmap b = b1.copy(Bitmap.Config.ARGB_8888, false);
-                    //BitmapDrawable d = new BitmapDrawable(b);
-                    //canvasView.setBackgroundDrawable(d);
-                    myView.destroyDrawingCache();
-                    saveImage(b);
+
 
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
-                    Toast.makeText(MainActivity.this, "Permission denied to read your External storage", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Berechtigung nicht vorhanden. Bitte bestätigen.", Toast.LENGTH_SHORT).show();
                 }
                 return;
             }
 
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
+    }
+
+    public Bitmap getBitmap(){
+        View myView = findViewById(R.id.view);
+        myView.buildDrawingCache();
+        Bitmap b1 = myView.getDrawingCache();
+        // copy this bitmap otherwise distroying the cache will destroy
+        // the bitmap for the referencing drawable and you'll not
+        // get the captured view
+        Bitmap b = b1.copy(Bitmap.Config.ARGB_8888, false);
+        //BitmapDrawable d = new BitmapDrawable(b);
+        //canvasView.setBackgroundDrawable(d);
+        myView.destroyDrawingCache();
+
+        return b;
+
     }
 }
