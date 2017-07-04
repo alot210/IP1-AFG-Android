@@ -216,7 +216,6 @@
             android:layout_marginBottom="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="0dp"
-            android:text="20"
             android:textAlignment="center"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/seekBar_m_Iteration"

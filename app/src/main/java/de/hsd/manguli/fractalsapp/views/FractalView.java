@@ -47,6 +47,10 @@ public class FractalView extends View {
     Boolean mandelPush = MandelbrotFragment.mandelPush;
     Algorithm am;
 
+    //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
+    private int granulation = 16;
+    private int endOfGranulation = 2;
+
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
      */
@@ -79,10 +83,6 @@ public class FractalView extends View {
     //Koordinaten geben an wo zuletzt hingedragged wurde
     private float previousTranslateX = 0f;
     private float previousTranslateY = 0f;
-
-    //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
-    private int granulation = 16;
-    private int endOfGranulation = 2;
 
     public Bitmap getBitmap() {
         return bitmap;
@@ -176,11 +176,16 @@ public class FractalView extends View {
             return;
         }
         if (bitmap != null) {
+            canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
             canvas.scale(this.scaleFactor,this.scaleFactor,this.gestureDetector.getFocusX(),this.gestureDetector.getFocusY());
+
             //translate soll nicht außerhalb des Canvas stattfinden
+
             scaleWindow(canvas);
+
             canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
+            //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawBitmap(bitmap, 0, 0, paint);
             canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
@@ -352,7 +357,6 @@ public class FractalView extends View {
         }
         return true;
     }//end onTouchEvent
-
     /**
      * Methode überprüft, dass nicht aus dem Canvas herausgezoomt werden kann
      * @param canvas das übergebene Canvas-Objekt auf das gezeichnet wird
@@ -372,7 +376,6 @@ public class FractalView extends View {
             translateY = (1- scaleFactor)* canvas.getHeight();
         }
     }//end scaleWindow
-
     /**
      * Klasse wird im Konstruktor von FractalView aufgerufen
      */
