@@ -178,7 +178,7 @@ public class FractalView extends View {
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
-            canvas.scale(this.scaleFactor,this.scaleFactor,this.gestureDetector.getFocusX(),this.gestureDetector.getFocusY());
+            canvas.scale(this.scaleFactor,this.scaleFactor);
 
             //translate soll nicht außerhalb des Canvas stattfinden
 
