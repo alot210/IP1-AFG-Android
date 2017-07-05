@@ -208,6 +208,8 @@ public class FractalView extends View {
 
         int mandelbrotIteration = Integer.parseInt(MandelbrotFragment.iteration);
         int juliaIteration = Integer.parseInt(JuliaFragment.iteration);
+        double _real = Math.cos((double) JuliaFragment.real+3.257);
+        double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
             am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(2.0,2.0),new Complex(3.0,4.0));
@@ -220,7 +222,7 @@ public class FractalView extends View {
             MandelbrotFragment.mandelPush = false;
         }
         else {
-            am = new Julia(width, height, juliaIteration, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+            am = new Julia(width, height, juliaIteration, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
             am.setColor3(JuliaFragment.color3);
