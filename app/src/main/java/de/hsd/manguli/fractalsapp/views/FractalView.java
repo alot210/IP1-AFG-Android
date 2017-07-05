@@ -84,6 +84,9 @@ public class FractalView extends View {
     private float previousTranslateX = 0f;
     private float previousTranslateY = 0f;
 
+    private float gx;
+    private float gy;
+
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -178,15 +181,23 @@ public class FractalView extends View {
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
-            canvas.scale(this.scaleFactor,this.scaleFactor);
 
-            //translate soll nicht außerhalb des Canvas stattfinden
+            if(gestureDetector.isInProgress()){
+                canvas.scale(this.scaleFactor,this.scaleFactor,gx,gy);
+                //translate soll nicht außerhalb des Canvas stattfinden
+                scaleWindow(canvas);
+                canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
+            }
+            else{
+                canvas.scale(this.scaleFactor,this.scaleFactor);
+                //translate soll nicht außerhalb des Canvas stattfinden
+                scaleWindow(canvas);
+                canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
+            }
 
-            scaleWindow(canvas);
-
-            canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawBitmap(bitmap, 0, 0, paint);
+
             canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
             return;
@@ -212,6 +223,9 @@ public class FractalView extends View {
         double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
+            //new Complex(2.0,2.0) Translation; new Complex(3.0/4.0/ Skalierung;
+            //Zahlen < 1 damit das Mandelbrot größer wird
+            //Verschiebung von Pixel in das Koordinatensystem
             am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(2.0,2.0),new Complex(3.0,4.0));
             if(mandelPush) {
                 am.setColor1(MandelbrotFragment.color1);
@@ -322,21 +336,30 @@ public class FractalView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
+
+
         switch (event.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
-                mode = DRAG;
-                //die aktuellen Koordinaten des Fingers beim Berühren des Screens
-                startX = event.getX()- previousTranslateX;
-                startY = event.getY()- previousTranslateY;
+
+                if(!gestureDetector.isInProgress()) {
+                    mode = DRAG;
+                    //die aktuellen Koordinaten des Fingers beim Berühren des Screens
+                    startX = event.getX()- previousTranslateX;
+                    startY = event.getY()- previousTranslateY;
+                }
                 break;
             case MotionEvent.ACTION_MOVE:
-                //wird bei jeder Bewegung des zweiten Fingers geupdatet
-                translateX = event.getX() - startX;
-                translateY = event.getY() - startY;
+                if(!gestureDetector.isInProgress()) {
+                    //wird bei jeder Bewegung des Fingers geupdatet
+                    translateX = event.getX() - startX;
+                    translateY = event.getY() - startY;
+                }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
-                //Ist der zweite Finger gesetzt kann gezoomt werden
-                mode = ZOOM;
+               // if(gestureDetector.isInProgress()) {
+                    //Ist der zweite Finger gesetzt kann gezoomt werden
+                    mode = ZOOM;
+               // }
                 break;
             case MotionEvent.ACTION_UP:
                 mode = NONE;
@@ -393,6 +416,8 @@ public class FractalView extends View {
             scaleFactor *= gestureDetector.getScaleFactor();
             scaleFactor = Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
 
+            gx = gestureDetector.getFocusX();
+            gy = gestureDetector.getFocusY();
             return true;
         }//end onScale
     }//end class ScaleListener()
