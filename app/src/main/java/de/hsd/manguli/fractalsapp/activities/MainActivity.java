@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         //View initialisieren und mit invalidate() onDraw aufrufen
         FractalView fw = new FractalView(this);
-        fw.invalidate();
+        //fw.invalidate();
         Log.d("LOGGING","View wurde initialisiert, Menge wird gezeichnet");
 
         //Aktuelles Logcat in Datei schreiben

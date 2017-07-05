@@ -1,6 +1,7 @@
 package de.hsd.manguli.fractalsapp.activities;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -13,6 +14,7 @@ import de.hsd.manguli.fractalsapp.R;
 
 public class EditorActivity extends AppCompatActivity {
 
+    private static final String INDEX_KEY_STRING ="" ;
     ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +52,24 @@ public class EditorActivity extends AppCompatActivity {
 
             }
         });
+
     }
 
     @Override
-    public void onResume(){
+    public void onPause() {
+        super.onPause();
+        final SharedPreferences.Editor ed = getSharedPreferences("name",
+                android.content.Context.MODE_PRIVATE).edit();
+        ed.putInt(INDEX_KEY_STRING, viewPager.getCurrentItem());
+        ed.commit();
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        int position = 0;
-
-        if(viewPager !=null) {
-
-            viewPager.setCurrentItem(position);
-            Log.d("TAB-POSITION resume",""+position);
-        }
+        final SharedPreferences sp = getSharedPreferences("name",
+                android.content.Context.MODE_PRIVATE);
+        viewPager.setCurrentItem(sp.getInt(INDEX_KEY_STRING, 0));
     }
 
 }
