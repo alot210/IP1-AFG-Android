@@ -6,12 +6,14 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import de.hsd.manguli.fractalsapp.views.adapter.PagerAdapter;
 import de.hsd.manguli.fractalsapp.R;
 
 public class EditorActivity extends AppCompatActivity {
 
+    ViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +29,7 @@ public class EditorActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Juliamenge"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -50,6 +52,18 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        int position = 0;
+
+        if(viewPager !=null) {
+
+            viewPager.setCurrentItem(position);
+            Log.d("TAB-POSITION resume",""+position);
+        }
+    }
 
 }
 
