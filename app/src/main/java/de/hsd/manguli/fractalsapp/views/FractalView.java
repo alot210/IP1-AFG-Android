@@ -204,7 +204,7 @@ public class FractalView extends View{
                 MandelbrotFragment.mandelPush = false;
             }
             else {
-                am = new Julia(width, height, jItm, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(-0.7,-0.3));
+                am = new Julia(width, height, jItm, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(_real,_imag));
                 am.setColor1(JuliaFragment.color1);
                 am.setColor2(JuliaFragment.color2);
                 am.setColor3(JuliaFragment.color3);

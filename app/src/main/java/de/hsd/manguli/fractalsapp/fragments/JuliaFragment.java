@@ -30,11 +30,19 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
     SeekBar sb_iter;
     //Seekbar Geschwindigkeit Animation
     SeekBar sb_speed;
+    //Seekbar Realteil
+    SeekBar sb_real;
+    //Seekbar Imagteil
+    SeekBar sb_imag;
 
     //Textfeld Iterationen
     TextView tv_iter;
     //Textfeld Geschwindigkeit
     TextView tv_speed;
+    //Textfeld Realteil
+    TextView tv_real;
+    //Textfeld Imaginaerteil
+    TextView tv_imag;
     //Button erste Farbe;
     Button bt_color1;
     //Button zweite Farbe
@@ -46,12 +54,12 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
-    public static int real;
-    public static int imag;
-    public static int color1;
-    public static int color2;
-    public static int color3;
-    public static int color4;
+    public static int real = 0;
+    public static int imag = 0;
+    public static int color1 = 0;
+    public static int color2 = 0;
+    public static int color3 = 0;
+    public static int color4 = 0;
     public static Boolean juliaPush = false;
 
     public JuliaFragment() {
@@ -59,25 +67,38 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        //Farbwerte auf 0 gesetzt für Fehlerbehandlung
-        color1 = 0;
-        color2 = 0;
-        color3 = 0;
-        color4 = 0;
         //View erstellen, um darüber die XML Elemente ansprechen zu können
         View editor_j = inflater.inflate(R.layout.fragment_julia, container, false);
 
         //Layout Elemente über ID ansprechen
         //Iteration
         sb_iter = (SeekBar) editor_j.findViewById(R.id.seekBar_j_Iteration);
-        sb_iter.setProgress(0);
         sb_iter.incrementProgressBy(10);
         sb_iter.setMax(100);
+        sb_iter.setProgress(Integer.parseInt(iteration));
 
         sb_speed = (SeekBar) editor_j.findViewById(R.id.seekBar_j_speed);
 
+        sb_real = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
+        sb_real.incrementProgressBy(1);
+        sb_real.setMax(360);
+        sb_real.setProgress(real);
+
+        sb_imag = (SeekBar) editor_j.findViewById(R.id.seekBar_j_imaginaer);
+        sb_imag.incrementProgressBy(1);
+        sb_imag.setMax(360);
+        sb_imag.setProgress(imag);
+
         tv_iter = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
+        tv_iter.setText(String.valueOf(iteration));
         tv_speed = (TextView) editor_j.findViewById(R.id.text_j_Speed_value);
+
+        //Werte setzen in die Textviews für Real und Imaginaerteil
+        tv_real = (TextView) editor_j.findViewById(R.id.text_j_real_value);
+        tv_real.setText(""+real);
+
+        tv_imag = (TextView) editor_j.findViewById(R.id.text_j_imaginaer_value);
+        tv_imag.setText(""+imag);
 
         //Wird bei Veränderung der Seekbar aufgerufen
         sb_iter.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -113,6 +134,13 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         bt_color4 = (Button) editor_j.findViewById(R.id.button_j_color4_select);
         bt_color4.setOnClickListener(this);
 
+        if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
+            bt_color1.setBackgroundColor(color1);
+            bt_color2.setBackgroundColor(color2);
+            bt_color3.setBackgroundColor(color3);
+            bt_color4.setBackgroundColor(color4);
+        }
+
         sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
@@ -131,18 +159,44 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             }
         });
 
+        sb_real.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onProgressChanged(SeekBar sb_real, int progress, boolean fromUser) {
+                tv_real.setText(String.valueOf(progress));
+                Log.d("LOGGING","Geschwindigkeit verändert");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar sb_speed) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar sb_speed) {
+
+            }
+        });
+
+        sb_imag.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
+            @Override
+            public void onProgressChanged(SeekBar sb_imag, int progress, boolean fromUser) {
+                tv_imag.setText(String.valueOf(progress));
+                Log.d("LOGGING","Geschwindigkeit verändert");
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar sb_speed) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar sb_speed) {
+
+            }
+        });
+
         final TextView iteration = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
-        final SeekBar realValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
 
-        realValue.setProgress(0);
-        realValue.incrementProgressBy(1);
-        realValue.setMax(360);
-
-        final SeekBar imagValue = (SeekBar) editor_j.findViewById(R.id.seekBar_j_imaginaer);
-
-        imagValue.setProgress(0);
-        imagValue.incrementProgressBy(1);
-        imagValue.setMax(360);
 
         Button drawIt = (Button) editor_j.findViewById(R.id.button_j_draw);
 
@@ -154,8 +208,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                 if(color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0) {
                     Toast.makeText(getContext(), "Juliamenge wird nun gezeichnet.", Toast.LENGTH_LONG).show();
                     JuliaFragment.iteration = iteration.getText().toString();
-                    real = realValue.getProgress();
-                    imag = imagValue.getProgress();
+                    real = sb_real.getProgress();
+                    imag = sb_imag.getProgress();
                     juliaPush = true;
 
                     Log.d("LOGGING","Julia Draw gedrueckt");
