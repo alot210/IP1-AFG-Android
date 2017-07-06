@@ -3,6 +3,7 @@ package de.hsd.manguli.fractalsapp.fragments;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.util.Log;
@@ -52,6 +53,12 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
     Button bt_color3;
     //Button vierte Farbe
     Button bt_color4;
+
+    //Boolean zur Prüfung ob eine Farbe gewählt wurde
+    boolean bt_color1_pressed;
+    boolean bt_color2_pressed;
+    boolean bt_color3_pressed;
+    boolean bt_color4_pressed;
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
@@ -128,12 +135,16 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         //Alle Buttons initialisieren und ClickListener hinzufügen
         bt_color1 = (Button) editor_j.findViewById(R.id.button_j_color1_select);
         bt_color1.setOnClickListener(this);
+        bt_color1_pressed = false;
         bt_color2 = (Button) editor_j.findViewById(R.id.button_j_color2_select);
         bt_color2.setOnClickListener(this);
+        bt_color2_pressed = false;
         bt_color3 = (Button) editor_j.findViewById(R.id.button_j_color3_select);
         bt_color3.setOnClickListener(this);
+        bt_color3_pressed = false;
         bt_color4 = (Button) editor_j.findViewById(R.id.button_j_color4_select);
         bt_color4.setOnClickListener(this);
+        bt_color4_pressed = false;
 
         if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
             bt_color1.setBackgroundColor(color1);
@@ -206,12 +217,20 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view){
                 //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
-                if(color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0) {
+                //Es müssen alle Farben selber gesetzt sein
+                //Oder alle Farben vorhanden sein
+                if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
+                        (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
                     Toast.makeText(getContext(), "Juliamenge wird nun gezeichnet.", Toast.LENGTH_LONG).show();
                     JuliaFragment.iteration = iteration.getText().toString();
                     real = sb_real.getProgress();
                     imag = sb_imag.getProgress();
                     juliaPush = true;
+
+                    color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
+                    color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
+                    color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
+                    color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
 
                     Log.d("LOGGING","Julia Draw gedrueckt");
                     Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
@@ -246,7 +265,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color1.setBackgroundColor(i);
-                                color1 = i;
+                                //color1 = i;
+                                bt_color1_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 1 gesetzt");
                             }
                         })
@@ -259,7 +279,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
-                                color2 = i;
+                                //color2 = i;
+                                bt_color2_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 2 gesetzt");
                             }
                         })
@@ -272,7 +293,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
-                                color3 = i;
+                                //color3 = i;
+                                bt_color3_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 3 gesetzt");
                             }
                         })
@@ -285,7 +307,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
-                                color4 = i;
+                                //color4 = i;
+                                bt_color4_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 4 gesetzt");
                             }
                         })

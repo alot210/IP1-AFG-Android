@@ -46,10 +46,11 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     //Button vierte Farbe
     Button bt_color4;
 
-    boolean bt_color1_presses;
-    boolean bt_color2_presses;
-    boolean bt_color3_presses;
-    boolean bt_color4_presses;
+    //Boolean zur Prüfung ob eine Farbe gewählt wurde
+    boolean bt_color1_pressed;
+    boolean bt_color2_pressed;
+    boolean bt_color3_pressed;
+    boolean bt_color4_pressed;
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
@@ -78,16 +79,16 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         //Alle Buttons initialisieren und ClickListener hinzufügen
         bt_color1 = (Button) editor_m.findViewById(R.id.button_m_color1_select);
         bt_color1.setOnClickListener(this);
-        bt_color1_presses = false;
+        bt_color1_pressed = false;
         bt_color2 = (Button) editor_m.findViewById(R.id.button_m_color2_select);
         bt_color2.setOnClickListener(this);
-        bt_color2_presses = false;
+        bt_color2_pressed = false;
         bt_color3 = (Button) editor_m.findViewById(R.id.button_m_color3_select);
         bt_color3.setOnClickListener(this);
-        bt_color3_presses = false;
+        bt_color3_pressed = false;
         bt_color4 = (Button) editor_m.findViewById(R.id.button_m_color4_select);
         bt_color4.setOnClickListener(this);
-        bt_color4_presses = false;
+        bt_color4_pressed = false;
 
         sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
 
@@ -152,10 +153,10 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             @Override
             public void onClick(View view){
                 //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
-                if(bt_color1_presses &&
-                        bt_color1_presses &&
-                        bt_color1_presses &&
-                        bt_color1_presses) {
+                //Es müssen alle Farben selber gesetzt sein
+                //Oder alle Farben vorhanden sein
+                if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
+                        (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
                     Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
                     MandelbrotFragment.iteration = iteration.getText().toString();
                     mandelPush = true;
@@ -206,7 +207,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color1.setBackgroundColor(i);
                                 //color1 = i;
-                                bt_color1_presses = true;
+                                bt_color1_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 1 gesetzt");
                             }
                         })
@@ -220,7 +221,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
                                 //color2 = i;
-                                bt_color2_presses = true;
+                                bt_color2_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 2 gesetzt");
                             }
                         })
@@ -234,7 +235,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
                                 //color3 = i;
-                                bt_color3_presses = true;
+                                bt_color3_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 3 gesetzt");
                             }
                         })
@@ -248,7 +249,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
                                 //color4 = i;
-                                bt_color4_presses = true;
+                                bt_color4_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 4 gesetzt");
                             }
                         })
