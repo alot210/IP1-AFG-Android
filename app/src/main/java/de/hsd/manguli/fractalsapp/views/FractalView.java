@@ -46,10 +46,13 @@ public class FractalView extends View {
     Boolean juliaPush = JuliaFragment.juliaPush;
     Boolean mandelPush = MandelbrotFragment.mandelPush;
     Algorithm am;
+    private Complex translate = new Complex(2.55, 2.55);
+    private double scaleX;
+    private double scaleY;
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
-    private int endOfGranulation = 2;
+    private int endOfGranulation = 1;
 
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
@@ -83,6 +86,8 @@ public class FractalView extends View {
     //Koordinaten geben an wo zuletzt hingedragged wurde
     private float previousTranslateX = 0f;
     private float previousTranslateY = 0f;
+
+    private Boolean zooming = false;
 
     public Bitmap getBitmap() {
         return bitmap;
@@ -169,25 +174,29 @@ public class FractalView extends View {
 
         //Nur einmal drawFractal aufrufen
         if (onCall) {
+            scaleX = this.getWidth()/300.0;
+            scaleY = this.getHeight()/300.0;
+            //translate = new Complex(scaleY*0.5, scaleY*0.5);
             terminateThreads();
-            drawFractal(canvas);
+            canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
+            drawFractal();
             onCall = false;
             Log.d("LOGGING", "drawFractal initial call");
             return;
         }
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-            canvas.save();
-            canvas.scale(this.scaleFactor,this.scaleFactor);
+            //canvas.save();
+            //canvas.scale(this.scaleFactor,this.scaleFactor);
 
             //translate soll nicht außerhalb des Canvas stattfinden
 
-            scaleWindow(canvas);
+            //scaleWindow(canvas);
 
-            canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
+            //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawBitmap(bitmap, 0, 0, paint);
-            canvas.restore();
+            //canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
             return;
         }
@@ -196,15 +205,16 @@ public class FractalView extends View {
 
     /**
      * erstellt Bitmap mit Mandelbrot/Juliamenge
-     * @param canvas
      */
-    public void drawFractal(Canvas canvas) {
-        canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
+    public void drawFractal() {
+        //canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         Log.d("LOGGING", "drawFractal()");
 
         //final, da innerhalb von Thread verwendet wird
-        final int width = canvas.getWidth();
-        final int height = canvas.getHeight();
+        final int width = this.getWidth();
+        final int height = this.getHeight();
+        Log.w("WIDTH", ""+width);
+        Log.w("HEIGHT", ""+height);
 
         int mandelbrotIteration = Integer.parseInt(MandelbrotFragment.iteration);
         int juliaIteration = Integer.parseInt(JuliaFragment.iteration);
@@ -212,7 +222,8 @@ public class FractalView extends View {
         double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
-            am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(2.0,2.0),new Complex(3.0,4.0));
+            Log.w("TRANSLATE", translate.complexToString());
+            am = new Mandelbrot(width,height, mandelbrotIteration ,translate,new Complex(scaleX, scaleY));
             if(mandelPush) {
                 am.setColor1(MandelbrotFragment.color1);
                 am.setColor2(MandelbrotFragment.color2);
@@ -328,54 +339,80 @@ public class FractalView extends View {
                 //die aktuellen Koordinaten des Fingers beim Berühren des Screens
                 startX = event.getX()- previousTranslateX;
                 startY = event.getY()- previousTranslateY;
+                Log.w("ONTOUCH", "ACTION_DOWN");
                 break;
             case MotionEvent.ACTION_MOVE:
                 //wird bei jeder Bewegung des zweiten Fingers geupdatet
                 translateX = event.getX() - startX;
                 translateY = event.getY() - startY;
+                /*if(mode != ZOOM){
+                    endOfGranulation = granulation;
+                    translate = translate.add(new Complex((scaleX*(previousTranslateX/scaleFactor))/this.getWidth(), (scaleY*(previousTranslateY/scaleFactor)/this.getHeight())));
+                    drawFractal();
+                }*/
+                Log.w("ONTOUCH", "ACTION_MOVE");
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 //Ist der zweite Finger gesetzt kann gezoomt werden
                 mode = ZOOM;
+                Log.w("ONTOUCH", "ACTION_POINTER_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
                 mode = NONE;
                 //hier wird gespeichert wo zuletzt hingedragged wurde
                 previousTranslateX = translateX;
                 previousTranslateY = translateY;
+                endOfGranulation = 16;
+                Log.w("ONTOUCH", "ACTION_UP");
+
+                translate = translate.add(new Complex((scaleX*(previousTranslateX/scaleFactor))/this.getWidth(), (scaleY*(previousTranslateY/scaleFactor)/this.getHeight())));
+
+                Log.w("TRANSLATE", (previousTranslateX/scaleFactor)+", "+(previousTranslateY/scaleFactor));
+                Log.w("TRANSLATE", (scaleX*(-startX+previousTranslateX))/this.getWidth()+", "+(scaleY*(-startY+previousTranslateY)/this.getHeight()));
+                Log.w("TRANSLATE", translate.complexToString());
+
+                //onCall = true;
+                scaleWindow();
+                translateX = 0;
+                translateY = 0;
+                drawFractal();
+                //invalidate();
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mode = DRAG;
                 //hier wird gespeichert wo zuletzt hingezoomt wurde
                 previousTranslateX = translateX;
                 previousTranslateY = translateY;
+                Log.w("ONTOUCH", "ACTION_POINTER_UP");
+
                 break;
         }
 
         gestureDetector.onTouchEvent(event);
         //wird neu gezeichnet, wenn der Faktor größer als 1f ist oder der Modus ZOOM erkannt wurde
         if((mode == DRAG && scaleFactor != 1f) || mode == ZOOM){
+            Log.w("ONCALL", ""+onCall);
             invalidate();
         }
         return true;
     }//end onTouchEvent
     /**
      * Methode überprüft, dass nicht aus dem Canvas herausgezoomt werden kann
-     * @param canvas das übergebene Canvas-Objekt auf das gezeichnet wird
+     *  das übergebene Canvas-Objekt auf das gezeichnet wird
      */
-    public void scaleWindow(Canvas canvas){
+    public void scaleWindow(){
         if((translateX*-1)< 0){
             translateX = 0;
         }
-        else if((translateX*-1)> (scaleFactor -1)* canvas.getWidth()){
-            translateX = (1- scaleFactor)* canvas.getWidth();
+        else if((translateX*-1)> (scaleFactor -1)* this.getWidth()){
+            translateX = (1- scaleFactor)* this.getWidth();
         }
 
         if((translateY*-1)< 0){
             translateY = 0;
         }
-        else if((translateY*-1)> (scaleFactor -1)* canvas.getHeight()){
-            translateY = (1- scaleFactor)* canvas.getHeight();
+        else if((translateY*-1)> (scaleFactor -1)* this.getHeight()){
+            translateY = (1- scaleFactor)* this.getHeight();
         }
     }//end scaleWindow
     /**

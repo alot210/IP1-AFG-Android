@@ -81,6 +81,10 @@ public class Algorithm {
     Complex translate;
     Complex scale;
 
+    public void setTranslate(Complex translate) {
+        this.translate.add(translate);
+    }
+
     /**
      * Methode wird nur von Julia-Menge überschrieben
      * Methode überprüft für jede übergebene Komplexe Zahl Zugehörigkeit zur Menge
