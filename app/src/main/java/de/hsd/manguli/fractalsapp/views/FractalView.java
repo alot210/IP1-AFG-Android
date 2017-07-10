@@ -61,7 +61,7 @@ public class FractalView extends View {
     private static float MAX_ZOOM = 5f;
 
     //Skalierungsfaktor
-    private float scaleFactor = 1.f;
+    private float scaleFactor = 1.0f;
 
     //erstellen eines ScaleGestureDetectors
     private ScaleGestureDetector gestureDetector;
@@ -412,9 +412,6 @@ public class FractalView extends View {
                     lastGestureX = gx;
                     lastGestureY = gy;
                 }
-                scaleX *= (scaleFactor-0.5);
-                scaleY *= (scaleFactor-0.5);
-                translate = new Complex(translate.getReal()*(scaleFactor-0.5), translate.getImag()*(scaleFactor-0.5));
                 endOfGranulation = 1;
                 //drawFractal();
                 break;
@@ -441,6 +438,9 @@ public class FractalView extends View {
                 break;
             case MotionEvent.ACTION_POINTER_UP:
                 mode = DRAG;
+                scaleX *= (scaleFactor*0.5f);
+                scaleY *= (scaleFactor*0.5f);
+                translate = new Complex(translate.getReal()*(scaleFactor*0.5f), translate.getImag()*(scaleFactor*0.5f));
                 Log.w("ONTOUCH", "ACTION_POINTER_UP");
                 break;
         }
