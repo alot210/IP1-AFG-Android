@@ -82,7 +82,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         //Layout Elemente über ID ansprechen
         //Iteration
         sb_iter = (SeekBar) editor_j.findViewById(R.id.seekBar_j_Iteration);
-        sb_iter.incrementProgressBy(10);
+        sb_iter.incrementProgressBy(5);
         sb_iter.setMax(100);
         sb_iter.setProgress(Integer.parseInt(iteration));
 
@@ -119,8 +119,8 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onProgressChanged(SeekBar sb_iter, int progress, boolean fromUser) {
 
-                progress = progress / 10;
-                progress = progress * 10;
+                progress = progress / 5;
+                progress = progress * 5;
                 //in Textfeld den Wert schreiben
                 tv_iter.setText(String.valueOf(progress));
                 Log.d("LOGGING","Iteration verändert");
