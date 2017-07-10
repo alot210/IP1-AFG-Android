@@ -40,6 +40,10 @@ public class EditorActivity extends AppCompatActivity {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
                 viewPager.setCurrentItem(tab.getPosition());
+                if (tab.getPosition()==0) {
+                    Log.d("LOGGING", "Mandelbrot wird bearbeitet");
+                }
+                else Log.d("LOGGING", "Julia wird bearbeitet");
             }
 
             @Override

@@ -16,6 +16,7 @@
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -27,6 +28,7 @@
         <activity
             android:name=".activities.EditorActivity"
             android:label="@string/title_activity_editor"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -36,6 +38,7 @@
         <activity
             android:name=".activities.MathActivity"
             android:label="@string/title_activity_math"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -45,6 +48,7 @@
         <activity
             android:name=".activities.DeveloperActivity"
             android:label="@string/title_activity_developer"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
@@ -54,6 +58,7 @@
         <activity
             android:name=".LogCatActivity"
             android:label="LogCat Ausgabe"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data

@@ -46,6 +46,8 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     //Button vierte Farbe
     Button bt_color4;
 
+
+
     //Boolean zur Prüfung ob eine Farbe gewählt wurde
     boolean bt_color1_pressed;
     boolean bt_color2_pressed;
@@ -59,6 +61,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     public static int color3 = 0;
     public static int color4 = 0;
     public static Boolean mandelPush = false;
+    public static int speed = 1;
 
     public MandelbrotFragment() {
     }
@@ -95,6 +98,12 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         tv_iter=(TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
         tv_iter.setText(String.valueOf(iteration));
         tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
+        tv_speed.setText(speed+"");
+
+        sb_speed.setProgress(speed);
+        sb_speed.incrementProgressBy(1);
+        sb_speed.setMax(10);
+
 
         if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
             bt_color1.setBackgroundColor(color1);
@@ -165,6 +174,9 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                     color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
                     color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
                     color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
+
+                    speed = Integer.parseInt(tv_speed.getText().toString());
+                    Log.d("LOGGING SPEED",speed+"");
 
                     //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
                     //        .setAction("Action", null).show();

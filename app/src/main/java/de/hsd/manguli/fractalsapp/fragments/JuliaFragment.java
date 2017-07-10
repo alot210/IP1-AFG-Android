@@ -68,6 +68,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
     public static int color2 = 0;
     public static int color3 = 0;
     public static int color4 = 0;
+    public static int speed = 1;
     public static Boolean juliaPush = false;
 
     public JuliaFragment() {
@@ -86,6 +87,9 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         sb_iter.setProgress(Integer.parseInt(iteration));
 
         sb_speed = (SeekBar) editor_j.findViewById(R.id.seekBar_j_speed);
+        sb_speed.incrementProgressBy(1);
+        sb_speed.setMax(10);
+        sb_speed.setProgress(speed);
 
         sb_real = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
         sb_real.incrementProgressBy(1);
@@ -100,6 +104,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         tv_iter = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
         tv_iter.setText(String.valueOf(iteration));
         tv_speed = (TextView) editor_j.findViewById(R.id.text_j_Speed_value);
+        tv_speed.setText(speed+"");
 
         //Werte setzen in die Textviews für Real und Imaginaerteil
         tv_real = (TextView) editor_j.findViewById(R.id.text_j_real_value);
@@ -175,7 +180,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onProgressChanged(SeekBar sb_real, int progress, boolean fromUser) {
                 tv_real.setText(String.valueOf(progress));
-                Log.d("LOGGING","Geschwindigkeit verändert");
+                Log.d("LOGGING","Realteil verändert");
             }
 
             @Override
@@ -193,7 +198,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onProgressChanged(SeekBar sb_imag, int progress, boolean fromUser) {
                 tv_imag.setText(String.valueOf(progress));
-                Log.d("LOGGING","Geschwindigkeit verändert");
+                Log.d("LOGGING","Imaginärteil verändert");
             }
 
             @Override
@@ -225,6 +230,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                     JuliaFragment.iteration = iteration.getText().toString();
                     real = sb_real.getProgress();
                     imag = sb_imag.getProgress();
+                    speed = Integer.parseInt(tv_speed.getText().toString());
                     juliaPush = true;
 
                     color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
