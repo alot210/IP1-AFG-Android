@@ -46,7 +46,7 @@ public class FractalView extends View {
     Boolean juliaPush = JuliaFragment.juliaPush;
     Boolean mandelPush = MandelbrotFragment.mandelPush;
     Algorithm am;
-    private Complex translate = new Complex(2.55, 2.55);
+    private Complex translate = new Complex(2.0, 2.0);
     private double scaleX;
     private double scaleY;
 
@@ -179,8 +179,8 @@ public class FractalView extends View {
 
         //Nur einmal drawFractal aufrufen
         if (onCall) {
-            scaleX = this.getWidth()/300.0;
-            scaleY = this.getHeight()/300.0;
+            scaleX = 3.0;
+            scaleY = 4.0;
             //translate = new Complex(scaleY*0.5, scaleY*0.5);
             terminateThreads();
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
@@ -370,10 +370,10 @@ public class FractalView extends View {
                 break;
             case MotionEvent.ACTION_MOVE:
                 if(!gestureDetector.isInProgress()) {
-                    final int pointerIndex = event.findPointerIndex(activePointerId);
+                    //final int pointerIndex = event.findPointerIndex(activePointerId);
                     //wird bei jeder Bewegung des Fingers geupdatet
-                    final float x = event.getX(pointerIndex);
-                    final float y = event.getY(pointerIndex);
+                    final float x = event.getX();
+                    final float y = event.getY();
 
                     final float dx = x - previousTranslateX;
                     final float dy = y - previousTranslateY;
@@ -412,29 +412,31 @@ public class FractalView extends View {
                     lastGestureX = gx;
                     lastGestureY = gy;
                 }
+                scaleX *= (scaleFactor-0.5);
+                scaleY *= (scaleFactor-0.5);
+                translate = new Complex(translate.getReal()*(scaleFactor-0.5), translate.getImag()*(scaleFactor-0.5));
+                endOfGranulation = 1;
+                //drawFractal();
                 break;
             case MotionEvent.ACTION_UP:
                 mode = NONE;
                 //hier wird gespeichert wo zuletzt hingedragged wurde
                 //previousTranslateX = translateX;
                 //previousTranslateY = translateY;
-                endOfGranulation = 16;
+                endOfGranulation = 1;
                 Log.w("ONTOUCH", "ACTION_UP");
 
-                translate = translate.add(new Complex((scaleX*(startX/scaleFactor))/this.getWidth(), (scaleY*(startY/scaleFactor)/this.getHeight())));
+                translate = translate.add(new Complex((scaleX*(startX))/this.getWidth(), (scaleY*(startY)/this.getHeight())));
 
-                Log.w("TRANSLATE", (startX/scaleFactor)+", "+(startY/scaleFactor));
-                Log.w("TRANSLATE", (scaleX*(startX-previousTranslateX))/this.getWidth()+", "+(scaleY*(startY-previousTranslateY)/this.getHeight()));
+                Log.w("TRANSLATE", (startX*scaleFactor)+", "+(startY*scaleFactor));
+                Log.w("TRANSLATE", (scaleX*(startX*(scaleFactor))/this.getWidth()+", "+(scaleY*(startY*(scaleFactor))/this.getHeight())));
                 Log.w("TRANSLATE", translate.complexToString());
-
-                //onCall = true;
-                //scaleWindow();
+                Log.w("SCALE",""+scaleFactor);
                 startX = 0;
                 startY = 0;
                 previousTranslateY = 0;
                 previousTranslateX = 0;
                 drawFractal();
-                //invalidate();
                 activePointerId = INVALID_POINTER_ID;
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -447,7 +449,9 @@ public class FractalView extends View {
         //wird neu gezeichnet, wenn der Faktor größer als 1f ist oder der Modus ZOOM erkannt wurde
         if((mode == DRAG && scaleFactor != 1f) || mode == ZOOM){
             Log.w("ONCALL", ""+onCall);
-            invalidate();
+            //onCall = true;
+            //invalidate();
+            drawFractal();
         }
         return true;
     }//end onTouchEvent
