@@ -11,7 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +49,9 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     //Button vierte Farbe
     Button bt_color4;
 
+    //Switch Button für Seepferdchen
+    Switch sh_button;
+
 
 
     //Boolean zur Prüfung ob eine Farbe gewählt wurde
@@ -62,6 +68,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     public static int color4 = 0;
     public static Boolean mandelPush = false;
     public static int speed = 1;
+    public static Boolean seahorse = false;
 
     public MandelbrotFragment() {
     }
@@ -154,6 +161,33 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
 
+        //Setze den Seepferdchen Button auf false standardmäßig
+        sh_button = (Switch) editor_m.findViewById(R.id.switch_m_seepferdchen);
+        sh_button.setChecked(false);
+        seahorse = false;
+        //Listener für den Switch Button
+        sh_button.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+                    seahorse = true;
+                }
+                else{
+                    seahorse = false;
+                }
+
+            }
+        });
+        //Setze den Boolean jenachdem ob in Seepferdchen gezoomt werden soll oder nicht
+        if(sh_button.isChecked()){
+            seahorse = true;
+        }
+        else{
+            seahorse = false;
+        }
+
         final TextView iteration = (TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
         Button drawIt = (Button) editor_m.findViewById(R.id.button_m_draw);
 
@@ -176,7 +210,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                     color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
 
                     speed = Integer.parseInt(tv_speed.getText().toString());
-                    Log.d("LOGGING SPEED",speed+"");
+                    //Log.d("LOGGING SEE",seahorse+"");
 
                     //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
                     //        .setAction("Action", null).show();

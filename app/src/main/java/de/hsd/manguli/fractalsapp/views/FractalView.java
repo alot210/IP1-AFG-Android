@@ -212,7 +212,16 @@ public class FractalView extends View {
         double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
-            am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(2.0,2.0),new Complex(3.0,4.0));
+
+            //Soll in Seepferdchen hinein gezoomt werden
+            if(MandelbrotFragment.seahorse){
+                am = new Mandelbrot(width,height, mandelbrotIteration ,new Complex(0.8086260179507412, 0.24773066371129954),new Complex(0.10211656607523975, 0.13615542143365297));
+            }
+            else {
+                am = new Mandelbrot(width, height, mandelbrotIteration, new Complex(2.0, 2.0), new Complex(3.0, 4.0));
+            }
+
+
             if(mandelPush) {
                 am.setColor1(MandelbrotFragment.color1);
                 am.setColor2(MandelbrotFragment.color2);
