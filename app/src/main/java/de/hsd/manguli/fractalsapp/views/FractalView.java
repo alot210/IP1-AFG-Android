@@ -357,7 +357,6 @@ public class FractalView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
-        boolean zooming = false;
         gestureDetector.onTouchEvent(event);
         switch (event.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
@@ -386,8 +385,11 @@ public class FractalView extends View {
                     moveX += dx;
                     moveY += dy;
 
+
+                    drawFractal();
                     previousTranslateX = startX;
                     previousTranslateY = startY;
+
                 }
                 else{
                     float gx = gestureDetector.getFocusX();
@@ -399,13 +401,14 @@ public class FractalView extends View {
                     moveX += gdx;
                     moveY += gdy;
 
+
+                    drawFractal();
                     lastGestureX = gx;
                     lastGestureY = gy;
                 }
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
                 if(gestureDetector.isInProgress()) {
-                    zooming = true;
                     //Ist der zweite Finger gesetzt kann gezoomt werden
                     mode = ZOOM;
                     final float gx = gestureDetector.getFocusX();
@@ -417,10 +420,10 @@ public class FractalView extends View {
                 endOfGranulation = 1;
                 break;
             case MotionEvent.ACTION_UP:
-                if(!zooming) {
+
                     mode = NONE;
 
-                    factor= 1.0f/scaleFactor;
+                   /*factor= 1.0f/scaleFactor;
                     scaleX *= factor;
                     scaleY *= factor;
 
@@ -428,22 +431,21 @@ public class FractalView extends View {
                     //endOfGranulation = 1;
                     Log.w("ONTOUCH", "ACTION_UP");
 
-                    translate = translate.add(new Complex((scaleX * (previousTranslateX)) / this.getWidth(), (scaleY * (previousTranslateY) / this.getHeight())));
+                    translate = translate.add(new Complex((scaleX * (moveX)) / this.getWidth(), (scaleY * (moveY) / this.getHeight())));
 
                     Log.w("TRANSLATE", (moveX * scaleFactor) + ", " + (moveY * scaleFactor));
                     Log.w("TRANSLATE", (scaleX * (moveX * (scaleFactor)) / this.getWidth() + ", " + (scaleY * (moveY * (scaleFactor)) / this.getHeight())));
                     Log.w("TRANSLATE", translate.complexToString());
                     Log.w("SCALE", "" + scaleFactor);
-                    moveX = 0;
+                   /* moveX = 0;
                     moveY = 0;
                     previousTranslateY = 0;
-                    previousTranslateX = 0;
+                    previousTranslateX = 0;*/
 
-                }
+
                 break;
             case MotionEvent.ACTION_POINTER_UP:
-                zooming = true;
-                mode = ZOOM;
+                mode = NONE;
                 final int pointerIndex = (event.getAction() & MotionEvent.ACTION_POINTER_INDEX_MASK) >> MotionEvent.ACTION_POINTER_INDEX_SHIFT;
                 final int pointerId = event.getPointerId(pointerIndex);
                 if (pointerId == activePointerId) {
@@ -461,15 +463,13 @@ public class FractalView extends View {
                     previousTranslateX = event.getX(tempPointerIndex);
                     previousTranslateY = event.getY(tempPointerIndex);
                 }
-               // scaleX *= (scaleFactor*0.5f);
-                //scaleY *= (scaleFactor*0.5f);
-                //translate = new Complex(translate.getReal()*(scaleFactor*0.5f), translate.getImag()*(scaleFactor*0.5f));
+                /*scaleX *= (scaleFactor*0.5f);
+                scaleY *= (scaleFactor*0.5f);
+                translate = new Complex(translate.getReal()*(scaleFactor*0.5f), translate.getImag()*(scaleFactor*0.5f));*/
                 Log.w("ONTOUCH", "ACTION_POINTER_UP");
 
                 break;
         }
-
-            drawFractal();
 
 
         return true;
