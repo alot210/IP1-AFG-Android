@@ -150,7 +150,7 @@ public class Algorithm {
         int loc;
         int c;
         //Farbpixel für jeweilige Auflösung berechnen
-        for (int i = 0; i < width - 1; i += granulation) {
+        for (int i = 0; i < width - granulation; i += granulation) {
             for (int j = 0; j < height - granulation; j += granulation) {
                 //Koordinaten von 2D-Array zu 1D-Array umrechnen
                 loc = i + j * width;

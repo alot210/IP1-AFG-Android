@@ -55,13 +55,15 @@ public class FractalView extends View {
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
-    private int endOfGranulation = 1;
+    private int endOfGranulation = 16;
 
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
      */
-    private static float MIN_ZOOM = 1f;
-    private static float MAX_ZOOM = 5f;
+    private static float MIN_ZOOM = 0.2f;
+    private static float MAX_ZOOM = 2f;
+
+    private Boolean zooming = false;
 
     //Skalierungsfaktor
     private float scaleFactor = 1.0f;
@@ -163,7 +165,6 @@ public class FractalView extends View {
      * Methode zur Initialisierung der View, wird beim Erstellen aufgerufen
      */
     private void init() {
-        showProgressDialog(getContext());
         paint = new Paint();
         paint.setColor(0xff101010);
         //Androidversion ueberprufen => ab Marshmallow
@@ -196,28 +197,28 @@ public class FractalView extends View {
         }
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-            /*canvas.save();
-            canvas.translate(startX/scaleFactor,startY/scaleFactor);
+            canvas.save();
+            //canvas.translate(startX/scaleFactor,startY/scaleFactor);
             if(gestureDetector.isInProgress()){
-                canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
+                //canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
-               // canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
+               //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             }
             else{
-                canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
+                //canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
                 //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
 
-            }*/
+            }
 
             //canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawBitmap(bitmap, 0, 0, paint);
 
-            //canvas.restore();
+            canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
             return;
         }
@@ -245,7 +246,7 @@ public class FractalView extends View {
         if(!juliaPush) {
 
             Log.w("TRANSLATE", translate.complexToString());
-            am = new Mandelbrot(width,height, mandelbrotIteration ,translate,new Complex(scaleX, scaleY));
+            am = new Mandelbrot(width,height, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
 
             //new Complex(2.0,2.0) Translation; new Complex(3.0/4.0/ Skalierung;
             //Zahlen < 1 damit das Mandelbrot größer wird
@@ -275,15 +276,6 @@ public class FractalView extends View {
 
         Thread t = new Thread(new Runnable() {
 
-            Handler handler = new Handler() {
-                @Override
-                public void handleMessage(Message msg) {
-                    super.handleMessage(msg);
-                    pd.incrementProgressBy(25);
-                    if(pd.getProgress() == pd.getMax()) pd.dismiss();
-                }
-            };
-
             @Override
             public void run() {
                 int granulation = getGranulation();
@@ -293,15 +285,14 @@ public class FractalView extends View {
                 while (true) {
 
                     pixels = am.fillPixels(granulation);
-                    //neue Bitmap setzen und Pixelarray übergeben
-                    setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
-                    //View soll neu gerendert werden
-                    FractalView.this.postInvalidate();
-
                     //wenn Thread beendet ist => thread.join()
                     if (terminateThreads) {
                         break;
                     }
+                    //neue Bitmap setzen und Pixelarray übergeben
+                    setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
+                    //View soll neu gerendert werden
+                    FractalView.this.postInvalidate();
                     //wenn Auflösung erreich ist
                     if (granulation <= endOfGranulation) {
                         Log.w("GRANULATION", "End of Granulation");
@@ -309,7 +300,6 @@ public class FractalView extends View {
                     }
                     //Auflösung verfeinern
                     granulation = granulation / 2;
-                    handler.sendMessage(handler.obtainMessage());
                 }
             }
         });
@@ -386,7 +376,9 @@ public class FractalView extends View {
                 }
                 break;
             case MotionEvent.ACTION_MOVE:
+
                 if(!gestureDetector.isInProgress()) {
+                    //zooming = true;
                     //final int pointerIndex = event.findPointerIndex(activePointerId);
                     //wird bei jeder Bewegung des Fingers geupdatet
                     final float x = event.getX();
@@ -403,6 +395,7 @@ public class FractalView extends View {
                     previousTranslateY = y;
                 }
                 else{
+                    zooming = true;
                     final float gx = gestureDetector.getFocusX();
                     final float gy = gestureDetector.getFocusY();
 
@@ -422,6 +415,7 @@ public class FractalView extends View {
                 if(gestureDetector.isInProgress()) {
                     //Ist der zweite Finger gesetzt kann gezoomt werden
                     mode = ZOOM;
+                    zooming = true;
                     final float gx = gestureDetector.getFocusX();
                     final float gy = gestureDetector.getFocusY();
                     lastGestureX = gx;
@@ -430,34 +424,61 @@ public class FractalView extends View {
                 Log.w("ONTOUCH", "ACTION_POINTER_DOWN");
                 break;
             case MotionEvent.ACTION_UP:
-                showProgressDialog(getContext());
-                if(mode == ZOOM){
-                    translate = new Complex(translate.getReal()*factor, translate.getImag()*factor);
-                }else{
-                    translate = translate.add(new Complex((scaleX*(startX))/this.getWidth(), (scaleY*(startY)/this.getHeight())));
-                }
-                mode = NONE;
+
                 //hier wird gespeichert wo zuletzt hingedragged wurde
                 //previousTranslateX = translateX;
                 //previousTranslateY = translateY;
-                endOfGranulation = 1;
+                endOfGranulation = 16;
                 Log.w("ONTOUCH", "ACTION_UP");
-                factor = 1.0/scaleFactor;
-                scaleX *= factor;
-                scaleY *= factor;
 
-                Log.w("TRANSLATE", (startX*scaleFactor)+", "+(startY*scaleFactor));
-                Log.w("TRANSLATE", (scaleX*(startX*(scaleFactor))/this.getWidth()+", "+(scaleY*(startY*(scaleFactor))/this.getHeight())));
-                Log.w("TRANSLATE", translate.complexToString());
-                Log.w("SCALE",""+scaleX+", "+scaleY);
+
+                if(zooming){
+                    Log.w("ZOOM", "zooming");
+                    //translate = translate.add(new Complex((scaleX*((-previousTranslateX+lastGestureX)))/this.getWidth(), (scaleY*(((-previousTranslateY+startY)))/this.getHeight())));
+
+
+                    //translate = translate.add(new Complex((scaleX*((lastGestureX)))/this.getWidth(), (scaleY*(((lastGestureY)))/this.getHeight())));
+
+                    factor = 1.0/scaleFactor;
+
+                    scaleX *= factor;
+                    scaleY *= factor;
+
+                    double dX = scaleX*(lastGestureX-(lastGestureX*scaleFactor))/this.getWidth();
+                    double dY = scaleY*(lastGestureY-(lastGestureY*scaleFactor))/this.getHeight();
+
+
+                    translate = new Complex(translate.getReal()+dX, translate.getImag()+dY);
+
+                    zooming = false;
+                }else{
+
+                    translate = translate.add(new Complex((scaleX*(startX))/this.getWidth(), (scaleY*(startY)/this.getHeight())));
+                }
+                mode = NONE;
+
+                Log.w("TRANSLATE", "startX: "+(startX)+", "+(startY));
+                Log.w("TRANSLATE", "previousTranslateX: "+(previousTranslateX)+", "+(previousTranslateY));
+                Log.w("TRANSLATE", "lastGestureX: "+(lastGestureX)+", "+(lastGestureY));
+                Log.w("TRANSLATE", "lastGestureX/factor: "+lastGestureX/factor+", "+lastGestureY/factor);
+                Log.w("TRANSLATE", "lastGestureX/scalefactor: "+lastGestureX/scaleFactor+", "+lastGestureY/scaleFactor);
+                Log.w("TRANSLATE", "lastGestureX-lastGestureX/factor: "+(lastGestureX-lastGestureX/factor)+", "+(lastGestureY-lastGestureY/factor));
+                Log.w("TRANSLATE", "lastGestureX-lastGestureX/scalefactor: "+(lastGestureX-lastGestureX/scaleFactor)+", "+(lastGestureY-lastGestureY/scaleFactor));
+                Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
+                //Log.w("TRANSLATE", (scaleX*(startX*(scaleFactor))/this.getWidth()+", "+(scaleY*(startY*(scaleFactor))/this.getHeight())));
+                //Log.w("TRANSLATE", translate.complexToString());
+                Log.w("TRANSLATE","scaleX: "+scaleX+", "+scaleY);
+
                 startX = 0;
                 startY = 0;
                 previousTranslateY = 0;
                 previousTranslateX = 0;
                 drawFractal();
+
                 scaleFactor = 1.0f;
                 activePointerId = INVALID_POINTER_ID;
                 break;
+
             case MotionEvent.ACTION_POINTER_UP:
                 mode = DRAG;
                 Log.w("ONTOUCH", "ACTION_POINTER_UP");
@@ -469,7 +490,7 @@ public class FractalView extends View {
         if((mode == DRAG && scaleFactor != 1f) || mode == ZOOM){
             Log.w("ONCALL", ""+onCall);
             //onCall = true;
-            //invalidate();
+            invalidate();
             //drawFractal();
         }
         return true;
@@ -508,18 +529,7 @@ public class FractalView extends View {
         public boolean onScale(ScaleGestureDetector gestureDetector){
             scaleFactor *= gestureDetector.getScaleFactor();
             scaleFactor = Math.max(MIN_ZOOM, Math.min(scaleFactor, MAX_ZOOM));
-
-
             return true;
         }//end onScale
     }//end class ScaleListener()
-    ProgressDialog pd;
-    public void showProgressDialog(Context context) {
-        pd = new ProgressDialog(context);
-        pd.setMax(100);
-        pd.setTitle("Die Menge wird gezeichnet");
-        pd.setMessage("Bitte haben Sie etwas Geduld");
-        pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        pd.show();
-    }
 }//end class()
