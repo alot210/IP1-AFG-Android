@@ -27,19 +27,19 @@ import de.hsd.manguli.fractalsapp.views.FractalView;
  */
 public class JuliaFragment extends Fragment implements View.OnClickListener {
 
-    //Seekbar Iterationen
+    //Seekbar für Iterationen im Editor
     SeekBar sb_iter;
-    //Seekbar Geschwindigkeit Animation
+    //Seekbar für Geschwindigkeit Animation im Editor
     SeekBar sb_speed;
-    //Seekbar Realteil
+    //Seekbar für den Realteil im Editor
     SeekBar sb_real;
-    //Seekbar Imagteil
+    //Seekbar für den Imaginärteil im Editor
     SeekBar sb_imag;
 
 
-    //Textfeld Iterationen
+    //Textfeld für Iterationen im Editor
     TextView tv_iter;
-    //Textfeld Geschwindigkeit
+    //Textfeld für Geschwindigkeit im Editor
     TextView tv_speed;
     //Textfeld Realteil
     TextView tv_real;
@@ -54,21 +54,25 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
     //Button vierte Farbe
     Button bt_color4;
 
-    //Boolean zur Prüfung ob eine Farbe gewählt wurde
+    //Boolean zur Prüfung ob die jeweilige Farbe gewählt wurde
     boolean bt_color1_pressed;
     boolean bt_color2_pressed;
     boolean bt_color3_pressed;
     boolean bt_color4_pressed;
 
-    //Variablen für Übergabeparameter an Fractalview
+    //Benötigte Variablen für Übergabeparameter an Fractalview --> static, da immer auf die Klassenvariablen zugegriffen werden muss
+    //Julia Iteration, Real/Imag Anteil
     public static String iteration = "20";
     public static int real = 0;
     public static int imag = 0;
+    //Farben
     public static int color1 = 0;
     public static int color2 = 0;
     public static int color3 = 0;
     public static int color4 = 0;
+    //Geschwindigkeit der Animation
     public static int speed = 1;
+    //Variable zum prüfen ob Julia gemalt werden soll
     public static Boolean juliaPush = false;
 
     public JuliaFragment() {
@@ -80,27 +84,30 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         View editor_j = inflater.inflate(R.layout.fragment_julia, container, false);
 
         //Layout Elemente über ID ansprechen
-        //Iteration
+        //Seekbar für Iterationen ansprechen, Progress auf den aktuellen Wert setzen
         sb_iter = (SeekBar) editor_j.findViewById(R.id.seekBar_j_Iteration);
         sb_iter.incrementProgressBy(5);
         sb_iter.setMax(100);
         sb_iter.setProgress(Integer.parseInt(iteration));
-
+        //Seekbar für Speed initialisieren
+        //Seekbar für Speed ansprechen, Progress auf den aktuellen Wert setzen
         sb_speed = (SeekBar) editor_j.findViewById(R.id.seekBar_j_speed);
         sb_speed.incrementProgressBy(1);
         sb_speed.setMax(10);
         sb_speed.setProgress(speed);
-
+        //Seekbar für Realteil initialisieren
+        //Seekbar für Realteil ansprechen, Progress auf den aktuellen Wert setzen
         sb_real = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
         sb_real.incrementProgressBy(1);
         sb_real.setMax(360);
         sb_real.setProgress(real);
-
+        //Seekbar für Imaginärteil initialisieren
+        //Seekbar für Imaginärteil ansprechen, Progress auf den aktuellen Wert setzen
         sb_imag = (SeekBar) editor_j.findViewById(R.id.seekBar_j_imaginaer);
         sb_imag.incrementProgressBy(1);
         sb_imag.setMax(360);
         sb_imag.setProgress(imag);
-
+        //Textviews für Iteration und Speed initialisieren und auf den aktuellen Wert setzen
         tv_iter = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
         tv_iter.setText(String.valueOf(iteration));
         tv_speed = (TextView) editor_j.findViewById(R.id.text_j_Speed_value);
@@ -137,7 +144,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             }
         });
 
-        //Alle Buttons initialisieren und ClickListener hinzufügen
+        //Alle Buttons initialisieren und ClickListener hinzufügen, Variable ob der Button gedrückt wurde standartisiert auf false
         bt_color1 = (Button) editor_j.findViewById(R.id.button_j_color1_select);
         bt_color1.setOnClickListener(this);
         bt_color1_pressed = false;
@@ -150,17 +157,19 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         bt_color4 = (Button) editor_j.findViewById(R.id.button_j_color4_select);
         bt_color4.setOnClickListener(this);
         bt_color4_pressed = false;
-
+        //Falls bereits Farben ausgewählt wurden, setze die Hintergrund Farbe der Buttons auf die vorher gewählte Farbe
         if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
             bt_color1.setBackgroundColor(color1);
             bt_color2.setBackgroundColor(color2);
             bt_color3.setBackgroundColor(color3);
             bt_color4.setBackgroundColor(color4);
         }
-
+        //Wird bei Veränderung der Seekbar aufgerufen
         sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            //Wenn Wert verändert wird
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
+                //in Textfeld den Wert schreiben
                 tv_speed.setText(String.valueOf(progress));
                 Log.d("LOGGING","Geschwindigkeit verändert");
             }
@@ -175,10 +184,11 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-
+        //Wird bei Veränderung der Seekbar aufgerufen
         sb_real.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             @Override
             public void onProgressChanged(SeekBar sb_real, int progress, boolean fromUser) {
+                //Bei Veränderung den Progress in die Textview schreiben
                 tv_real.setText(String.valueOf(progress));
                 Log.d("LOGGING","Realteil verändert");
             }
@@ -217,28 +227,32 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
 
         Button drawIt = (Button) editor_j.findViewById(R.id.button_j_draw);
 
-
+        //Bei Click auf den drawIt Button -->
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
-                //Es müssen alle Farben selber gesetzt sein
-                //Oder alle Farben vorhanden sein
+                //Es müssen alle Farben gesetzt werden, ansonsten wird darauf hingewiesen
+                //Es müssen alle Farben aktuell gesetzt worden sein ( Erstaufruf des Editors )
+                //Oder alle Farben vorhanden sein ( nach erstem Zeichnen eines Mandelbrotes )
                 if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
                         (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
+                    //Toastnachricht ausgeben
                     Toast.makeText(getContext(), "Juliamenge wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                    //Benötigte Variablen final setzen und falls vorhanden, Überschreiben
                     JuliaFragment.iteration = iteration.getText().toString();
                     real = sb_real.getProgress();
                     imag = sb_imag.getProgress();
                     speed = Integer.parseInt(tv_speed.getText().toString());
+                    //JuliaMenge soll gemalt werden
                     juliaPush = true;
-
+                    //Farbe setzen anhand der Hintergrundfarbe des Buttons
                     color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
                     color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
                     color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
                     color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
 
                     Log.d("LOGGING","Julia Draw gedrueckt");
+                    //Die Mainactivity wird aufgerufen, nachdem die wichtigen Parameter gesetzt wurden
                     Intent juliaIntent = new Intent(getActivity(),MainActivity.class);
                     startActivity(juliaIntent);
                 }
@@ -270,8 +284,9 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                //Setzte die Hintergrundfarbe auf die Farbe die ausgewählt wurde
                                 bt_color1.setBackgroundColor(i);
-                                //color1 = i;
+                                //Button für Farbe 1 wurde betätigt
                                 bt_color1_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 1 gesetzt");
                             }
@@ -285,7 +300,6 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
-                                //color2 = i;
                                 bt_color2_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 2 gesetzt");
                             }
@@ -299,7 +313,6 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
-                                //color3 = i;
                                 bt_color3_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 3 gesetzt");
                             }
@@ -313,7 +326,6 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
-                                //color4 = i;
                                 bt_color4_pressed = true;
                                 Log.d("LOGGING","Juliamenge Farbe 4 gesetzt");
                             }

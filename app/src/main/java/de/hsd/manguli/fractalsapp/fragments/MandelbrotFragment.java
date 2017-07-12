@@ -29,14 +29,14 @@ import de.hsd.manguli.fractalsapp.R;
  */
 public class MandelbrotFragment extends Fragment implements View.OnClickListener {
 
-    //Seekbar Iterationen
+    //Seekbar für Iterationen im Editor
     SeekBar sb_iter;
-    //Seekbar Geschwindigkeit Animation
+    //Seekbar für Geschwindigkeit Animation im Editor
     SeekBar sb_speed;
 
-    //Textfeld Iterationen
+    //Textfeld für Iterationen im Editor
     TextView tv_iter;
-    //Textfeld Geschwindigkeit
+    //Textfeld für Geschwindigkeit im Editor
     TextView tv_speed;
 
     //Button erste Farbe
@@ -51,7 +51,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
 
 
-    //Boolean zur Prüfung ob eine Farbe gewählt wurde
+    //Boolean zur Prüfung ob die jeweilige Farbe gewählt wurde
     boolean bt_color1_pressed;
     boolean bt_color2_pressed;
     boolean bt_color3_pressed;
@@ -63,16 +63,19 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
 
 
-    //Variablen für Übergabeparameter an Fractalview
+    //Benötigte Variablen für Übergabeparameter an Fractalview --> static, da immer auf die Klassenvariablen zugegriffen werden muss
+    //Mandelbrot Iteration
     public static String iteration = "20";
+    //Farben des Mandelbrots
     public static int color1 = 0;
     public static int color2 = 0;
     public static int color3 = 0;
     public static int color4 = 0;
+    //Variable zum prüfen ob Mandelbrot gemalt werden soll
     public static Boolean mandelPush = false;
-
+    //Geschwindigkeit der Animation
     public static int speed = 1;
-
+    //Boolean ob direkt in eine Seepferdchenmenge gezoomt werden soll
     public static Boolean seahorse = false;
 
 
@@ -86,13 +89,13 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         View editor_m = inflater.inflate(R.layout.fragment_editor, container, false);
 
         //Layout Elemente über ID ansprechen
-        //Iteration
+        //Seekbar für Iterationen ansprechen, Progress auf den aktuellen Wert setzen
         sb_iter=(SeekBar) editor_m.findViewById(R.id.seekBar_m_Iteration);
         sb_iter.setProgress(Integer.parseInt(iteration));
         sb_iter.incrementProgressBy(5);
         sb_iter.setMax(100);
 
-        //Alle Buttons initialisieren und ClickListener hinzufügen
+        //Alle Buttons initialisieren und ClickListener hinzufügen, Variable ob der Button gedrückt wurde standartisiert auf false
         bt_color1 = (Button) editor_m.findViewById(R.id.button_m_color1_select);
         bt_color1.setOnClickListener(this);
         bt_color1_pressed = false;
@@ -105,19 +108,19 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         bt_color4 = (Button) editor_m.findViewById(R.id.button_m_color4_select);
         bt_color4.setOnClickListener(this);
         bt_color4_pressed = false;
-
+        //Seekbar für Speed initialisieren
         sb_speed=(SeekBar) editor_m.findViewById(R.id.seekBar_m_speed);
-
+        //Textviews für Iteration und Speed initialisieren und auf den aktuellen Wert setzen
         tv_iter=(TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
         tv_iter.setText(String.valueOf(iteration));
         tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
         tv_speed.setText(speed+"");
-
+        //Seekbar für Speed ansprechen, Progress auf den aktuellen Wert setzen
         sb_speed.setProgress(speed);
         sb_speed.incrementProgressBy(1);
         sb_speed.setMax(10);
 
-
+        //Falls bereits Farben ausgewählt wurden, setze die Hintergrund Farbe der Buttons auf die vorher gewählte Farbe
         if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
             bt_color1.setBackgroundColor(color1);
             bt_color2.setBackgroundColor(color2);
@@ -148,10 +151,11 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
             }
         });
-
+        //Wird bei Veränderung der Seekbar aufgerufen
         sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
+                //Bei Veränderung den Progress in die Textview schreiben
                 tv_speed.setText(String.valueOf(progress));
                 Log.d("LOGGING","Geschwindigkeit veraendert");
             }
@@ -167,16 +171,17 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        //Setze den Seepferdchen Button auf false standardmäßig
+        //Initialisiere und setze den Seepferdchen Button auf false standardmäßig
         sh_button = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
         sh_button.setChecked(false);
+        //Boolean für Seepferdchen soll standartmäßig false sein
         seahorse = false;
         //Listener für den Switch Button
         sh_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
+                //Wenn der Button gecheckt wurde, soll in eine Seepferdchenmenge gezoomt werden
                 if(isChecked){
                     seahorse = true;
                 }
@@ -197,37 +202,34 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         final TextView iteration = (TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
         Button drawIt = (Button) editor_m.findViewById(R.id.button_m_draw);
 
-
+        //Bei Click auf den drawIt Button -->
         drawIt.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                //Wenn alle Farben gesetzt sind wird gezeichnet, ansonsten Fehlermeldung
-                //Es müssen alle Farben selber gesetzt sein
-                //Oder alle Farben vorhanden sein
+                //Es müssen alle Farben gesetzt werden, ansonsten wird darauf hingewiesen
+                //Es müssen alle Farben aktuell gesetzt worden sein ( Erstaufruf des Editors )
+                //Oder alle Farben vorhanden sein ( nach erstem Zeichnen eines Mandelbrotes )
                 if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
                         (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
+                    //Toastnachricht ausgeben
                     Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                    //Benötigte Variablen final setzen und falls vorhanden, Überschreiben
                     MandelbrotFragment.iteration = iteration.getText().toString();
                     mandelPush = true;
-
+                    speed = Integer.parseInt(tv_speed.getText().toString());
+                    Log.d("LOGGING SPEED",speed+"");
+                    //Farbe setzen anhand der Hintergrundfarbe des Buttons
                     color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
                     color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
                     color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
                     color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
 
-                    speed = Integer.parseInt(tv_speed.getText().toString());
-                    Log.d("LOGGING SPEED",speed+"");
-
-                    //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
-                    //        .setAction("Action", null).show();
-
 
                     Log.d("LOGGING","Mandelbrot Draw gedrueckt");
-                    //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                    //Die Mainactivity wird aufgerufen, nachdem die wichtigen Parameter gesetzt wurden
                     Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
                     startActivity(mandelbrotIntent);
 
-                    //String i = iteration.getText().toString();
                 }
                 else {
                     Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
@@ -257,8 +259,9 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                         .setPositiveButton("ok", new ColorPickerClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
+                                //Setzte die Hintergrundfarbe auf die Farbe die ausgewählt wurde
                                 bt_color1.setBackgroundColor(i);
-                                //color1 = i;
+                                //Button für Farbe 1 wurde betätigt
                                 bt_color1_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 1 gesetzt");
                             }
@@ -272,7 +275,6 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color2.setBackgroundColor(i);
-                                //color2 = i;
                                 bt_color2_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 2 gesetzt");
                             }
@@ -286,7 +288,6 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color3.setBackgroundColor(i);
-                                //color3 = i;
                                 bt_color3_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 3 gesetzt");
                             }
@@ -300,7 +301,6 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i, Integer[] integers) {
                                 bt_color4.setBackgroundColor(i);
-                                //color4 = i;
                                 bt_color4_pressed = true;
                                 Log.d("LOGGING","Mandelbrot Farbe 4 gesetzt");
                             }
