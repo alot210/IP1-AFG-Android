@@ -1,11 +1,11 @@
 <resources>
     <string name="app_name">Fractalicious</string>
     <string name="action_settings">Editor</string>
-    <string name="action_math">Mathe-Infos</string>
-    <string name="action_developer">Entwickler</string>
+    <string name="action_math">Infos</string>
+    <string name="action_developer">Impressum</string>
     <string name="title_activity_editor">Editor</string>
-    <string name="title_activity_math">Checkst du Mandelbrot?</string>
-    <string name="title_activity_developer">Entwickler</string>
+    <string name="title_activity_math">Infos</string>
+    <string name="title_activity_developer">Impressum</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
