@@ -192,7 +192,8 @@ public class FractalView extends View {
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
-            //canvas.translate(startX/scaleFactor,startY/scaleFactor);
+
+            canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             if(gestureDetector.isInProgress()){
                 canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
@@ -389,7 +390,7 @@ public class FractalView extends View {
                     //drawFractal();
                     previousTranslateX = x;
                     previousTranslateY = y;
-
+                    invalidate();
                 }
                 else{
                     zooming = true;
