@@ -1,7 +1,5 @@
 package de.hsd.manguli.fractalsapp.views;
 
-
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -11,8 +9,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -200,13 +196,13 @@ public class FractalView extends View {
             canvas.save();
             //canvas.translate(startX/scaleFactor,startY/scaleFactor);
             if(gestureDetector.isInProgress()){
-                //canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
+                canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
                //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             }
             else{
-                //canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
+                canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
                 //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
@@ -229,6 +225,7 @@ public class FractalView extends View {
      * erstellt Bitmap mit Mandelbrot/Juliamenge
      */
     public void drawFractal() {
+        terminateThreads();
         //canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         Log.d("LOGGING", "drawFractal()");
 
@@ -261,7 +258,7 @@ public class FractalView extends View {
             MandelbrotFragment.mandelPush = false;
         }
         else {
-            am = new Julia(width, height, juliaIteration, new Complex(1.5,2.0),new Complex(3.0,4.0),new Complex(_real,_imag));
+            am = new Julia(width, height, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
             am.setColor3(JuliaFragment.color3);
@@ -272,7 +269,7 @@ public class FractalView extends View {
         //Pixelarray initialiseren
         setPixels(new int[height * width]);
 
-        terminateThreads();
+
 
         Thread t = new Thread(new Runnable() {
 
@@ -285,14 +282,14 @@ public class FractalView extends View {
                 while (true) {
 
                     pixels = am.fillPixels(granulation);
-                    //wenn Thread beendet ist => thread.join()
-                    if (terminateThreads) {
-                        break;
-                    }
                     //neue Bitmap setzen und Pixelarray übergeben
                     setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
                     //View soll neu gerendert werden
                     FractalView.this.postInvalidate();
+                    //wenn Thread beendet ist => thread.join()
+                    if (terminateThreads) {
+                        break;
+                    }
                     //wenn Auflösung erreich ist
                     if (granulation <= endOfGranulation) {
                         Log.w("GRANULATION", "End of Granulation");
@@ -303,6 +300,7 @@ public class FractalView extends View {
                 }
             }
         });
+
         t.start();
         currentThreads.add(t);
         Log.d("LOGGING", "drawFractal() beendet");
@@ -463,10 +461,7 @@ public class FractalView extends View {
                 Log.w("TRANSLATE", "lastGestureX/factor: "+lastGestureX/factor+", "+lastGestureY/factor);
                 Log.w("TRANSLATE", "lastGestureX/scalefactor: "+lastGestureX/scaleFactor+", "+lastGestureY/scaleFactor);
                 Log.w("TRANSLATE", "lastGestureX-lastGestureX/factor: "+(lastGestureX-lastGestureX/factor)+", "+(lastGestureY-lastGestureY/factor));
-                Log.w("TRANSLATE", "lastGestureX-lastGestureX/scalefactor: "+(lastGestureX-lastGestureX/scaleFactor)+", "+(lastGestureY-lastGestureY/scaleFactor));
-                Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
-                //Log.w("TRANSLATE", (scaleX*(startX*(scaleFactor))/this.getWidth()+", "+(scaleY*(startY*(scaleFactor))/this.getHeight())));
-                //Log.w("TRANSLATE", translate.complexToString());
+               Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
                 Log.w("TRANSLATE","scaleX: "+scaleX+", "+scaleY);
 
                 startX = 0;
@@ -474,7 +469,6 @@ public class FractalView extends View {
                 previousTranslateY = 0;
                 previousTranslateX = 0;
                 drawFractal();
-
                 scaleFactor = 1.0f;
                 activePointerId = INVALID_POINTER_ID;
                 break;
