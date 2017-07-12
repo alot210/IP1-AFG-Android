@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">FractalApp</string>
+    <string name="app_name">Fractalicious</string>
     <string name="action_settings">Editor</string>
     <string name="action_math">Mathe-Infos</string>
     <string name="action_developer">Entwickler</string>
