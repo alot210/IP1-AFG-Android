@@ -97,17 +97,9 @@ public class FractalView extends View {
     private int  activePointerId = INVALID_POINTER_ID;
 
 
-    public Bitmap getBitmap() {
-        return bitmap;
-    }
-
     public void setBitmap(Bitmap bitmap) {
         System.out.println("new Bitmap");
         this.bitmap = bitmap;
-    }
-
-    public int[] getPixels() {
-        return pixels;
     }
 
     public void setPixels(int[] pixels) {
@@ -118,16 +110,8 @@ public class FractalView extends View {
         return granulation;
     }
 
-    public void setGranulation(int granulation) {
-        this.granulation = granulation;
-    }
-
     public int getEndOfGranulation() {
         return endOfGranulation;
-    }
-
-    public void setEndOfGranulation(int endOfGranulation) {
-        this.endOfGranulation = endOfGranulation;
     }
 
 
@@ -150,13 +134,6 @@ public class FractalView extends View {
         init();
     }
 
-    public int getScreenWidth() {
-        return this.screenWidth;
-    }
-
-    public int getScreenHeight() {
-        return this.screenHeight;
-    }
 
     /**
      * Methode zur Initialisierung der View, wird beim Erstellen aufgerufen
@@ -456,7 +433,7 @@ public class FractalView extends View {
                     scaleY *= factor;
 
                     double dX = scaleX*(lastGestureX-(lastGestureX*scaleFactor))/screenWidth;
-                    double dY = scaleY*(lastGestureY-(lastGestureY*scaleFactor))/screenWidth;
+                    double dY = scaleY*(lastGestureY-(lastGestureY*scaleFactor))/screenHeight;
 
 
                     translate = new Complex(translate.getReal()+dX, translate.getImag()+dY);
