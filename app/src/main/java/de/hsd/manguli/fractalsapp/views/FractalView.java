@@ -195,12 +195,12 @@ public class FractalView extends View {
             //canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             if(gestureDetector.isInProgress()){
-                //canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
+                canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
             }
             else{
-                //canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
+                canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
 
@@ -406,6 +406,7 @@ public class FractalView extends View {
                     //drawFractal();
                     lastGestureX = gx;
                     lastGestureY = gy;
+                    invalidate();
                 }
                 Log.w("ONTOUCH", "ACTION_MOVE");
                 break;
