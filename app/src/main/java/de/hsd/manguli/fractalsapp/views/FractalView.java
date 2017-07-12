@@ -55,7 +55,7 @@ public class FractalView extends View {
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
-    private int endOfGranulation = 16;
+    private int endOfGranulation = 2;
 
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
@@ -185,6 +185,16 @@ public class FractalView extends View {
             terminateThreads();
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             drawFractal();
+
+            //Soll direkt in ein Seepferdchen gezoomt werden?
+            if (MandelbrotFragment.seahorse){
+                scaleX = 0.10211656607523975;
+                scaleY = 0.13615542143365297;
+                translate = new Complex(0.8086260179507412, 0.24773066371129954);
+                drawFractal();
+            }
+
+
             onCall = false;
             Log.d("LOGGING", "drawFractal initial call");
             return;
@@ -426,7 +436,7 @@ public class FractalView extends View {
                 break;
             case MotionEvent.ACTION_UP:
 
-                endOfGranulation = 16;
+                endOfGranulation = 2;
                 Log.w("ONTOUCH", "ACTION_UP");
 
                 if(zooming){
