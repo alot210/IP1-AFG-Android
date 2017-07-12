@@ -36,6 +36,9 @@ import static android.content.ContentValues.TAG;
  * View zur Darstellung der Mengen
  */
 public class FractalView extends View {
+
+    int screenWidth;
+    int screenHeight;
     private Paint paint;
     private Bitmap bitmap = null;
     private List<Thread> currentThreads = new ArrayList<>();
@@ -147,12 +150,12 @@ public class FractalView extends View {
         init();
     }
 
-    public static int getScreenWidth() {
-        return Resources.getSystem().getDisplayMetrics().widthPixels;
+    public int getScreenWidth() {
+        return this.screenWidth;
     }
 
-    public static int getScreenHeight() {
-        return Resources.getSystem().getDisplayMetrics().heightPixels;
+    public int getScreenHeight() {
+        return this.screenHeight;
     }
 
     /**
@@ -165,6 +168,7 @@ public class FractalView extends View {
         if (Build.VERSION.SDK_INT > 23) {
             onCall = true;
         }
+
     }
 
     /**
@@ -178,7 +182,13 @@ public class FractalView extends View {
         super.onDraw(canvas);
 
         //Nur einmal drawFractal aufrufen
-        if (onCall) {
+        //if (onCall) {
+            if ((screenWidth != this.getWidth()) || (screenHeight != this.getHeight())) {
+                screenWidth = this.getWidth();
+                screenHeight = this.getHeight();
+                if ((screenWidth == 0) || (screenHeight == 0)) {
+                    return;
+                }
             scaleX = 3.0;
             scaleY = 4.0;
             //translate = new Complex(scaleY*0.5, scaleY*0.5);
@@ -222,6 +232,7 @@ public class FractalView extends View {
 
             canvas.restore();
             Log.d("LOGGING", "drawBitmap()");
+
             return;
         }
         onCall = true;
@@ -236,10 +247,8 @@ public class FractalView extends View {
         Log.d("LOGGING", "drawFractal()");
 
         //final, da innerhalb von Thread verwendet wird
-        final int width = this.getWidth();
-        final int height = this.getHeight();
-        Log.w("WIDTH", ""+width);
-        Log.w("HEIGHT", ""+height);
+        //final int width = screenWidth;
+        //final int height = screenHeight;
 
         int mandelbrotIteration = Integer.parseInt(MandelbrotFragment.iteration);
         int juliaIteration = Integer.parseInt(JuliaFragment.iteration);
@@ -249,7 +258,7 @@ public class FractalView extends View {
         if(!juliaPush) {
 
             Log.w("TRANSLATE", translate.complexToString());
-            am = new Mandelbrot(width,height, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
+            am = new Mandelbrot(screenWidth, screenHeight, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
 
             //new Complex(2.0,2.0) Translation; new Complex(3.0/4.0/ Skalierung;
             //Zahlen < 1 damit das Mandelbrot größer wird
@@ -264,7 +273,7 @@ public class FractalView extends View {
             MandelbrotFragment.mandelPush = false;
         }
         else {
-            am = new Julia(width, height, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
+            am = new Julia(screenWidth, screenHeight, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
             am.setColor3(JuliaFragment.color3);
@@ -273,7 +282,7 @@ public class FractalView extends View {
         }
 
         //Pixelarray initialiseren
-        setPixels(new int[height * width]);
+        setPixels(new int[screenWidth * screenHeight]);
 
 
 
@@ -283,19 +292,21 @@ public class FractalView extends View {
             public void run() {
                 int granulation = getGranulation();
                 int endOfGranulation = getEndOfGranulation();
+                int width = screenWidth;
+                int height = screenHeight;
 
                 //solange Thread lebt oder höchste Auflösung (granulation) erreicht ist
                 while (true) {
 
                     pixels = am.fillPixels(granulation);
-                    //neue Bitmap setzen und Pixelarray übergeben
-                    setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
-                    //View soll neu gerendert werden
-                    FractalView.this.postInvalidate();
                     //wenn Thread beendet ist => thread.join()
                     if (terminateThreads) {
                         break;
                     }
+                    //neue Bitmap setzen und Pixelarray übergeben
+                    setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
+                    //View soll neu gerendert werden
+                    FractalView.this.postInvalidate();
                     //wenn Auflösung erreich ist
                     if (granulation <= endOfGranulation) {
                         Log.w("GRANULATION", "End of Granulation");
@@ -396,8 +407,6 @@ public class FractalView extends View {
                     startX += dx;
                     startY += dy;
 
-
-                    //drawFractal();
                     previousTranslateX = x;
                     previousTranslateY = y;
                     invalidate();
@@ -414,7 +423,6 @@ public class FractalView extends View {
                     startX += gdx;
                     startY += gdy;
 
-                    //drawFractal();
                     lastGestureX = gx;
                     lastGestureY = gy;
                     invalidate();
@@ -447,8 +455,8 @@ public class FractalView extends View {
                     scaleX *= factor;
                     scaleY *= factor;
 
-                    double dX = scaleX*(lastGestureX-(lastGestureX*scaleFactor))/this.getWidth();
-                    double dY = scaleY*(lastGestureY-(lastGestureY*scaleFactor))/this.getHeight();
+                    double dX = scaleX*(lastGestureX-(lastGestureX*scaleFactor))/screenWidth;
+                    double dY = scaleY*(lastGestureY-(lastGestureY*scaleFactor))/screenWidth;
 
 
                     translate = new Complex(translate.getReal()+dX, translate.getImag()+dY);
@@ -456,7 +464,7 @@ public class FractalView extends View {
                     zooming = false;
                 }else{
 
-                    translate = translate.add(new Complex((scaleX*(startX))/this.getWidth(), (scaleY*(startY)/this.getHeight())));
+                    translate = translate.add(new Complex((scaleX*(startX))/screenWidth, (scaleY*(startY)/screenHeight)));
                 }
                 mode = NONE;
 
@@ -484,26 +492,7 @@ public class FractalView extends View {
         }
         return true;
     }//end onTouchEvent
-    /**
-     * Methode überprüft, dass nicht aus dem Canvas herausgezoomt werden kann
-     *  das übergebene Canvas-Objekt auf das gezeichnet wird
-     */
 
-    public void scaleWindow(Canvas canvas){
-        if((startX*-1)< 0){
-            //startX = 0;
-        }
-        else if((startX*-1)> (scaleFactor -1)* canvas.getWidth()){
-            startX = (1- scaleFactor)* canvas.getWidth();
-        }
-
-        if((startY*-1)< 0){
-           // startY = 0;
-        }
-        else if((startY*-1)> (scaleFactor -1)* canvas.getHeight()){
-            startY = (1- scaleFactor)* canvas.getHeight();
-        }
-    }//end scaleWindow
     /**
      * Klasse wird im Konstruktor von FractalView aufgerufen
      */
