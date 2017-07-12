@@ -46,8 +46,12 @@ public class FractalView extends View {
     Boolean mandelPush = MandelbrotFragment.mandelPush;
     Algorithm am;
 
+    //Transformationsvariablen
     private double scaleX;
     private double scaleY;
+    private double factor = 1.0;
+    private Complex translate = new Complex(2.0*factor, 2.0*factor);
+    private Boolean zooming = false;
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
@@ -59,12 +63,9 @@ public class FractalView extends View {
     private static float MIN_ZOOM = 0.2f;
     private static float MAX_ZOOM = 2f;
 
-    private Boolean zooming = false;
-
     //Skalierungsfaktor
     private float scaleFactor = 1.0f;
-    private double factor = 1.0;
-    private Complex translate = new Complex(2.0*factor, 2.0*factor);
+
     //erstellen eines ScaleGestureDetectors
     private ScaleGestureDetector gestureDetector;
 
@@ -81,14 +82,11 @@ public class FractalView extends View {
     private float startX = 0f;
     private float startY = 0f;
 
-    //x- und y-Koordinaten des zweiten Fingers der gesetzt wird
-    private float translateX = 0f;
-    private float translateY = 0f;
-
     //Koordinaten geben an wo zuletzt hingedragged wurde
     private float previousTranslateX = 0f;
     private float previousTranslateY = 0f;
 
+    //Koordinaten der letzten Geste
     private float lastGestureX = 0f;
     private float lastGestureY = 0f;
 
@@ -195,21 +193,18 @@ public class FractalView extends View {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
             //canvas.translate(startX/scaleFactor,startY/scaleFactor);
+
             if(gestureDetector.isInProgress()){
-                canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
+                //canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
-               //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
             }
             else{
-                canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
+                //canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
                 //translate soll nicht außerhalb des Canvas stattfinden
                 //scaleWindow(canvas);
-                //canvas.translate(translateX/scaleFactor,translateY/scaleFactor);
 
             }
-
-            //canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             //Methode zum Mandelbrot zeichnen aufrufen und in Canvas speichern
             canvas.drawBitmap(bitmap, 0, 0, paint);
@@ -360,11 +355,13 @@ public class FractalView extends View {
      */
     @Override
     public boolean onTouchEvent(MotionEvent event){
+
         gestureDetector.onTouchEvent(event);
         switch (event.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
                 if(!gestureDetector.isInProgress()) {
                     mode = DRAG;
+                    //Koordinaten des ersten Fingers
                     final float x = event.getX();
                     final float y = event.getY();
                     previousTranslateX = x;
@@ -376,27 +373,29 @@ public class FractalView extends View {
             case MotionEvent.ACTION_MOVE:
 
                 if(!gestureDetector.isInProgress()) {
-                    //zooming = true;
-                    //final int pointerIndex = event.findPointerIndex(activePointerId);
                     //wird bei jeder Bewegung des Fingers geupdatet
                     final float x = event.getX();
                     final float y = event.getY();
 
+                    //Koordinaten des neuen Punktes
                     final float dx = x - previousTranslateX;
                     final float dy = y - previousTranslateY;
 
+                    //Berechnung der Bewegung
                     startX += dx;
                     startY += dy;
 
-                   // invalidate();
+
+                    //drawFractal();
                     previousTranslateX = x;
                     previousTranslateY = y;
+
                 }
                 else{
                     zooming = true;
+
                     final float gx = gestureDetector.getFocusX();
                     final float gy = gestureDetector.getFocusY();
-
 
                     final float gdx = gx - lastGestureX;
                     final float gdy = gy - lastGestureY;
@@ -404,6 +403,7 @@ public class FractalView extends View {
                     startX += gdx;
                     startY += gdy;
 
+                    //drawFractal();
                     lastGestureX = gx;
                     lastGestureY = gy;
                 }
@@ -416,6 +416,7 @@ public class FractalView extends View {
                     zooming = true;
                     final float gx = gestureDetector.getFocusX();
                     final float gy = gestureDetector.getFocusY();
+                    //Koordinate der letzen Geste
                     lastGestureX = gx;
                     lastGestureY = gy;
                 }
@@ -423,19 +424,11 @@ public class FractalView extends View {
                 break;
             case MotionEvent.ACTION_UP:
 
-                //hier wird gespeichert wo zuletzt hingedragged wurde
-                //previousTranslateX = translateX;
-                //previousTranslateY = translateY;
                 endOfGranulation = 16;
                 Log.w("ONTOUCH", "ACTION_UP");
 
-
                 if(zooming){
                     Log.w("ZOOM", "zooming");
-                    //translate = translate.add(new Complex((scaleX*((-previousTranslateX+lastGestureX)))/this.getWidth(), (scaleY*(((-previousTranslateY+startY)))/this.getHeight())));
-
-
-                    //translate = translate.add(new Complex((scaleX*((lastGestureX)))/this.getWidth(), (scaleY*(((lastGestureY)))/this.getHeight())));
 
                     factor = 1.0/scaleFactor;
 
@@ -461,7 +454,7 @@ public class FractalView extends View {
                 Log.w("TRANSLATE", "lastGestureX/factor: "+lastGestureX/factor+", "+lastGestureY/factor);
                 Log.w("TRANSLATE", "lastGestureX/scalefactor: "+lastGestureX/scaleFactor+", "+lastGestureY/scaleFactor);
                 Log.w("TRANSLATE", "lastGestureX-lastGestureX/factor: "+(lastGestureX-lastGestureX/factor)+", "+(lastGestureY-lastGestureY/factor));
-               Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
+                Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
                 Log.w("TRANSLATE","scaleX: "+scaleX+", "+scaleY);
 
                 startX = 0;
@@ -472,20 +465,10 @@ public class FractalView extends View {
                 scaleFactor = 1.0f;
                 activePointerId = INVALID_POINTER_ID;
                 break;
-
             case MotionEvent.ACTION_POINTER_UP:
-                mode = DRAG;
+                mode = NONE;
                 Log.w("ONTOUCH", "ACTION_POINTER_UP");
                 break;
-        }
-
-        //gestureDetector.onTouchEvent(event);
-        //wird neu gezeichnet, wenn der Faktor größer als 1f ist oder der Modus ZOOM erkannt wurde
-        if((mode == DRAG && scaleFactor != 1f) || mode == ZOOM){
-            Log.w("ONCALL", ""+onCall);
-            //onCall = true;
-            invalidate();
-            //drawFractal();
         }
         return true;
     }//end onTouchEvent
@@ -496,14 +479,14 @@ public class FractalView extends View {
 
     public void scaleWindow(Canvas canvas){
         if((startX*-1)< 0){
-            startX = 0;
+            //startX = 0;
         }
         else if((startX*-1)> (scaleFactor -1)* canvas.getWidth()){
             startX = (1- scaleFactor)* canvas.getWidth();
         }
 
         if((startY*-1)< 0){
-            startY = 0;
+           // startY = 0;
         }
         else if((startY*-1)> (scaleFactor -1)* canvas.getHeight()){
             startY = (1- scaleFactor)* canvas.getHeight();
