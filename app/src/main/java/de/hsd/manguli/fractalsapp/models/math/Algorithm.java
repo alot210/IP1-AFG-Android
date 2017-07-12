@@ -81,6 +81,10 @@ public class Algorithm {
     Complex translate;
     Complex scale;
 
+    public void setTranslate(Complex translate) {
+        this.translate.add(translate);
+    }
+
     /**
      * Methode wird nur von Julia-Menge überschrieben
      * Methode überprüft für jede übergebene Komplexe Zahl Zugehörigkeit zur Menge
@@ -146,7 +150,7 @@ public class Algorithm {
         int loc;
         int c;
         //Farbpixel für jeweilige Auflösung berechnen
-        for (int i = 0; i < width - 1; i += granulation) {
+        for (int i = 0; i < width - granulation; i += granulation) {
             for (int j = 0; j < height - granulation; j += granulation) {
                 //Koordinaten von 2D-Array zu 1D-Array umrechnen
                 loc = i + j * width;

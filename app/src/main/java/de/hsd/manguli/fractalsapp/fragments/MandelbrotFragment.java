@@ -11,7 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,11 +50,18 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
 
 
+
     //Boolean zur Prüfung ob eine Farbe gewählt wurde
     boolean bt_color1_pressed;
     boolean bt_color2_pressed;
     boolean bt_color3_pressed;
     boolean bt_color4_pressed;
+
+
+    //Switch Button für Seepferdchen
+    Switch sh_button;
+
+
 
     //Variablen für Übergabeparameter an Fractalview
     public static String iteration = "20";
@@ -61,7 +70,11 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     public static int color3 = 0;
     public static int color4 = 0;
     public static Boolean mandelPush = false;
+
     public static int speed = 1;
+
+    public static Boolean seahorse = false;
+
 
     public MandelbrotFragment() {
     }
@@ -153,6 +166,33 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
             }
         });
+
+        //Setze den Seepferdchen Button auf false standardmäßig
+        sh_button = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
+        sh_button.setChecked(false);
+        seahorse = false;
+        //Listener für den Switch Button
+        sh_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+                if(isChecked){
+                    seahorse = true;
+                }
+                else{
+                    seahorse = false;
+                }
+
+            }
+        });
+        //Setze den Boolean jenachdem ob in Seepferdchen gezoomt werden soll oder nicht
+        if(sh_button.isChecked()){
+            seahorse = true;
+        }
+        else{
+            seahorse = false;
+        }
 
         final TextView iteration = (TextView) editor_m.findViewById(R.id.text_m_Iteration_value);
         Button drawIt = (Button) editor_m.findViewById(R.id.button_m_draw);
