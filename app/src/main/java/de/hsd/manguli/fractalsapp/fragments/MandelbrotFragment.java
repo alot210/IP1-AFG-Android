@@ -233,28 +233,34 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                 //Oder alle Farben vorhanden sein
                 if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
                         (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
-                    Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
-                    MandelbrotFragment.iteration = iteration.getText().toString();
-                    mandelPush = true;
+                    if(seahorse && animation) {
+                        Toast.makeText(getContext(), "Bitte nur Seepferdchen oder Animation auswählen und nicht beides.", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                        MandelbrotFragment.iteration = iteration.getText().toString();
+                        mandelPush = true;
 
-                    color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
-                    color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
-                    color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
-                    color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
+                        color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
+                        color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
+                        color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
+                        color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
 
-                    speed = Integer.parseInt(tv_speed.getText().toString());
-                    Log.d("LOGGING SPEED",speed+"");
+                        speed = Integer.parseInt(tv_speed.getText().toString());
+                        Log.d("LOGGING SPEED",speed+"");
 
-                    //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
-                    //        .setAction("Action", null).show();
+                        //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
+                        //        .setAction("Action", null).show();
 
 
-                    Log.d("LOGGING","Mandelbrot Draw gedrueckt");
-                    //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
-                    Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
-                    startActivity(mandelbrotIntent);
+                        Log.d("LOGGING","Mandelbrot Draw gedrueckt");
+                        //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                        Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
+                        startActivity(mandelbrotIntent);
 
-                    //String i = iteration.getText().toString();
+                        //String i = iteration.getText().toString();
+                    }
+
                 }
                 else {
                     Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
