@@ -23,7 +23,8 @@ import de.hsd.manguli.fractalsapp.activities.MainActivity;
 import de.hsd.manguli.fractalsapp.views.FractalView;
 
 /**
- * A placeholder fragment containing a simple view.
+ * Fragment für den Julia Editor,
+ * wird in der EditorActivity dargestellt
  */
 public class JuliaFragment extends Fragment implements View.OnClickListener {
 
@@ -75,9 +76,13 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
     //Variable zum prüfen ob Julia gemalt werden soll
     public static Boolean juliaPush = false;
 
-    public JuliaFragment() {
-    }
-
+    /**
+     *
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //View erstellen, um darüber die XML Elemente ansprechen zu können

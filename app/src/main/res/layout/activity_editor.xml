@@ -28,7 +28,8 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:tabIndicatorColor="@android:color/white"
-            app:tabSelectedTextColor="@android:color/white" />
+            app:tabSelectedTextColor="@android:color/white"
+            app:tabMaxWidth="0dp"/>
 
 
     </android.support.design.widget.AppBarLayout>

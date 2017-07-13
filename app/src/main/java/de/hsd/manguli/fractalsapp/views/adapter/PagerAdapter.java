@@ -9,17 +9,34 @@ import de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment;
 import de.hsd.manguli.fractalsapp.fragments.JuliaFragment;
 
 /**
- * Created by Thomas on 29.05.2017.
+ * PagerAdapter fügt dem tabLayout die Views hinzu
+ *
+ * erweitert FragmentStatePagerAdapter um Ressourcen zu sparen,
+ * da dieser nicht sichtbare Tabs nicht berücksichtigt
  */
-
 public class PagerAdapter extends FragmentStatePagerAdapter {
+
+    /**
+     * Anzahl der Tabs
+     */
     int mNumOfTabs;
 
-    public PagerAdapter(FragmentManager fm, int NumOfTabs) {
+    /**
+     * Constructor
+     * @param fm
+     * @param numOfTabs Anzahl der Tabs
+     */
+    public PagerAdapter(FragmentManager fm, int numOfTabs) {
         super(fm);
-        this.mNumOfTabs = NumOfTabs;
-    }
+        this.mNumOfTabs = numOfTabs;
+    }// end PagerAdapter()
 
+    /**
+     * Gibt das aktuelle sichtbare Fragment im Tab zurück
+     *
+     * @param position TabPosition
+     * @return das sichtbare Fragment
+     */
     @Override
     public Fragment getItem(int position) {
 
@@ -36,12 +53,16 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             default:
                 return null;
         }
-    }
+    }// end getItem()
 
+    /**
+     * Gibt die aktuelle Position zurück
+     * @return die aktuelle Position
+     */
     @Override
     public int getCount() {
         return mNumOfTabs;
-    }
-}
+    }//end getCount()
+}//end PagerAdapter
 
 

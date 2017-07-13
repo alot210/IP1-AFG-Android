@@ -25,7 +25,8 @@ import de.hsd.manguli.fractalsapp.views.FractalView;
 import de.hsd.manguli.fractalsapp.R;
 
 /**
- * Fragment als Teil des Editor
+ * Fragment für den Mandelbrot Editor,
+ * wird in der EditorActivity dargestellt
  */
 public class MandelbrotFragment extends Fragment implements View.OnClickListener {
 

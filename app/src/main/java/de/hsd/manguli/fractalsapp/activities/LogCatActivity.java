@@ -1,4 +1,4 @@
-package de.hsd.manguli.fractalsapp;
+package de.hsd.manguli.fractalsapp.activities;
 
 import android.os.Bundle;
 import android.os.Environment;
@@ -13,11 +13,32 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 
+import de.hsd.manguli.fractalsapp.R;
+
+/**
+ * Klasse LogCatActivity zeigt den Screen für das Log
+ *
+ * Erbt von: AppCompat Activity - Library, um die ActionBar einzubinden
+ *
+ * XML-Layout: activity_log_cat.xml (included content_log_cat.xml)
+ */
 public class LogCatActivity extends AppCompatActivity {
 
+    /**
+     * Hier werden Basisfunktionen implementiert, die nur einmal beim Erstellen
+     * aufgerufen werden sollen
+     *
+     * Lifecycle: wird beim Erstellen der Activity aufgerufen
+     * Zustand: Created
+     *
+     * @param savedInstanceState Bundle Objekt, enthält den zuletzt gespeicherten Zustand der Activity
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        //onCreate() der Superklasse aurufen, um Erstellung der Activity zu vollenden
         super.onCreate(savedInstanceState);
+
+        //XML-Layout über die Ressourcen Variable holen
         setContentView(R.layout.activity_log_cat);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
