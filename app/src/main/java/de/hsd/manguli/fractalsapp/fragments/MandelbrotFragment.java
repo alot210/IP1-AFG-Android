@@ -59,8 +59,9 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
 
     //Switch Button für Seepferdchen
-    Switch sh_button;
-
+    Switch sw_seahorses;
+    //Switch Button für Animation
+    Switch sw_animation;
 
 
     //Variablen für Übergabeparameter an Fractalview
@@ -71,9 +72,13 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     public static int color4 = 0;
     public static Boolean mandelPush = false;
 
+    //Geschwindigkeit der Animation
     public static int speed = 1;
 
+    //Soll zu Seepferdchen gesprungen werden oder nicht
     public static Boolean seahorse = false;
+    //Soll animiert werden oder nicht
+    public static Boolean animation = false;
 
 
     public MandelbrotFragment() {
@@ -167,12 +172,34 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
 
+        sw_animation = (Switch) editor_m.findViewById(R.id.switch_m_Animation);
+        sw_animation.setChecked(false);
+        animation = false;
+        sw_animation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked) {
+                        animation = true;
+                    }
+                    else {
+                        animation = false;
+                    }
+                }
+        });
+        if(sw_animation.isChecked()) {
+            animation = true;
+        }
+        else {
+            animation = false;
+        }
+
         //Setze den Seepferdchen Button auf false standardmäßig
-        sh_button = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
-        sh_button.setChecked(false);
+        sw_seahorses = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
+        sw_seahorses.setChecked(false);
         seahorse = false;
         //Listener für den Switch Button
-        sh_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        sw_seahorses.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -187,7 +214,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
         //Setze den Boolean jenachdem ob in Seepferdchen gezoomt werden soll oder nicht
-        if(sh_button.isChecked()){
+        if(sw_seahorses.isChecked()){
             seahorse = true;
         }
         else{

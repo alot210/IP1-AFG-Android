@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -36,6 +37,11 @@ import static android.content.ContentValues.TAG;
  * View zur Darstellung der Mengen
  */
 public class FractalView extends View {
+    int i = 0;
+    volatile boolean zoomingZyklusFinished = false;
+    double animationScaleXValue = 0, animationScaleYValue = 0;
+    double animationReal = 0.55, animationImag = 0.83, animationRealStart = 2,animationImagStart = 2;
+    boolean animationIsRunning = true;
     private Paint paint;
     private Bitmap bitmap = null;
     private List<Thread> currentThreads = new ArrayList<>();
@@ -55,7 +61,7 @@ public class FractalView extends View {
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
-    private int endOfGranulation = 2;
+    private int endOfGranulation = 16;
 
     /**
      * statische Variablen für die minimale und maximale Zoom-Frequenz
@@ -194,6 +200,9 @@ public class FractalView extends View {
                 drawFractal();
             }
 
+            if(MandelbrotFragment.animation) {
+                mandelsetAnimation(MandelbrotFragment.speed * 100);
+            }
 
             onCall = false;
             Log.d("LOGGING", "drawFractal initial call");
@@ -370,6 +379,7 @@ public class FractalView extends View {
         gestureDetector.onTouchEvent(event);
         switch (event.getAction() & MotionEvent.ACTION_MASK){
             case MotionEvent.ACTION_DOWN:
+                animationIsRunning = false;
                 if(!gestureDetector.isInProgress()) {
                     mode = DRAG;
                     //Koordinaten des ersten Fingers
@@ -436,7 +446,7 @@ public class FractalView extends View {
                 break;
             case MotionEvent.ACTION_UP:
 
-                endOfGranulation = 2;
+                endOfGranulation = 16;
                 Log.w("ONTOUCH", "ACTION_UP");
 
                 if(zooming){
@@ -467,7 +477,7 @@ public class FractalView extends View {
                 Log.w("TRANSLATE", "lastGestureX/scalefactor: "+lastGestureX/scaleFactor+", "+lastGestureY/scaleFactor);
                 Log.w("TRANSLATE", "lastGestureX-lastGestureX/factor: "+(lastGestureX-lastGestureX/factor)+", "+(lastGestureY-lastGestureY/factor));
                 Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
-                Log.w("TRANSLATE","scaleX: "+scaleX+", "+scaleY);
+                Log.w("COMPLEX","scaleX: "+scaleX+", "+scaleY);
 
                 startX = 0;
                 startY = 0;
@@ -521,4 +531,35 @@ public class FractalView extends View {
             return true;
         }//end onScale
     }//end class ScaleListener()
+
+    public void mandelsetAnimation(final long speed) {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (animationIsRunning) {
+                    if(zoomingZyklusFinished) {
+                        if(i==1) {
+                            zoomingZyklusFinished = false;
+                        }
+                        scaleX += 0.29;
+                        scaleY += 0.39;
+                        translate = new Complex(animationRealStart+=0.12,animationImagStart+=0.175);
+                        i--;
+                    }
+                    else {
+                        if(i == 22) {
+                            zoomingZyklusFinished = true;
+                        }
+                        scaleX -=0.29;
+                        scaleY -=0.39;
+                        translate = new Complex(animationRealStart-=0.12,animationImagStart-=0.175);
+                        i++;
+                    }
+                    drawFractal();
+                    handler.postDelayed(this, speed);
+                }
+            }
+        });
+    }
 }//end class()
