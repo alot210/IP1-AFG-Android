@@ -310,7 +310,7 @@ public class FractalView extends View {
 
             for (Thread t : currentThreads) {
                 if (t.isAlive()) {
-                    t.join(DateUtils.SECOND_IN_MILLIS);
+                    t.join();
                     counter++;
                     System.out.println(counter + ". thread terminated");
                 } else {
