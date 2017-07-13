@@ -233,7 +233,6 @@ public class FractalView extends View {
         double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
-
             Log.w("TRANSLATE", translate.complexToString());
             am = new Mandelbrot(screenWidth, screenHeight, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
 
@@ -247,9 +246,11 @@ public class FractalView extends View {
                 am.setColor3(MandelbrotFragment.color3);
                 am.setColor4(MandelbrotFragment.color4);
             }
+
             MandelbrotFragment.mandelPush = false;
         }
         else {
+            translate = new Complex(1.5,2.0);
             am = new Julia(screenWidth, screenHeight, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
@@ -334,12 +335,12 @@ public class FractalView extends View {
         ColorPickerDialogBuilder cpdb = ColorPickerDialogBuilder
                 //Initialisierung
                 .with(getContext())
-                .setTitle("Choose color")
+                .setTitle("Farbe auswählen")
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(12)
                 .lightnessSliderOnly()
                 //CancelButton
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
