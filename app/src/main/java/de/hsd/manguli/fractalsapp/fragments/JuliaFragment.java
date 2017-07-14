@@ -94,12 +94,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         sb_iter.incrementProgressBy(5);
         sb_iter.setMax(100);
         sb_iter.setProgress(Integer.parseInt(iteration));
-        //Seekbar für Speed initialisieren
-        //Seekbar für Speed ansprechen, Progress auf den aktuellen Wert setzen
-        sb_speed = (SeekBar) editor_j.findViewById(R.id.seekBar_j_speed);
-        sb_speed.incrementProgressBy(1);
-        sb_speed.setMax(10);
-        sb_speed.setProgress(speed);
+
         //Seekbar für Realteil initialisieren
         //Seekbar für Realteil ansprechen, Progress auf den aktuellen Wert setzen
         sb_real = (SeekBar) editor_j.findViewById(R.id.seekBar_j_real);
@@ -115,8 +110,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
         //Textviews für Iteration und Speed initialisieren und auf den aktuellen Wert setzen
         tv_iter = (TextView) editor_j.findViewById(R.id.text_j_Iteration_value);
         tv_iter.setText(String.valueOf(iteration));
-        tv_speed = (TextView) editor_j.findViewById(R.id.text_j_Speed_value);
-        tv_speed.setText(speed+"");
+
 
         //Werte setzen in die Textviews für Real und Imaginaerteil
         tv_real = (TextView) editor_j.findViewById(R.id.text_j_real_value);
@@ -169,26 +163,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
             bt_color3.setBackgroundColor(color3);
             bt_color4.setBackgroundColor(color4);
         }
-        //Wird bei Veränderung der Seekbar aufgerufen
-        sb_speed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            //Wenn Wert verändert wird
-            @Override
-            public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
-                //in Textfeld den Wert schreiben
-                tv_speed.setText(String.valueOf(progress));
-                Log.d("LOGGING","Geschwindigkeit verändert");
-            }
 
-            @Override
-            public void onStartTrackingTouch(SeekBar sb_speed) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar sb_speed) {
-
-            }
-        });
         //Wird bei Veränderung der Seekbar aufgerufen
         sb_real.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener(){
             @Override
@@ -247,7 +222,6 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                     JuliaFragment.iteration = iteration.getText().toString();
                     real = sb_real.getProgress();
                     imag = sb_imag.getProgress();
-                    speed = Integer.parseInt(tv_speed.getText().toString());
                     //JuliaMenge soll gemalt werden
                     juliaPush = true;
                     //Farbe setzen anhand der Hintergrundfarbe des Buttons
@@ -262,7 +236,7 @@ public class JuliaFragment extends Fragment implements View.OnClickListener {
                     startActivity(juliaIntent);
                 }
                 else {
-                    Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"Wählen Sie bitte 4 Farben aus.", Toast.LENGTH_LONG).show();
                     Log.d("LOGGING","Julia Draw gedrueckt, Farben fehlen");
                 }
 
