@@ -2,7 +2,6 @@ package de.hsd.manguli.fractalsapp.views;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
-import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -42,7 +40,7 @@ public class FractalView extends View {
     int screenWidth;
     int screenHeight;
     //Setzen der Werte für die Animation
-    int animationsFaktor = 0;
+    int animationFactor = 0;
     volatile boolean zoomingZyklusFinished = false;
     double animationScaleXValue = 0, animationScaleYValue = 0;
     double animationReal = 0.55, animationImag = 0.83, animationRealStart = 2,animationImagStart = 2;
@@ -529,22 +527,22 @@ public class FractalView extends View {
             public void run() {
                 if (animationIsRunning) {
                     if(zoomingZyklusFinished) {
-                        if(animationsFaktor==1) {
+                        if(animationFactor ==1) {
                             zoomingZyklusFinished = false;
                         }
                         scaleX += 0.29;
                         scaleY += 0.39;
                         translate = new Complex(animationRealStart+=0.12,animationImagStart+=0.175);
-                        animationsFaktor--;
+                        animationFactor--;
                     }
                     else {
-                        if(animationsFaktor == 22) {
+                        if(animationFactor == 22) {
                             zoomingZyklusFinished = true;
                         }
                         scaleX -=0.29;
                         scaleY -=0.39;
                         translate = new Complex(animationRealStart-=0.12,animationImagStart-=0.175);
-                        animationsFaktor++;
+                        animationFactor++;
                     }
                     drawFractal();
                     handler.postDelayed(this, speed);
