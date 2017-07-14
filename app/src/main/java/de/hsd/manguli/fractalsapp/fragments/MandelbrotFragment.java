@@ -178,14 +178,17 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
 
-
+        //Setze den Animation Button standardmäßig auf false
         sw_animation = (Switch) editor_m.findViewById(R.id.switch_m_Animation);
         sw_animation.setChecked(false);
         animation = false;
+
+        //Listener für den Switch Button
         sw_animation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    //Wenn der Button gecheckt wurde, soll die Animation ausgeführt werden
                     if(isChecked) {
                         animation = true;
                     }
@@ -194,6 +197,8 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                     }
                 }
         });
+
+        //Soll die Animation ausgeführt werden oder nicht?
         if(sw_animation.isChecked()) {
             animation = true;
         }
@@ -242,10 +247,12 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                 if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
                         (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
 
+                    //Es darf nur in Seepferdchen gezoomt werden oder die Animation ausgeführt werden
                     if(seahorse && animation) {
                         Toast.makeText(getContext(), "Bitte nur Seepferdchen oder Animation auswählen und nicht beides.", Toast.LENGTH_LONG).show();
                     }
                     else {
+                        //Speicher die Werte aus dem Editor in Variablen zur Verarbeitung
                         Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
                         MandelbrotFragment.iteration = iteration.getText().toString();
                         mandelPush = true;
@@ -257,10 +264,6 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
                         speed = Integer.parseInt(tv_speed.getText().toString());
                         Log.d("LOGGING SPEED",speed+"");
-
-                        //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
-                        //        .setAction("Action", null).show();
-
 
                         Log.d("LOGGING","Mandelbrot Draw gedrueckt");
                         //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
@@ -284,7 +287,10 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         return editor_m;
     }
 
-    //OnCllick Methode muss für OnClickListener überschrieben werden
+    /**
+     * OnCllick Methode muss für OnClickListener überschrieben werden
+     * @param v View des Editors
+     */
     @Override
     public void onClick(View v) {
         //Holen uns den ersten Teil des Dialogfensters aus FractalView

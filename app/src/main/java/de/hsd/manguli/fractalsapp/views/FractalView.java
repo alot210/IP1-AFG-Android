@@ -39,11 +39,13 @@ public class FractalView extends View {
     //Größe des Screens
     int screenWidth;
     int screenHeight;
-    //Setzen der Werte für die Animation
-    int animationFactor = 0;
-    volatile boolean zoomingZyklusFinished = false;
-    double animationScaleXValue = 0, animationScaleYValue = 0;
-    double animationReal = 0.55, animationImag = 0.83, animationRealStart = 2,animationImagStart = 2;
+    //Zustand des Zyklus
+    int animationCycleState = 0;
+    //Ist Zyklus abgeschlossen
+    volatile boolean animationCycleFinished = false;
+    //Real und Imaginärteil für die Animation
+    double animationReal = 2, animationImag = 2;
+    //Start und Stop der Animation
     boolean animationIsRunning = true;
 
     private Paint paint;
@@ -181,35 +183,37 @@ public class FractalView extends View {
         super.onDraw(canvas);
 
         //Nur einmal drawFractal aufrufen
-        //if (onCall) {
+        if (onCall) {
             if ((screenWidth != this.getWidth()) || (screenHeight != this.getHeight())) {
                 screenWidth = this.getWidth();
                 screenHeight = this.getHeight();
                 if ((screenWidth == 0) || (screenHeight == 0)) {
                     return;
                 }
-            scaleX = 3.0;
-            scaleY = 4.0;
-            //translate = new Complex(scaleY*0.5, scaleY*0.5);
-            terminateThreads();
-            canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
-            drawFractal();
-
-            //Soll direkt in ein Seepferdchen gezoomt werden?
-            if (MandelbrotFragment.seahorse){
-                scaleX = 0.10211656607523975;
-                scaleY = 0.13615542143365297;
-                translate = new Complex(0.8086260179507412, 0.24773066371129954);
+                scaleX = 3.0;
+                scaleY = 4.0;
+                terminateThreads();
+                canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
                 drawFractal();
-            }
 
-            if(MandelbrotFragment.animation) {
-                mandelsetAnimation(MandelbrotFragment.speed * 100);
-            }
+                //Soll direkt in ein Seepferdchen gezoomt werden?
+                if (MandelbrotFragment.seahorse) {
+                    scaleX = 0.10211656607523975;
+                    scaleY = 0.13615542143365297;
+                    translate = new Complex(0.8086260179507412, 0.24773066371129954);
+                    drawFractal();
+                }
 
-            onCall = false;
-            Log.d("LOGGING", "drawFractal initial call");
-            return;
+                //Wurde die Animation im Editor aktiviert?
+                if (MandelbrotFragment.animation) {
+                    //Methode die in Abhängigkeit von der Seekbar die Animation ausführt
+                    mandelSetAnimation(MandelbrotFragment.speed * 100);
+                }
+
+                onCall = false;
+                Log.d("LOGGING", "drawFractal initial call");
+                return;
+            }
         }
         if (bitmap != null) {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
@@ -241,26 +245,20 @@ public class FractalView extends View {
      */
     public void drawFractal() {
         terminateThreads();
-        //canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
         Log.d("LOGGING", "drawFractal()");
 
-        //final, da innerhalb von Thread verwendet wird
-        //final int width = screenWidth;
-        //final int height = screenHeight;
-
+        //Speichert Werte aus dem Editor in Variablen ab
         int mandelbrotIteration = Integer.parseInt(MandelbrotFragment.iteration);
         int juliaIteration = Integer.parseInt(JuliaFragment.iteration);
         double _real = Math.cos((double) JuliaFragment.real+3.257);
         double _imag = Math.sin((double) JuliaFragment.imag);
 
+        //Wurde der DrawButton im Editor der Juliamenge oder der Mandelbrotmenge geklickt?
         if(!juliaPush) {
-            Log.w("TRANSLATE", translate.complexToString());
+            //Setze den Algorithmus auf die Mandelbrotmenge
             am = new Mandelbrot(screenWidth, screenHeight, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
 
-            //new Complex(2.0,2.0) Translation; new Complex(3.0/4.0/ Skalierung;
-            //Zahlen < 1 damit das Mandelbrot größer wird
-            //Verschiebung von Pixel in das Koordinatensystem
-
+            //Speichert die Farben aus dem Editor ab
             if(mandelPush) {
                 am.setColor1(MandelbrotFragment.color1);
                 am.setColor2(MandelbrotFragment.color2);
@@ -271,6 +269,7 @@ public class FractalView extends View {
             MandelbrotFragment.mandelPush = false;
         }
         else {
+            //Zentriere die Juliamenge, initialisiere sie und setze die Farben
             translate = new Complex(1.5,2.0);
             am = new Julia(screenWidth, screenHeight, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
@@ -283,8 +282,7 @@ public class FractalView extends View {
         //Pixelarray initialiseren
         setPixels(new int[screenWidth * screenHeight]);
 
-
-
+        //WorkerThread für die Berechnung der Mengen und setzen der Bitmap
         Thread t = new Thread(new Runnable() {
 
             @Override
@@ -350,8 +348,10 @@ public class FractalView extends View {
         }
     }
 
-
-    //Methode gibt ein Teil des Color Picker Dialogfensters zurück
+    /**
+     * Setze die Daten für den ColorPicker bis auf Cancel Button
+     * @return Gibt einen ColorPicker zurück
+     */
     public ColorPickerDialogBuilder getColorPickerDialogBuilder() {
         ColorPickerDialogBuilder cpdb = ColorPickerDialogBuilder
                 //Initialisierung
@@ -363,8 +363,7 @@ public class FractalView extends View {
                 //CancelButton
                 .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
+                    public void onClick(DialogInterface dialog, int which) {}
                 });
         return cpdb;
     }//end getColorPickerDialogBuilder
@@ -383,6 +382,7 @@ public class FractalView extends View {
         switch (event.getAction() & MotionEvent.ACTION_MASK){
             //der erste Finger ist gesetzt
             case MotionEvent.ACTION_DOWN:
+                //Wenn der Finger das Display berührt, wird die Animation gestoppt
                 animationIsRunning = false;
                 if(!gestureDetector.isInProgress()) {
                     //Koordinaten des ersten Fingers
@@ -520,34 +520,45 @@ public class FractalView extends View {
      * Animation der Mandelbrotmenge; automatischer Zoom
      * @param speed Schnelligkeit mit der die Animation stattfindet
      */
-    public void mandelsetAnimation(final long speed) {
+    public void mandelSetAnimation(final long speed) {
         final Handler handler = new Handler();
+        //Runnable wird der Message Queue angehangen
         handler.post(new Runnable() {
             @Override
             public void run() {
+                //Zeichne die Mandelbrotmenge solange neu, bis ACTION_DOWN Event ausgeführt wird
                 if (animationIsRunning) {
-                    if(zoomingZyklusFinished) {
-                        if(animationFactor ==1) {
-                            zoomingZyklusFinished = false;
+                    //Wird der erste oder zweite Zyklus ausgeführt?
+                    if(animationCycleFinished) {
+                        //Führe den ersten Zyklus der Animation aus
+                        //nachdem der erste Zyklus durchlaufen wurde
+                        if(animationCycleState ==1) {
+                            animationCycleFinished = false;
                         }
+                        //Inkrementiere die Skalierung, sowie den Real- und Imaginärteil
                         scaleX += 0.29;
                         scaleY += 0.39;
-                        translate = new Complex(animationRealStart+=0.12,animationImagStart+=0.175);
-                        animationFactor--;
+                        translate = new Complex(animationReal +=0.12, animationImag +=0.175);
+                        animationCycleState--;
                     }
                     else {
-                        if(animationFactor == 22) {
-                            zoomingZyklusFinished = true;
+                        //Führe den zweiten Zyklus der Animation aus
+                        //nachdem der erste Zyklus durchlaufen wurde
+                        if(animationCycleState == 22) {
+                            animationCycleFinished = true;
                         }
+                        //Dekrementiere die Skalierung, sowie den Real- und Imaginärteil
                         scaleX -=0.29;
                         scaleY -=0.39;
-                        translate = new Complex(animationRealStart-=0.12,animationImagStart-=0.175);
-                        animationFactor++;
+                        translate = new Complex(animationReal -=0.12, animationImag -=0.175);
+                        animationCycleState++;
                     }
+                    //Zeichne das Fraktal neu
                     drawFractal();
+                    //Runnable wird je nach Wert der Seekbar der Message Queue angehangen
                     handler.postDelayed(this, speed);
                 }
             }
         });
-    }//end mandelsetAnimation
+    }//end mandelSetAnimation
 }//end class()
