@@ -67,7 +67,7 @@ public class FractalView extends View {
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
     private int granulation = 16;
-    private int endOfGranulation = 2;
+    private int endOfGranulation = 1;
 
     //statische Variablen für die minimale und maximale Zoom-Frequenz
     private static float MIN_ZOOM = 0.2f;
@@ -314,7 +314,7 @@ public class FractalView extends View {
                         break;
                     }
                     //Auflösung verfeinern
-                    granulation = granulation / 2;
+                    granulation = granulation / 4;
                 }
             }
         });
@@ -449,7 +449,7 @@ public class FractalView extends View {
             //der erste Finger verlässt den Screen
             case MotionEvent.ACTION_UP:
 
-                endOfGranulation = 2;
+                endOfGranulation = 1;
                 Log.w("ONTOUCH", "ACTION_UP");
 
                 //die Bitmap muss an die Position der letzten Geste angepasst werden
