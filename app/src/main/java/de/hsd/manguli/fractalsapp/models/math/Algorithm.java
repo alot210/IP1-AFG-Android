@@ -171,9 +171,9 @@ public class Algorithm {
      * @return interpolierte Farbe
      */
     public int interpolate(int v1, int v2, int i) {
-        int r = Math.abs(Color.red(v1) + i * (Color.red(v2) - Color.red(v1)) / (maxIteration/3));
-        int g = Math.abs(Color.green(v1) + i * (Color.green(v2) - Color.green(v1)) / (maxIteration/3));
-        int b = Math.abs(Color.blue(v1) + i * (Color.blue(v2) - Color.blue(v1)) / (maxIteration/3));
+        int r = Math.abs(Color.red(v1) + (i%(maxIteration/3)) * (Color.red(v2) - Color.red(v1)) / (maxIteration/3));
+        int g = Math.abs(Color.green(v1) + (i%(maxIteration/3)) * (Color.green(v2) - Color.green(v1)) / (maxIteration/3));
+        int b = Math.abs(Color.blue(v1) + (i%(maxIteration/3)) * (Color.blue(v2) - Color.blue(v1)) / (maxIteration/3));
         return Color.rgb(r, g, b);
     }
 }
