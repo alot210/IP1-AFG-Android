@@ -207,7 +207,10 @@ public class FractalView extends View {
                 //Wurde die Animation im Editor aktiviert?
                 if (MandelbrotFragment.animation) {
                     //Methode die in Abhängigkeit von der Seekbar die Animation ausführt
-                    mandelSetAnimation(MandelbrotFragment.speed * 100);
+                    if(MandelbrotFragment.speed == 0) mandelSetAnimation(1500);
+                    else mandelSetAnimation(1000 / MandelbrotFragment.speed);
+
+
                 }
 
                 onCall = false;
