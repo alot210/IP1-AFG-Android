@@ -217,7 +217,7 @@ public class FractalView extends View {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
 
-            canvas.translate(startX/scaleFactor,startY/scaleFactor);
+            //canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             if(gestureDetector.isInProgress()){
                 canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
