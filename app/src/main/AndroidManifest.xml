@@ -56,7 +56,7 @@
                 android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".LogCatActivity"
+            android:name="activities.LogCatActivity"
             android:label="LogCat Ausgabe"
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.MainActivity"

@@ -25,7 +25,8 @@ import de.hsd.manguli.fractalsapp.views.FractalView;
 import de.hsd.manguli.fractalsapp.R;
 
 /**
- * Fragment als Teil des Editor
+ * Fragment für den Mandelbrot Editor,
+ * wird in der EditorActivity dargestellt
  */
 public class MandelbrotFragment extends Fragment implements View.OnClickListener {
 
@@ -59,8 +60,9 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
 
     //Switch Button für Seepferdchen
-    Switch sh_button;
-
+    Switch sw_seahorses;
+    //Switch Button für Animation
+    Switch sw_animation;
 
 
     //Benötigte Variablen für Übergabeparameter an Fractalview --> static, da immer auf die Klassenvariablen zugegriffen werden muss
@@ -73,10 +75,15 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
     public static int color4 = 0;
     //Variable zum prüfen ob Mandelbrot gemalt werden soll
     public static Boolean mandelPush = false;
+
+
     //Geschwindigkeit der Animation
     public static int speed = 1;
-    //Boolean ob direkt in eine Seepferdchenmenge gezoomt werden soll
+
+    //Soll zu Seepferdchen gesprungen werden oder nicht
     public static Boolean seahorse = false;
+    //Soll animiert werden oder nicht
+    public static Boolean animation = false;
 
 
     public MandelbrotFragment() {
@@ -171,13 +178,36 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
 
-        //Initialisiere und setze den Seepferdchen Button auf false standardmäßig
-        sh_button = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
-        sh_button.setChecked(false);
-        //Boolean für Seepferdchen soll standartmäßig false sein
+
+        sw_animation = (Switch) editor_m.findViewById(R.id.switch_m_Animation);
+        sw_animation.setChecked(false);
+        animation = false;
+        sw_animation.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(isChecked) {
+                        animation = true;
+                    }
+                    else {
+                        animation = false;
+                    }
+                }
+        });
+        if(sw_animation.isChecked()) {
+            animation = true;
+        }
+        else {
+            animation = false;
+        }
+
+        //Setze den Seepferdchen Button auf false standardmäßig
+        sw_seahorses = (Switch) editor_m.findViewById(R.id.switch_j_seepferdchen);
+        sw_seahorses.setChecked(false);
+
         seahorse = false;
         //Listener für den Switch Button
-        sh_button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        sw_seahorses.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -192,7 +222,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             }
         });
         //Setze den Boolean jenachdem ob in Seepferdchen gezoomt werden soll oder nicht
-        if(sh_button.isChecked()){
+        if(sw_seahorses.isChecked()){
             seahorse = true;
         }
         else{
@@ -211,24 +241,34 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
                 //Oder alle Farben vorhanden sein ( nach erstem Zeichnen eines Mandelbrotes )
                 if((bt_color1_pressed && bt_color2_pressed && bt_color3_pressed && bt_color4_pressed) ||
                         (color1 != 0 && color2 != 0 && color3 != 0 && color4 != 0)) {
-                    //Toastnachricht ausgeben
-                    Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
-                    //Benötigte Variablen final setzen und falls vorhanden, Überschreiben
-                    MandelbrotFragment.iteration = iteration.getText().toString();
-                    mandelPush = true;
-                    speed = Integer.parseInt(tv_speed.getText().toString());
-                    Log.d("LOGGING SPEED",speed+"");
-                    //Farbe setzen anhand der Hintergrundfarbe des Buttons
-                    color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
-                    color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
-                    color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
-                    color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
+
+                    if(seahorse && animation) {
+                        Toast.makeText(getContext(), "Bitte nur Seepferdchen oder Animation auswählen und nicht beides.", Toast.LENGTH_LONG).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Mandelbrot wird nun gezeichnet.", Toast.LENGTH_LONG).show();
+                        MandelbrotFragment.iteration = iteration.getText().toString();
+                        mandelPush = true;
+
+                        color1 = ((ColorDrawable)bt_color1.getBackground()).getColor();
+                        color2 = ((ColorDrawable)bt_color2.getBackground()).getColor();
+                        color3 = ((ColorDrawable)bt_color3.getBackground()).getColor();
+                        color4 = ((ColorDrawable)bt_color4.getBackground()).getColor();
+
+                        speed = Integer.parseInt(tv_speed.getText().toString());
+                        Log.d("LOGGING SPEED",speed+"");
+
+                        //Snackbar.make(view,  i, Snackbar.LENGTH_LONG)
+                        //        .setAction("Action", null).show();
 
 
-                    Log.d("LOGGING","Mandelbrot Draw gedrueckt");
-                    //Die Mainactivity wird aufgerufen, nachdem die wichtigen Parameter gesetzt wurden
-                    Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
-                    startActivity(mandelbrotIntent);
+                        Log.d("LOGGING","Mandelbrot Draw gedrueckt");
+                        //Intent mandelbrotIntent = new Intent(this,MainActivity.class);
+                        Intent mandelbrotIntent = new Intent(getActivity(),MainActivity.class);
+                        startActivity(mandelbrotIntent);
+
+                        //String i = iteration.getText().toString();
+                    }
 
                 }
                 else {

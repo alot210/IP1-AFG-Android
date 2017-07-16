@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
+import android.os.Handler;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -37,8 +38,16 @@ import static android.content.ContentValues.TAG;
  */
 public class FractalView extends View {
 
+    //Größe des Screens
     int screenWidth;
     int screenHeight;
+    //Setzen der Werte für die Animation
+    int animationsFaktor = 0;
+    volatile boolean zoomingZyklusFinished = false;
+    double animationScaleXValue = 0, animationScaleYValue = 0;
+    double animationReal = 0.55, animationImag = 0.83, animationRealStart = 2,animationImagStart = 2;
+    boolean animationIsRunning = true;
+
     private Paint paint;
     private Bitmap bitmap = null;
     private List<Thread> currentThreads = new ArrayList<>();
@@ -60,9 +69,7 @@ public class FractalView extends View {
     private int granulation = 16;
     private int endOfGranulation = 2;
 
-    /**
-     * statische Variablen für die minimale und maximale Zoom-Frequenz
-     */
+    //statische Variablen für die minimale und maximale Zoom-Frequenz
     private static float MIN_ZOOM = 0.2f;
     private static float MAX_ZOOM = 2f;
 
@@ -71,15 +78,6 @@ public class FractalView extends View {
 
     //erstellen eines ScaleGestureDetectors
     private ScaleGestureDetector gestureDetector;
-
-    //wenn kein Finger den Bildschirm berührt
-    private static int NONE = 0;
-    //wenn 1 Finger den Bildschirm berührt
-    private static int DRAG = 1;
-    //wenn 2 Finger den Bildschirm berühren
-    private static int ZOOM = 2;
-
-    private int mode;
 
     //x- und y-Koordinaten des ersten Fingers der gesetzt wird
     private float startX = 0f;
@@ -93,41 +91,67 @@ public class FractalView extends View {
     private float lastGestureX = 0f;
     private float lastGestureY = 0f;
 
-    private static final int INVALID_POINTER_ID = -1;
-    private int  activePointerId = INVALID_POINTER_ID;
-
-
+    /**
+     * setzen der Bitmap
+     * @param bitmap die gezeichnete Bitmap
+     */
     public void setBitmap(Bitmap bitmap) {
         System.out.println("new Bitmap");
         this.bitmap = bitmap;
     }
 
+    /**
+     * setzten der Pixel im Pixel-Array
+     * @param pixels
+     */
     public void setPixels(int[] pixels) {
         this.pixels = pixels;
     }
 
+    /**
+     *
+     * @return aktuelle granulation der Bitmap
+     */
     public int getGranulation() {
         return granulation;
     }
 
+    /**
+     *
+     * @return endOfGranulation die kleinste Granulation, die erreicht wird
+     */
     public int getEndOfGranulation() {
         return endOfGranulation;
     }
 
 
-    //Überschreiben der drei Constructor
+    /**
+     *
+     * @param context
+     */
     public FractalView(Context context) {
         super(context);
         gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
         init();
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     */
     public FractalView(Context context, AttributeSet attrs) {
         super(context, attrs);
         gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
         init();
     }
 
+    /**
+     *
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
     public FractalView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         gestureDetector = new ScaleGestureDetector(context,new ScaleListener());
@@ -181,6 +205,9 @@ public class FractalView extends View {
                 drawFractal();
             }
 
+            if(MandelbrotFragment.animation) {
+                mandelsetAnimation(MandelbrotFragment.speed * 100);
+            }
 
             onCall = false;
             Log.d("LOGGING", "drawFractal initial call");
@@ -190,17 +217,13 @@ public class FractalView extends View {
             canvas.drawColor(Color.WHITE, PorterDuff.Mode.CLEAR);
             canvas.save();
 
-            //canvas.translate(startX/scaleFactor,startY/scaleFactor);
+            canvas.translate(startX/scaleFactor,startY/scaleFactor);
 
             if(gestureDetector.isInProgress()){
                 canvas.scale(this.scaleFactor,this.scaleFactor,gestureDetector.getFocusX(),gestureDetector.getFocusY());
-                //translate soll nicht außerhalb des Canvas stattfinden
-                //scaleWindow(canvas);
             }
             else{
                 canvas.scale(this.scaleFactor,this.scaleFactor, lastGestureX,lastGestureY);
-                //translate soll nicht außerhalb des Canvas stattfinden
-                //scaleWindow(canvas);
 
             }
 
@@ -233,7 +256,6 @@ public class FractalView extends View {
         double _imag = Math.sin((double) JuliaFragment.imag);
 
         if(!juliaPush) {
-
             Log.w("TRANSLATE", translate.complexToString());
             am = new Mandelbrot(screenWidth, screenHeight, mandelbrotIteration ,translate ,new Complex(scaleX, scaleY));
 
@@ -247,9 +269,11 @@ public class FractalView extends View {
                 am.setColor3(MandelbrotFragment.color3);
                 am.setColor4(MandelbrotFragment.color4);
             }
+
             MandelbrotFragment.mandelPush = false;
         }
         else {
+            translate = new Complex(1.5,2.0);
             am = new Julia(screenWidth, screenHeight, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
@@ -310,7 +334,7 @@ public class FractalView extends View {
 
             for (Thread t : currentThreads) {
                 if (t.isAlive()) {
-                    t.join(DateUtils.SECOND_IN_MILLIS);
+                    t.join();
                     counter++;
                     System.out.println(counter + ". thread terminated");
                 } else {
@@ -334,12 +358,12 @@ public class FractalView extends View {
         ColorPickerDialogBuilder cpdb = ColorPickerDialogBuilder
                 //Initialisierung
                 .with(getContext())
-                .setTitle("Choose color")
+                .setTitle("Farbe auswählen")
                 .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
                 .density(12)
                 .lightnessSliderOnly()
                 //CancelButton
-                .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                .setNegativeButton("Abbrechen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
@@ -350,27 +374,30 @@ public class FractalView extends View {
     /**
      * handelt das Touch Event
      * @param event Touch Event dass beim Berühren des Screens übergeben wird
-     * @return
+     * @return true wenn eine gültiges Touch-Event ausgeführt wurde
      */
     @Override
     public boolean onTouchEvent(MotionEvent event){
 
+        //rekursiver Aufruf über den gestureDetector
         gestureDetector.onTouchEvent(event);
+        //abfangen der verschieden MotionEvents auf dem Screen
         switch (event.getAction() & MotionEvent.ACTION_MASK){
+            //der erste Finger ist gesetzt
             case MotionEvent.ACTION_DOWN:
+                animationIsRunning = false;
                 if(!gestureDetector.isInProgress()) {
-                    mode = DRAG;
                     //Koordinaten des ersten Fingers
                     final float x = event.getX();
                     final float y = event.getY();
                     previousTranslateX = x;
                     previousTranslateY = y;
-                    activePointerId = event.getPointerId(0);
                     Log.w("ONTOUCH", "ACTION_DOWN");
                 }
                 break;
+            //der erste Finger bewegt sich
             case MotionEvent.ACTION_MOVE:
-
+                //Abfragen ob gestureDetector bereits verwendet wird
                 if(!gestureDetector.isInProgress()) {
                     //wird bei jeder Bewegung des Fingers geupdatet
                     final float x = event.getX();
@@ -406,10 +433,10 @@ public class FractalView extends View {
                 }
                 Log.w("ONTOUCH", "ACTION_MOVE");
                 break;
+            //der zweite Finger ist gesetzt
             case MotionEvent.ACTION_POINTER_DOWN:
                 if(gestureDetector.isInProgress()) {
                     //Ist der zweite Finger gesetzt kann gezoomt werden
-                    mode = ZOOM;
                     zooming = true;
                     final float gx = gestureDetector.getFocusX();
                     final float gy = gestureDetector.getFocusY();
@@ -419,11 +446,15 @@ public class FractalView extends View {
                 }
                 Log.w("ONTOUCH", "ACTION_POINTER_DOWN");
                 break;
+            //der erste Finger verlässt den Screen
             case MotionEvent.ACTION_UP:
 
                 endOfGranulation = 2;
                 Log.w("ONTOUCH", "ACTION_UP");
 
+                //die Bitmap muss an die Position der letzten Geste angepasst werden
+                //und wird beim Verlassen der Finger vom Screen neu gezeichnet
+                //dabei muss zwischen der Zoom-Geste und der Drag-Geste unterschieden werden
                 if(zooming){
                     Log.w("ZOOM", "zooming");
 
@@ -443,7 +474,6 @@ public class FractalView extends View {
 
                     translate = translate.add(new Complex((scaleX*(startX))/screenWidth, (scaleY*(startY)/screenHeight)));
                 }
-                mode = NONE;
 
                 Log.w("TRANSLATE", "startX: "+(startX)+", "+(startY));
                 Log.w("TRANSLATE", "previousTranslateX: "+(previousTranslateX)+", "+(previousTranslateY));
@@ -452,18 +482,18 @@ public class FractalView extends View {
                 Log.w("TRANSLATE", "lastGestureX/scalefactor: "+lastGestureX/scaleFactor+", "+lastGestureY/scaleFactor);
                 Log.w("TRANSLATE", "lastGestureX-lastGestureX/factor: "+(lastGestureX-lastGestureX/factor)+", "+(lastGestureY-lastGestureY/factor));
                 Log.w("TRANSLATE", "scaleFactor: "+(scaleFactor+""));
-                Log.w("TRANSLATE","scaleX: "+scaleX+", "+scaleY);
+                Log.w("COMPLEX","scaleX: "+scaleX+", "+scaleY);
 
+                //Werte werden auf null gesetzt, da eine neue Bitmap gezeichnet wurde
                 startX = 0;
                 startY = 0;
                 previousTranslateY = 0;
                 previousTranslateX = 0;
                 drawFractal();
                 scaleFactor = 1.0f;
-                activePointerId = INVALID_POINTER_ID;
                 break;
+            //der zweite Finger verlässt den Screen
             case MotionEvent.ACTION_POINTER_UP:
-                mode = NONE;
                 Log.w("ONTOUCH", "ACTION_POINTER_UP");
                 break;
         }
@@ -471,7 +501,7 @@ public class FractalView extends View {
     }//end onTouchEvent
 
     /**
-     * Klasse wird im Konstruktor von FractalView aufgerufen
+     * Definition des Listeners, der im Konstruktor von FractalView übergeben wird
      */
     private class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener{
         /**
@@ -479,7 +509,7 @@ public class FractalView extends View {
          * es wird überprüft ob dieser innerhalb unseres ausgewählten Fensters
          * liegt, wenn ja wird der Zoom ausgeführt
          * @param gestureDetector
-         * @return
+         * @return true wenn die Skalierung ausgeführt werden kann
          */
         public boolean onScale(ScaleGestureDetector gestureDetector){
             scaleFactor *= gestureDetector.getScaleFactor();
@@ -487,4 +517,39 @@ public class FractalView extends View {
             return true;
         }//end onScale
     }//end class ScaleListener()
+
+    /**
+     * Animation der Mandelbrotmenge; automatischer Zoom
+     * @param speed Schnelligkeit mit der die Animation stattfindet
+     */
+    public void mandelsetAnimation(final long speed) {
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (animationIsRunning) {
+                    if(zoomingZyklusFinished) {
+                        if(animationsFaktor==1) {
+                            zoomingZyklusFinished = false;
+                        }
+                        scaleX += 0.29;
+                        scaleY += 0.39;
+                        translate = new Complex(animationRealStart+=0.12,animationImagStart+=0.175);
+                        animationsFaktor--;
+                    }
+                    else {
+                        if(animationsFaktor == 22) {
+                            zoomingZyklusFinished = true;
+                        }
+                        scaleX -=0.29;
+                        scaleY -=0.39;
+                        translate = new Complex(animationRealStart-=0.12,animationImagStart-=0.175);
+                        animationsFaktor++;
+                    }
+                    drawFractal();
+                    handler.postDelayed(this, speed);
+                }
+            }
+        });
+    }//end mandelsetAnimation
 }//end class()
