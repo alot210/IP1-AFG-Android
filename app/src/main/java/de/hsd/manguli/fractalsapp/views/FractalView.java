@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Message;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -287,6 +288,16 @@ public class FractalView extends View {
 
         //WorkerThread für die Berechnung der Mengen und setzen der Bitmap
         Thread t = new Thread(new Runnable() {
+            int granulationProgress = 0;
+
+            Handler handler = new Handler() {
+                @Override
+                public void handleMessage(Message msg) {
+                    granulationProgress ++;
+                    super.handleMessage(msg);
+                    Toast.makeText(getContext(),"Fractal "+granulationProgress+"/"+3+" fertig", Toast.LENGTH_SHORT).show();
+                }
+            };
 
             @Override
             public void run() {
@@ -307,6 +318,7 @@ public class FractalView extends View {
                     setBitmap(Bitmap.createBitmap(pixels, width, height, Bitmap.Config.ARGB_8888));
                     //View soll neu gerendert werden
                     FractalView.this.postInvalidate();
+                    handler.sendMessage(handler.obtainMessage());
                     //wenn Auflösung erreich ist
                     if (granulation <= endOfGranulation) {
                         Log.w("GRANULATION", "End of Granulation");
