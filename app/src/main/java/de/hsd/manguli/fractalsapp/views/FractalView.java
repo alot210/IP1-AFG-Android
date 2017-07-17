@@ -401,6 +401,7 @@ public class FractalView extends View {
             case MotionEvent.ACTION_DOWN:
                 //Wenn der Finger das Display berührt, wird die Animation gestoppt
                 animationIsRunning = false;
+                granulation = 16;
                 endOfGranulation = 1;
                 if(!gestureDetector.isInProgress()) {
                     //Koordinaten des ersten Fingers
@@ -537,6 +538,7 @@ public class FractalView extends View {
      * @param speed Schnelligkeit mit der die Animation stattfindet
      */
     public void mandelSetAnimation(final long speed) {
+        granulation = 8;
         endOfGranulation = 8;
         final Handler handler = new Handler();
         //Runnable wird der Message Queue angehangen
