@@ -19,14 +19,6 @@ public class Algorithm {
     private int maxIteration = 150;
     private int color1 = Color.YELLOW, color2 = Color.CYAN, color3 = Color.MAGENTA, color4 = Color.BLUE;
 
-    public int getWidth() {
-        return this.width;
-    }
-
-    public int getHeigth() {
-        return this.height;
-    }
-
     public int getMaxIteration() {
         return this.maxIteration;
     }
@@ -138,8 +130,6 @@ public class Algorithm {
         return isElemOfMand(c);
     }
 
-
-
     /**
      * Methode um Pixelarray mit Farbwerten befüllen
      * @param granulation Auflösung der aktuellen Bitmap
@@ -181,9 +171,9 @@ public class Algorithm {
      * @return interpolierte Farbe
      */
     public int interpolate(int v1, int v2, int i) {
-        int r = Math.abs(Color.red(v1) + i * (Color.red(v2) - Color.red(v1)) / maxIteration);
-        int g = Math.abs(Color.green(v1) + i * (Color.green(v2) - Color.green(v1)) / maxIteration);
-        int b = Math.abs(Color.blue(v1) + i * (Color.blue(v2) - Color.blue(v1)) / maxIteration);
+        int r = Math.abs(Color.red(v1) + (i%(maxIteration/3)) * (Color.red(v2) - Color.red(v1)) / (maxIteration/3));
+        int g = Math.abs(Color.green(v1) + (i%(maxIteration/3)) * (Color.green(v2) - Color.green(v1)) / (maxIteration/3));
+        int b = Math.abs(Color.blue(v1) + (i%(maxIteration/3)) * (Color.blue(v2) - Color.blue(v1)) / (maxIteration/3));
         return Color.rgb(r, g, b);
     }
 }

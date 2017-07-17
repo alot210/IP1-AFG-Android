@@ -18,7 +18,7 @@ public class Julia extends Algorithm {
     public Julia(int width, int heigth, int maxIteration, Complex translate, Complex scale, Complex constant){
         super.setWidth(width);
         super.setHeigth(heigth);
-        super.setMaxIteration(maxIteration);
+        super.setMaxIteration((maxIteration*3)/3);
         super.translate = translate;
         super.scale = scale;
         this.constant = constant;

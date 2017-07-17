@@ -15,7 +15,7 @@ public class Mandelbrot extends Algorithm {
 
         super.setWidth(width);
         super.setHeigth(heigth);
-        super.setMaxIteration(maxIteration);
+        super.setMaxIteration((maxIteration/3)*3);
         //Nullpunkt der Mandelbrotmenge
         super.translate = translate;
         super.scale = scale;
