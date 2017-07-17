@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     //Toast, damit user sieht, dass das Bild gespeichert wird
-                    Toast.makeText(MainActivity.this, "Bild gespeichert", Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, "Bild wurde gespeichert.", Toast.LENGTH_LONG).show();
                 } else {
 
                     // Permission wurde abgelehnt oder beendet

@@ -249,7 +249,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
                     //Es darf nur in Seepferdchen gezoomt werden oder die Animation ausgeführt werden
                     if(seahorse && animation) {
-                        Toast.makeText(getContext(), "Bitte nur Seepferdchen oder Animation auswählen und nicht beides.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Seepferdchen- und Animationsmodus können nicht kombiniert werden.", Toast.LENGTH_LONG).show();
                     }
                     else {
                         //Speicher die Werte aus dem Editor in Variablen zur Verarbeitung
@@ -275,7 +275,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
 
                 }
                 else {
-                    Toast.makeText(getContext(),"Bitte wählen Sie Farben aus.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(),"Wählen Sie bitte 4 Farben aus.", Toast.LENGTH_LONG).show();
                     Log.d("LOGGING","Mandelbrot Draw gedrueckt, Farben fehlen");
                 }
 
