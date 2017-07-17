@@ -65,6 +65,7 @@ public class FractalView extends View {
     private double scaleY;
     private double factor = 1.0;
     private Complex translate = new Complex(2.0*factor, 2.0*factor);
+    private Complex translateJ = new Complex(1.5*factor, 2.0*factor);
     private Boolean zooming = false;
 
     //Auflösung wird mit 16x16, 8x8, 4x4 und 2x2 berechnet
@@ -273,9 +274,8 @@ public class FractalView extends View {
             MandelbrotFragment.mandelPush = false;
         }
         else {
-            //Zentriere die Juliamenge, initialisiere sie und setze die Farben
-            translate = new Complex(1.5,2.0);
-            am = new Julia(screenWidth, screenHeight, juliaIteration, translate,new Complex(scaleX,scaleY),new Complex(_real,_imag));
+            //initialisiere sie und setze die Farben der Juliamenge
+            am = new Julia(screenWidth, screenHeight, juliaIteration, translateJ,new Complex(scaleX,scaleY),new Complex(_real,_imag));
             am.setColor1(JuliaFragment.color1);
             am.setColor2(JuliaFragment.color2);
             am.setColor3(JuliaFragment.color3);
@@ -483,10 +483,13 @@ public class FractalView extends View {
 
 
                     translate = new Complex(translate.getReal()+dX, translate.getImag()+dY);
+                    translateJ = new Complex(translateJ.getReal()+dX, translateJ.getImag()+dY);
+
 
                     zooming = false;
                 }else{
 
+                    translateJ = translateJ.add(new Complex((scaleX*(startX))/screenWidth, (scaleY*(startY)/screenHeight)));
                     translate = translate.add(new Complex((scaleX*(startX))/screenWidth, (scaleY*(startY)/screenHeight)));
                 }
 
