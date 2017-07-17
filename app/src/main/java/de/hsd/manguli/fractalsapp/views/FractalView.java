@@ -293,9 +293,11 @@ public class FractalView extends View {
             Handler handler = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    granulationProgress ++;
                     super.handleMessage(msg);
-                    Toast.makeText(getContext(),"Detailgrad: "+granulationProgress+"/"+3, Toast.LENGTH_SHORT).show();
+                    granulationProgress ++;
+                    if(!MandelbrotFragment.animation) {
+                        Toast.makeText(getContext(),"Detailgrad: "+granulationProgress+"/"+3, Toast.LENGTH_SHORT).show();
+                    }
                 }
             };
 
@@ -399,6 +401,7 @@ public class FractalView extends View {
             case MotionEvent.ACTION_DOWN:
                 //Wenn der Finger das Display berührt, wird die Animation gestoppt
                 animationIsRunning = false;
+                endOfGranulation = 1;
                 if(!gestureDetector.isInProgress()) {
                     //Koordinaten des ersten Fingers
                     final float x = event.getX();
@@ -461,8 +464,6 @@ public class FractalView extends View {
                 break;
             //der erste Finger verlässt den Screen
             case MotionEvent.ACTION_UP:
-
-                endOfGranulation = 1;
                 Log.w("ONTOUCH", "ACTION_UP");
 
                 //die Bitmap muss an die Position der letzten Geste angepasst werden
@@ -536,6 +537,7 @@ public class FractalView extends View {
      * @param speed Schnelligkeit mit der die Animation stattfindet
      */
     public void mandelSetAnimation(final long speed) {
+        endOfGranulation = 8;
         final Handler handler = new Handler();
         //Runnable wird der Message Queue angehangen
         handler.post(new Runnable() {
