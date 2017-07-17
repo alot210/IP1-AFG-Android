@@ -295,7 +295,7 @@ public class FractalView extends View {
                 public void handleMessage(Message msg) {
                     granulationProgress ++;
                     super.handleMessage(msg);
-                    Toast.makeText(getContext(),"Fractal "+granulationProgress+"/"+3+" fertig", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(),"Detailgrad: "+granulationProgress+"/"+3, Toast.LENGTH_SHORT).show();
                 }
             };
 
