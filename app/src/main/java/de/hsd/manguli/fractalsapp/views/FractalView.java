@@ -295,7 +295,7 @@ public class FractalView extends View {
                 public void handleMessage(Message msg) {
                     super.handleMessage(msg);
                     granulationProgress ++;
-                    if(!MandelbrotFragment.animation) {
+                    if(!animationIsRunning) {
                         Toast.makeText(getContext(),"Detailgrad: "+granulationProgress+"/"+3, Toast.LENGTH_SHORT).show();
                     }
                 }
