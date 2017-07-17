@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Toast;
 
 import com.flask.colorpicker.ColorPickerView;
 import com.flask.colorpicker.builder.ColorPickerDialogBuilder;
@@ -206,11 +207,10 @@ public class FractalView extends View {
 
                 //Wurde die Animation im Editor aktiviert?
                 if (MandelbrotFragment.animation) {
-                    //Methode die in Abhängigkeit von der Seekbar die Animation ausführt
-                    if(MandelbrotFragment.speed == 0) mandelSetAnimation(1500);
-                    else mandelSetAnimation(1000 / MandelbrotFragment.speed);
+                    //Toast, um anzuzeigen, wie ANimation gestoppt wird
+                    Toast.makeText(getContext(), "Berühre den Bildschirm, um die Animation zu stoppen.", Toast.LENGTH_LONG).show();
 
-
+                    mandelSetAnimation(1000 / MandelbrotFragment.speed);
                 }
 
                 onCall = false;

@@ -125,8 +125,8 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Dein Fractal wurde gespeichert.", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                //Snackbar.make(view, "Dein Fractal wurde gespeichert.", Snackbar.LENGTH_LONG)
+                       // .setAction("Action", null).show();
 
                 //Permission abfragen ab Android 6 nötig
                 if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){

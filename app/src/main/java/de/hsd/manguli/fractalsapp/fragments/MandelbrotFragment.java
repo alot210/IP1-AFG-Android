@@ -123,9 +123,10 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
         tv_speed=(TextView) editor_m.findViewById(R.id.text_m_Speed_value);
         tv_speed.setText(speed+"");
         //Seekbar für Speed ansprechen, Progress auf den aktuellen Wert setzen
-        sb_speed.setProgress(speed);
-        sb_speed.incrementProgressBy(1);
-        sb_speed.setMax(10);
+        sb_speed.setMax(9);
+        sb_speed.setProgress(speed-1);
+        //sb_speed.incrementProgressBy(1);
+
 
         //Falls bereits Farben ausgewählt wurden, setze die Hintergrund Farbe der Buttons auf die vorher gewählte Farbe
         if(color1!=0 && color2!= 0 &&color3!=0 && color4!=0){
@@ -163,7 +164,7 @@ public class MandelbrotFragment extends Fragment implements View.OnClickListener
             @Override
             public void onProgressChanged(SeekBar sb_speed, int progress, boolean fromUser) {
                 //Bei Veränderung den Progress in die Textview schreiben
-                tv_speed.setText(String.valueOf(progress));
+                tv_speed.setText(String.valueOf(progress+1));
                 Log.d("LOGGING","Geschwindigkeit veraendert");
             }
 
