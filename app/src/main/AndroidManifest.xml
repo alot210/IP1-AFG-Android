@@ -2,16 +2,22 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.hsd.manguli.fractalsapp">
 
+    <uses-permission android:name="android.permission.READ_LOGS"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/fractalicious_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/fractalicious_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -20,31 +26,44 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".EditorActivity"
+            android:name=".activities.EditorActivity"
             android:label="@string/title_activity_editor"
-            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.hsd.manguli.fractalsapp.MainActivity" />
+                android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".MathActivity"
+            android:name=".activities.MathActivity"
             android:label="@string/title_activity_math"
-            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.hsd.manguli.fractalsapp.MainActivity" />
+                android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".DeveloperActivity"
+            android:name=".activities.DeveloperActivity"
             android:label="@string/title_activity_developer"
-            android:parentActivityName=".MainActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="de.hsd.manguli.fractalsapp.MainActivity" />
+                android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name="activities.LogCatActivity"
+            android:label="LogCat Ausgabe"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="de.hsd.manguli.fractalsapp.activities.MainActivity" />
         </activity>
     </application>
 

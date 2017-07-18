@@ -11,30 +11,32 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="de.hsd.manguli.fractalsapp.EditorActivityFragment">
+        tools:context="de.hsd.manguli.fractalsapp.fragments.MandelbrotFragment">
 
 
         <TextView
             android:id="@+id/text_m_Iteration"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
             android:layout_marginTop="128dp"
             android:text="Iterationen"
-            android:textSize="24sp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <SeekBar
             android:id="@+id/seekBar_m_Iteration"
             style="@android:style/Widget.DeviceDefault.SeekBar"
             android:layout_width="164dp"
-            android:layout_height="32dp"
+            android:layout_height="24dp"
+            android:layout_marginBottom="0dp"
             android:layout_marginRight="64dp"
             android:layout_marginTop="0dp"
             android:max="100"
             android:paddingRight="0dip"
             android:progress="20"
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_Iteration"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/text_m_Iteration" />
 
@@ -52,12 +54,12 @@
             android:id="@+id/text_m_color"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="31dp"
-            android:text="Farben"
-            android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@+id/text_m_Iteration_desc"
             android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            android:layout_marginTop="32dp"
+            android:text="Farben"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_m_Iteration_desc" />
 
         <TextView
             android:id="@+id/text_m_color_desc"
@@ -65,66 +67,35 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:text="Wählen Sie 2 Farben aus"
+            android:text="Wählen Sie insgesamt 4 Farben aus"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_m_color" />
-
-        <TextView
-            android:id="@+id/text_m_Rotation"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Rotation"
-            android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@+id/text_m_color_desc"
-            android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
-
-        <Switch
-            android:id="@+id/switch_m_Rotation"
-            android:layout_width="wrap_content"
-            android:layout_height="27dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="0dp"
-            android:checked="false"
-            android:switchMinWidth="60dp"
-            app:layout_constraintLeft_toRightOf="@+id/picto_m_zoom_rotation"
-            app:layout_constraintRight_toLeftOf="@+id/picto_m_rotation_rotation"
-            app:layout_constraintTop_toTopOf="@+id/text_m_Rotation"
-            tools:checked="false"
-            app:layout_constraintHorizontal_bias="0.49" />
-
-        <TextView
-            android:id="@+id/text_m_rotation_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Landscape View: Zoom-in oder Drehung"
-            app:layout_constraintTop_toBottomOf="@+id/text_m_Rotation"
-            android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
 
         <TextView
             android:id="@+id/text_m_animation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:text="Animation"
-            android:textSize="24sp"
-            app:layout_constraintTop_toBottomOf="@+id/text_m_rotation_desc"
             android:layout_marginLeft="16dp"
-            app:layout_constraintLeft_toLeftOf="parent" />
+            android:layout_marginTop="32dp"
+            android:text="Animation"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_m_color_desc" />
 
         <Switch
             android:id="@+id/switch_m_Animation"
             android:layout_width="wrap_content"
-            android:layout_height="27dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="0dp"
             android:switchMinWidth="60dp"
             app:layout_constraintTop_toTopOf="@+id/text_m_animation"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="0dp"
-            app:layout_constraintRight_toRightOf="@+id/switch_m_Rotation" />
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_animation"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintVertical_bias="0.4"
+            android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="@+id/seekBar_m_Iteration"
+            android:layout_marginRight="8dp"
+            app:layout_constraintRight_toRightOf="@+id/seekBar_m_Iteration" />
 
         <TextView
             android:id="@+id/text_m_animation_desc"
@@ -142,22 +113,21 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="32dp"
-            android:text="Speed"
-            android:textSize="24sp"
+            android:text="Geschwindigkeit"
+            android:textSize="18sp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_m_animation_desc" />
 
         <SeekBar
             android:id="@+id/seekBar_m_speed"
             style="@style/Widget.AppCompat.SeekBar.Discrete"
-            android:layout_width="164dp"
-            android:layout_height="32dp"
+            android:layout_width="132dp"
+            android:layout_height="24dp"
+            android:layout_marginRight="64dp"
             android:layout_marginTop="0dp"
             android:max="10"
-            android:progress="3"
-            app:layout_constraintTop_toTopOf="@+id/switch_m_Speed"
-            android:layout_marginRight="64dp"
-            app:layout_constraintRight_toRightOf="parent" />
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/switch_m_Speed" />
 
         <TextView
             android:id="@+id/text_m_speed_desc"
@@ -176,8 +146,12 @@
 
             app:layout_constraintTop_toTopOf="@+id/text_m_color"
             android:layout_marginTop="0dp"
-            android:layout_marginLeft="4dp"
-            app:layout_constraintLeft_toLeftOf="@+id/seekBar_m_Iteration" />
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_color"
+            android:layout_marginBottom="0dp"
+            android:layout_marginLeft="0dp"
+            app:layout_constraintLeft_toLeftOf="@+id/seekBar_m_Iteration"
+            app:layout_constraintRight_toLeftOf="@+id/button_m_color2_select"
+            android:layout_marginRight="8dp" />
 
         <Button
             android:id="@+id/button_m_color2_select"
@@ -187,7 +161,11 @@
             app:layout_constraintTop_toTopOf="@+id/text_m_color"
             android:layout_marginTop="0dp"
             android:layout_marginLeft="44dp"
-            app:layout_constraintLeft_toLeftOf="@+id/seekBar_m_Iteration" />
+            app:layout_constraintLeft_toLeftOf="@+id/seekBar_m_Iteration"
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_color"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintRight_toLeftOf="@+id/button_m_color3_select"
+            android:layout_marginRight="8dp" />
 
         <Button
             android:id="@+id/button_m_color3_select"
@@ -196,8 +174,10 @@
 
             app:layout_constraintTop_toTopOf="@+id/text_m_color"
             android:layout_marginTop="0dp"
-            android:layout_marginRight="44dp"
-            app:layout_constraintRight_toRightOf="@+id/seekBar_m_Iteration" />
+            android:layout_marginRight="8dp"
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_color"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintRight_toLeftOf="@+id/button_m_color4_select" />
 
         <Button
             android:id="@+id/button_m_color4_select"
@@ -206,8 +186,10 @@
 
             app:layout_constraintTop_toTopOf="@+id/text_m_color"
             android:layout_marginTop="0dp"
-            android:layout_marginRight="4dp"
-            app:layout_constraintRight_toRightOf="@+id/seekBar_m_Iteration" />
+            android:layout_marginRight="0dp"
+            app:layout_constraintRight_toRightOf="@+id/seekBar_m_Iteration"
+            app:layout_constraintBottom_toBottomOf="@+id/text_m_color"
+            android:layout_marginBottom="0dp" />
 
         <TextView
             android:id="@+id/text_m_Iteration_value"
@@ -216,7 +198,6 @@
             android:layout_marginBottom="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="0dp"
-            android:text="20"
             android:textAlignment="center"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/seekBar_m_Iteration"
@@ -228,57 +209,39 @@
             android:id="@+id/text_m_Speed_value"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="0dp"
-            android:text="3"
             android:textAlignment="center"
             android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/seekBar_m_speed"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="@+id/seekBar_m_speed"
-            app:layout_constraintBottom_toBottomOf="@+id/seekBar_m_speed"
-            android:layout_marginBottom="0dp"
             app:layout_constraintVertical_bias="0.5" />
-
-        <ImageView
-            android:id="@+id/picto_m_zoom_rotation"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            android:layout_marginTop="0dp"
-            app:layout_constraintTop_toTopOf="@+id/switch_m_Rotation"
-            app:srcCompat="@drawable/rotation_fullscreen"
-            app:layout_constraintLeft_toRightOf="@+id/text_m_Rotation"
-            android:layout_marginLeft="64dp" />
-
-        <ImageView
-            android:id="@+id/picto_m_rotation_rotation"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
-            app:srcCompat="@drawable/rotation_rotate"
-            app:layout_constraintTop_toTopOf="@+id/switch_m_Rotation"
-            android:layout_marginTop="0dp"
-            android:layout_marginRight="64dp"
-            app:layout_constraintRight_toRightOf="parent" />
 
         <TextView
             android:id="@+id/text_j_seepf"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
-            android:text="Seepferdchen"
-            android:textSize="24sp"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:layout_marginTop="32dp"
+            android:text="Seepferdchen"
+            android:textSize="18sp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_m_speed_desc" />
 
         <Switch
             android:id="@+id/switch_j_seepferdchen"
             android:layout_width="wrap_content"
             android:layout_height="27dp"
-            android:layout_marginRight="8dp"
+            android:layout_marginRight="0dp"
             android:layout_marginTop="0dp"
             android:switchMinWidth="60dp"
             app:layout_constraintRight_toRightOf="@+id/switch_m_Animation"
-            app:layout_constraintTop_toTopOf="@+id/text_j_seepf" />
+            app:layout_constraintTop_toTopOf="@+id/text_j_seepf"
+            app:layout_constraintBottom_toBottomOf="@+id/text_j_seepf"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintVertical_bias="0.4" />
 
         <TextView
             android:id="@+id/text_j_seepf_desc"
